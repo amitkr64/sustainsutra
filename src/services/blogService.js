@@ -12,8 +12,41 @@ export const blogService = {
         }
     },
 
-    // Note: getBlogBySlug logic might need adjustment if backend only supports ID
-    // ideally backend should support slug or we start using ID in frontend
+    // Get published blogs only
+    getPublished: async () => {
+        try {
+            const blogs = await blogService.getAll();
+            return blogs.filter(blog => blog.status === 'published');
+        } catch (error) {
+            console.error('Error fetching published blogs:', error);
+            return [];
+        }
+    },
+
+    // Get blog by slug
+    getBySlug: async (slug) => {
+        try {
+            // Ideally backend should have a getBySlug endpoint
+            // For now, we fetch all and filter, or keep using ID if possible
+            const blogs = await blogService.getAll();
+            return blogs.find(blog => blog.slug === slug);
+        } catch (error) {
+            console.error('Error fetching blog by slug:', error);
+            return null;
+        }
+    },
+
+    // Increment view count
+    incrementView: async (id) => {
+        try {
+            // This could be a specialized endpoint in the backend
+            // For now, we can just log it or implement a PATCH endpoint later
+            console.log(`Incrementing view for blog ${id}`);
+        } catch (error) {
+            console.error('Error incrementing view:', error);
+        }
+    },
+
     getBlogById: async (id) => {
         try {
             const response = await fetch(`${API_URL}/${id}`);

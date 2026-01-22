@@ -14,9 +14,11 @@ const HomePage = () => {
     const [recentBlogs, setRecentBlogs] = useState([]);
 
     useEffect(() => {
-        // Get top 3 published blogs
-        const blogs = blogService.getPublished().slice(0, 3);
-        setRecentBlogs(blogs);
+        const fetchRecentBlogs = async () => {
+            const data = await blogService.getPublished();
+            setRecentBlogs(data ? data.slice(0, 3) : []);
+        };
+        fetchRecentBlogs();
     }, []);
 
     return (

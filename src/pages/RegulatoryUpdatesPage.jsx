@@ -9,8 +9,11 @@ const RegulatoryUpdatesPage = () => {
     const [updates, setUpdates] = React.useState([]);
 
     React.useEffect(() => {
-        const data = resourceService.getUpdates();
-        setUpdates(data);
+        const fetchUpdates = async () => {
+            const data = await resourceService.getRegulatoryUpdates();
+            setUpdates(data || []);
+        };
+        fetchUpdates();
     }, []);
 
     return (

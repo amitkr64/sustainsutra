@@ -12,18 +12,21 @@ const BlogPostPage = () => {
     const [relatedPosts, setRelatedPosts] = useState([]);
 
     useEffect(() => {
-        const post = blogService.getBySlug(slug);
-        if (post) {
-            setBlog(post);
-            blogService.incrementView(post.id);
+        const fetchBlogData = async () => {
+            const post = await blogService.getBySlug(slug);
+            if (post) {
+                setBlog(post);
+                blogService.incrementView(post.id);
 
-            // Get related posts
-            const allPosts = blogService.getPublished();
-            const related = allPosts
-                .filter(p => p.category === post.category && p.id !== post.id)
-                .slice(0, 3);
-            setRelatedPosts(related);
-        }
+                // Get related posts
+                const allPosts = await blogService.getPublished();
+                const related = (allPosts || [])
+                    .filter(p => p.category === post.category && p.id !== post.id)
+                    .slice(0, 3);
+                setRelatedPosts(related);
+            }
+        };
+        fetchBlogData();
     }, [slug]);
 
     if (!blog) return <LoadingSpinner fullScreen />;

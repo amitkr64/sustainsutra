@@ -19,11 +19,13 @@ const ResourceManager = () => {
         loadData();
     }, [activeTab]);
 
-    const loadData = () => {
-        if (activeTab === 'reports') setData(resourceService.getReports());
-        else if (activeTab === 'updates') setData(resourceService.getUpdates());
-        else if (activeTab === 'templates') setData(resourceService.getTemplates());
-        else if (activeTab === 'casestudies') setData(resourceService.getCaseStudies());
+    const loadData = async () => {
+        let fetchedData = [];
+        if (activeTab === 'reports') fetchedData = await resourceService.getIndustryReports();
+        else if (activeTab === 'updates') fetchedData = await resourceService.getRegulatoryUpdates();
+        else if (activeTab === 'templates') fetchedData = await resourceService.getTemplates();
+        else if (activeTab === 'casestudies') fetchedData = await resourceService.getCaseStudies();
+        setData(fetchedData || []);
     };
 
     const handleAddNew = () => {
@@ -38,43 +40,47 @@ const ResourceManager = () => {
         setView('form');
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
             let success = false;
-            if (activeTab === 'reports') success = resourceService.deleteReport(id);
-            else if (activeTab === 'updates') success = resourceService.deleteUpdate(id);
-            else if (activeTab === 'templates') success = resourceService.deleteTemplate(id);
-            else if (activeTab === 'casestudies') success = resourceService.deleteCaseStudy(id);
+            if (activeTab === 'reports') success = await resourceService.deleteIndustryReport(id);
+            else if (activeTab === 'updates') success = await resourceService.deleteRegulatoryUpdate(id);
+            else if (activeTab === 'templates') success = await resourceService.deleteTemplate(id);
+            else if (activeTab === 'casestudies') success = await resourceService.deleteCaseStudy(id);
 
             if (success) {
                 toast({ title: "Item deleted successfully" });
-                loadData();
+                await loadData();
             }
         }
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
         let result = null;
 
-        if (activeTab === 'reports') {
-            if (editingItem) result = resourceService.updateReport(editingItem.id, formData);
-            else result = resourceService.createReport(formData);
-        } else if (activeTab === 'updates') {
-            if (editingItem) result = resourceService.updateUpdate(editingItem.id, formData);
-            else result = resourceService.createUpdate(formData);
-        } else if (activeTab === 'templates') {
-            if (editingItem) result = resourceService.updateTemplate(editingItem.id, formData);
-            else result = resourceService.createTemplate(formData);
-        } else if (activeTab === 'casestudies') {
-            if (editingItem) result = resourceService.updateCaseStudy(editingItem.id, formData);
-            else result = resourceService.createCaseStudy(formData);
-        }
+        try {
+            if (activeTab === 'reports') {
+                if (editingItem) result = await resourceService.updateIndustryReport(editingItem.id, formData);
+                else result = await resourceService.addIndustryReport(formData);
+            } else if (activeTab === 'updates') {
+                if (editingItem) result = await resourceService.updateRegulatoryUpdate(editingItem.id, formData);
+                else result = await resourceService.addRegulatoryUpdate(formData);
+            } else if (activeTab === 'templates') {
+                if (editingItem) result = await resourceService.updateTemplate(editingItem.id, formData);
+                else result = await resourceService.addTemplate(formData);
+            } else if (activeTab === 'casestudies') {
+                if (editingItem) result = await resourceService.updateCaseStudy(editingItem.id, formData);
+                else result = await resourceService.createCaseStudy(formData);
+            }
 
-        if (result) {
-            toast({ title: editingItem ? "Item updated" : "Item created" });
-            setView('list');
-            loadData();
+            if (result) {
+                toast({ title: editingItem ? "Item updated" : "Item created" });
+                setView('list');
+                await loadData();
+            }
+        } catch (error) {
+            toast({ title: "Error saving item", variant: "destructive" });
         }
     };
 

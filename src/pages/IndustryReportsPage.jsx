@@ -9,8 +9,11 @@ const IndustryReportsPage = () => {
     const [reports, setReports] = React.useState([]);
 
     React.useEffect(() => {
-        const data = resourceService.getReports();
-        setReports(data);
+        const fetchReports = async () => {
+            const data = await resourceService.getIndustryReports();
+            setReports(data || []);
+        };
+        fetchReports();
     }, []);
 
     return (

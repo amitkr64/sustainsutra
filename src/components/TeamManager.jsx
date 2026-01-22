@@ -14,8 +14,9 @@ const TeamManager = () => {
         loadData();
     }, []);
 
-    const loadData = () => {
-        setTeam(teamService.getAll());
+    const loadData = async () => {
+        const data = await teamService.getAll();
+        setTeam(data || []);
     };
 
     const handleEdit = (member) => {
@@ -35,25 +36,29 @@ const TeamManager = () => {
         setIsEditing(true);
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        if (currentMember.id) {
-            teamService.update(currentMember.id, currentMember);
-            toast({ title: "Team member updated" });
-        } else {
-            teamService.create(currentMember);
-            toast({ title: "Team member added" });
+        try {
+            if (currentMember.id) {
+                await teamService.update(currentMember.id, currentMember);
+                toast({ title: "Team member updated" });
+            } else {
+                await teamService.create(currentMember);
+                toast({ title: "Team member added" });
+            }
+            setIsEditing(false);
+            setCurrentMember(null);
+            await loadData();
+        } catch (error) {
+            toast({ title: "Error saving team member", variant: "destructive" });
         }
-        setIsEditing(false);
-        setCurrentMember(null);
-        loadData();
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to remove this team member?")) {
-            teamService.delete(id);
+            await teamService.delete(id);
             toast({ title: "Team member removed", variant: "destructive" });
-            loadData();
+            await loadData();
         }
     };
 

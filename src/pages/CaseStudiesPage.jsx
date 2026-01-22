@@ -10,8 +10,11 @@ const CaseStudiesPage = () => {
     const [caseStudies, setCaseStudies] = React.useState([]);
 
     React.useEffect(() => {
-        const data = resourceService.getCaseStudies();
-        setCaseStudies(data);
+        const fetchStudies = async () => {
+            const data = await resourceService.getCaseStudies();
+            setCaseStudies(data || []);
+        };
+        fetchStudies();
     }, []);
 
     return (

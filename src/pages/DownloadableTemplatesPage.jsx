@@ -12,8 +12,11 @@ const DownloadableTemplatesPage = () => {
     const [templates, setTemplates] = React.useState([]);
 
     React.useEffect(() => {
-        const data = resourceService.getTemplates();
-        setTemplates(data);
+        const fetchTemplates = async () => {
+            const data = await resourceService.getTemplates();
+            setTemplates(data || []);
+        };
+        fetchTemplates();
     }, []);
 
     const getIconComponent = (type) => {

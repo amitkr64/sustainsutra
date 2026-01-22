@@ -8,7 +8,11 @@ const AboutPage = () => {
     const [team, setTeam] = useState([]);
 
     useEffect(() => {
-        setTeam(teamService.getAll());
+        const fetchTeam = async () => {
+            const data = await teamService.getAll();
+            setTeam(data || []);
+        };
+        fetchTeam();
     }, []);
 
     return (

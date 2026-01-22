@@ -13,12 +13,12 @@ const CaseStudyDetailPage = () => {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
-        // Simulate loading for effect
-        setTimeout(() => {
-            const data = resourceService.getCaseStudyById(id);
+        const fetchStudy = async () => {
+            const data = await resourceService.getCaseStudyById(id);
             setStudy(data);
             setLoading(false);
-        }, 500);
+        };
+        fetchStudy();
     }, [id]);
 
     if (loading) return <LoadingSpinner fullScreen />;

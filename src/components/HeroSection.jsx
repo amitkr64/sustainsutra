@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Calculator } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import ParticleAnimation from '@/components/ParticleAnimation';
 import { Button } from '@/components/ui/button';
 
@@ -51,23 +52,20 @@ const HeroSection = () => {
                         </p>
 
                         <div className="flex flex-wrap gap-4 pt-6">
-                            <Button
-                                onClick={scrollToContact}
-                                className="px-8 py-6 text-lg rounded-lg shadow-xl shadow-gold/20"
-                            >
-                                Start Audit
-                                <ArrowRight className="ml-2" size={20} />
-                            </Button>
+                            <Link to="/carbon-calculator">
+                                <Button className="px-8 py-6 text-lg rounded-lg shadow-xl shadow-gold/20 flex items-center gap-2">
+                                    <Calculator size={20} />
+                                    Launch GHG Tool
+                                </Button>
+                            </Link>
 
                             <Button
-                                onClick={() => {
-                                    const element = document.getElementById('process');
-                                    if (element) element.scrollIntoView({ behavior: 'smooth' });
-                                }}
+                                onClick={scrollToContact}
                                 variant="outline"
-                                className="px-8 py-6 text-lg rounded-lg"
+                                className="px-8 py-6 text-lg rounded-lg border-white/20 hover:border-gold"
                             >
-                                Learn More
+                                Get Expert Audit
+                                <ArrowRight className="ml-2" size={20} />
                             </Button>
                         </div>
 

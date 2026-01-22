@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
 import { emissionFactorService } from '@/services/emissionFactorService';
 import { carbonCalculationService } from '@/services/carbonCalculationService';
+import { paymentService } from '@/services/paymentService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,10 +11,12 @@ import {
     Flame, Zap, Globe, TrendingUp, Shield, HelpCircle, ArrowRight,
     LineChart, LayoutDashboard, Database, Info
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CarbonCalculatorPage = () => {
     const { user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
     const { toast } = useToast();
 
     const [activeScope, setActiveScope] = useState(1);
@@ -26,6 +29,7 @@ const CarbonCalculatorPage = () => {
     const [organizationName, setOrganizationName] = useState('');
     const [reportingPeriod, setReportingPeriod] = useState('');
     const [isCalculating, setIsCalculating] = useState(false);
+    const [paymentFee, setPaymentFee] = useState(999);
 
     useEffect(() => {
         const factors = emissionFactorService.getAll();
@@ -35,6 +39,9 @@ const CarbonCalculatorPage = () => {
         if (scope1Activities.length === 0) addActivity(1);
         if (scope2Activities.length === 0) addActivity(2);
         if (scope3Activities.length === 0) addActivity(3);
+
+        const settings = paymentService.getSettings();
+        setPaymentFee(settings.reportFee);
     }, []);
 
     const addActivity = (scope) => {
@@ -391,7 +398,12 @@ const CarbonCalculatorPage = () => {
                                                 <Lock className="text-gold mx-auto mb-4" size={32} />
                                                 <h4 className="text-white font-bold mb-4">Detailed Analytics Locked</h4>
                                                 <p className="text-xs text-dimmed leading-relaxed mb-6">Upgrade to an authorized account to unlock scope-wise data visualization and PDF report generation.</p>
-                                                <Button onClick={() => navigate('/login')} className="w-full">Sign In to Unlock</Button>
+                                                <Button
+                                                    onClick={() => navigate('/login')}
+                                                    className="w-full h-14 bg-gold text-navy hover:bg-white transition-all font-bold text-lg"
+                                                >
+                                                    Sign In to Unlock
+                                                </Button>
                                             </div>
                                         )}
                                     </div>
@@ -454,7 +466,7 @@ const CarbonCalculatorPage = () => {
                                     <div className="text-xs font-bold text-gold uppercase tracking-widest mb-1">Standard Generation Fee</div>
                                     <div className="text-white text-sm font-medium">Verified by SustainSutra Advisors</div>
                                 </div>
-                                <div className="text-3xl font-playfair text-white">₹999</div>
+                                <div className="text-3xl font-playfair text-white">₹{paymentFee}</div>
                             </div>
 
                             <div className="flex flex-col gap-4">

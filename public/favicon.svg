@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c5a059;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a1628;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad)" />
+  
+  <!-- Leaf Symbol (representing sustainability) -->
+  <path d="M 50 25 Q 65 35, 65 50 Q 65 65, 50 75 Q 35 65, 35 50 Q 35 35, 50 25 Z" 
+        fill="none" stroke="#ffffff" stroke-width="2.5" />
+  
+  <!-- Center dot -->
+  <circle cx="50" cy="50" r="4" fill="#ffffff" />
+  
+  <!-- Letter S (stylized) -->
+  <text x="50" y="58" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">S</text>
+</svg>

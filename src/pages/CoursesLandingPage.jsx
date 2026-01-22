@@ -4,11 +4,13 @@ import { motion } from 'framer-motion';
 import { GraduationCap, Search, Filter, CheckCircle } from 'lucide-react';
 import { courseService } from '@/services/courseService';
 import CourseCard from '@/components/CourseCard';
+import { CourseCardSkeleton } from '@/components/LoadingSkeletons';
 
 const CoursesLandingPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedLevel, setSelectedLevel] = useState('all');
+    const [isLoading, setIsLoading] = useState(false);
 
     const courses = courseService.getPublishedCourses();
 

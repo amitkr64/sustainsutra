@@ -13,6 +13,7 @@ import EmissionFactorManager from '@/components/EmissionFactorManager';
 import UserManagement from '@/components/UserManagement';
 import ResourceManager from '@/components/ResourceManager';
 import TeamManager from '@/components/TeamManager';
+import PaymentSettings from '@/components/PaymentSettings';
 
 const AdminDashboard = () => {
     const [blogs, setBlogs] = useState([]);
@@ -143,6 +144,7 @@ const AdminDashboard = () => {
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
                         <TabsTrigger value="team">Team</TabsTrigger>
+                        <TabsTrigger value="payments" className="text-gold">Payments</TabsTrigger>
                     </TabsList>
 
                     {/* Blogs Tab */}
@@ -346,6 +348,11 @@ const AdminDashboard = () => {
                     {/* Team Tab */}
                     <TabsContent value="team" className="mt-6">
                         <TeamManager />
+                    </TabsContent>
+
+                    {/* Payments Tab */}
+                    <TabsContent value="payments" className="mt-6">
+                        <PaymentSettings />
                     </TabsContent>
                 </Tabs>
             </div>

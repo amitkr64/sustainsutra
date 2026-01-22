@@ -29,22 +29,35 @@ export const userService = {
 
     // Register
     create: async (userData) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
 
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || 'Registration failed');
-        }
+            const contentType = response.headers.get("content-type");
+            let data;
 
-        // Auto-login (save token)
-        if (data.token) {
-            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data));
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error(text || `Server error: ${response.status}`);
+            }
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Registration failed');
+            }
+
+            if (data.token) {
+                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data));
+            }
+            return data;
+        } catch (error) {
+            console.error('Registration API error:', error);
+            throw error;
         }
-        return data;
     },
 
     login: async (email, password) => {
@@ -55,7 +68,16 @@ export const userService = {
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            const contentType = response.headers.get("content-type");
+            let data;
+
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error(text || `Server error: ${response.status}`);
+            }
+
             if (!response.ok) {
                 throw new Error(data.message || 'Login failed');
             }

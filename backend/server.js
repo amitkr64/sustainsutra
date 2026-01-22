@@ -29,6 +29,8 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/team', require('./routes/teamRoutes'));
@@ -36,6 +38,10 @@ app.use('/api/blogs', require('./routes/blogRoutes'));
 app.use('/api/resources', require('./routes/resourceRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/newsletter', require('./routes/newsletterRoutes'));
+
+// Error Middleware
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

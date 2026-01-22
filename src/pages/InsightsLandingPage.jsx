@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { blogService } from '@/services/blogService';
 import { Calendar, User, ArrowRight, Search, Grid, List } from 'lucide-react';
+import { BlogCardSkeleton } from '@/components/LoadingSkeletons';
 
 const InsightsLandingPage = () => {
     const [blogs, setBlogs] = useState([]);
@@ -11,12 +12,15 @@ const InsightsLandingPage = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchBlogs = async () => {
+            setIsLoading(true);
             const data = await blogService.getPublished();
             setBlogs(data || []);
             setFilteredBlogs(data || []);
+            setIsLoading(false);
         };
         fetchBlogs();
     }, []);
@@ -113,7 +117,13 @@ const InsightsLandingPage = () => {
 
             {/* Blogs Grid/List */}
             <section className="py-12 px-4 container mx-auto">
-                {filteredBlogs.length === 0 ? (
+                {isLoading ? (
+                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' : 'space-y-6 max-w-4xl mx-auto'}>
+                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                            <BlogCardSkeleton key={n} />
+                        ))}
+                    </div>
+                ) : filteredBlogs.length === 0 ? (
                     <div className="text-center py-20 text-offwhite/50">
                         <p className="text-xl">No insights found matching your criteria.</p>
                     </div>

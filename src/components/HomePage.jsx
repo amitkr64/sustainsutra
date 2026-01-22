@@ -7,8 +7,9 @@ import ESGScoreChart from '@/components/ESGScoreChart';
 import CarbonAbatementChart from '@/components/CarbonAbatementChart';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import { blogService } from '@/services/blogService';
-import { Mail, Phone, MapPin, ArrowRight, Calendar, User } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight, Calendar, User, Calculator } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 const HomePage = () => {
     const [recentBlogs, setRecentBlogs] = useState([]);
@@ -178,6 +179,46 @@ const HomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                         <ESGScoreChart />
                         <CarbonAbatementChart />
+                    </div>
+                </div>
+            </section>
+
+            {/* GHG Tool CTA Section */}
+            <section className="py-24 bg-gradient-to-r from-gold/10 via-navy to-gold/5 relative overflow-hidden border-y border-white/5">
+                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                    <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-gold blur-[120px] rounded-full animate-pulse"></div>
+                </div>
+
+                <div className="container mx-auto px-4 relative z-10">
+                    <div className="glassmorphism rounded-[40px] p-8 md:p-16 border-gold/20 flex flex-col md:flex-row items-center gap-12 max-w-6xl mx-auto shadow-2xl">
+                        <div className="w-24 h-24 md:w-32 md:h-32 bg-gold/10 rounded-3xl flex items-center justify-center text-gold border border-gold/30 shadow-[0_0_30px_rgba(197,160,89,0.2)]">
+                            <Calculator size={64} className="md:size-80" />
+                        </div>
+
+                        <div className="flex-1 text-center md:text-left">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-gold/20 rounded-full text-gold font-bold text-[10px] uppercase tracking-widest mb-4">
+                                Proprietary Technology
+                            </div>
+                            <h2 className="text-3xl md:text-5xl font-playfair text-white mb-6">
+                                Professional <span className="text-gold italic">GHG Audit</span> Engine
+                            </h2>
+                            <p className="text-lg text-dimmed mb-8 leading-relaxed max-w-2xl">
+                                Quantify your Scope 1, 2, and 3 emissions with ISO 14064-1 compliant methodology. Our high-precision tool generates institutional-grade analytics for your net-zero roadmap.
+                            </p>
+
+                            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                                <Link to="/carbon-calculator">
+                                    <Button className="h-14 px-8 rounded-xl flex items-center gap-2">
+                                        Launch Calculator <ArrowRight size={18} />
+                                    </Button>
+                                </Link>
+                                <Link to="/services/carbon-footprinting">
+                                    <Button variant="outline" className="h-14 px-8 rounded-xl border-white/10">
+                                        Learn About Methodology
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

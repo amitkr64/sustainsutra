@@ -10,7 +10,8 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   backend:
     image: amitkr64/sustainsutra-backend:latest
@@ -26,7 +27,14 @@ services:
       - JWT_SECRET=sustainsutra_secret_key_change_this
       - NODE_ENV=production
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:5000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   mongo:
     image: mongo:latest
@@ -35,6 +43,12 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
 volumes:
   mongo-data:

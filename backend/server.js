@@ -24,6 +24,11 @@ app.get('/', (req, res) => {
     res.send('SustainSutra API is running...');
 });
 
+// Health check route
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
+
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/team', require('./routes/teamRoutes'));

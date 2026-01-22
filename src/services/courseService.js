@@ -1,370 +1,184 @@
-// Course service for managing course data in localStorage
-
-const COURSES_KEY = 'sustainsutra_courses';
-const REGISTRATIONS_KEY = 'sustainsutra_course_registrations';
-
-// Default courses - Synchronized with courseContentService.js
-const defaultCourses = [
-    {
-        id: 'ghg-accounting',
-        slug: 'greenhouse-gas-accounting',
-        title: 'Greenhouse Gas (GHG) Accounting',
-        category: 'Climate',
-        level: 'Intermediate',
-        duration: '8 weeks',
-        price: 15000,
-        description: 'Comprehensive training on GHG Protocol, Scope 1, 2, and 3 emissions calculation and reporting.',
-        prerequisites: [
-            'Basic understanding of environmental science',
-            'Proficiency in Microsoft Excel',
-            'Familiarity with corporate operations'
-        ],
-        objectives: [
-            'Understand GHG Protocol standards',
-            'Calculate Scope 1, 2, and 3 emissions',
-            'Prepare GHG inventory reports',
-            'Implement emission reduction strategies'
-        ],
-        modules: [
-            { title: 'Concepts & Standards', duration: '2 weeks' },
-            { title: 'Quantifying Scope 1 & 2', duration: '3 weeks' },
-            { title: 'Scope 3 & Reporting', duration: '3 weeks' }
-        ],
-        instructor: 'Dr. Amit Kumar',
-        instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
-        highlights: [
-            'Master Scope 1, 2 & 3 Emissions',
-            'GHG Protocol Standard Training',
-            'Hands-on Excel Modeling',
-            'BRSR Alignment Support'
-        ],
-        reviews: [
-            { id: 1, user: 'Priya S.', rating: 5, comment: 'Excellent course! The practical exercises on Scope 3 were very helpful.' },
-            { id: 2, user: 'Rahul M.', rating: 4, comment: 'Great content, though the pace was a bit fast in the beginning.' }
-        ],
-        published: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: 'iso-14064',
-        slug: 'iso-14064-verification',
-        title: 'ISO 14064 Verification & Validation',
-        category: 'Standards',
-        level: 'Advanced',
-        duration: '6 weeks',
-        price: 18000,
-        description: 'Master ISO 14064 standards for GHG quantification, monitoring, reporting and verification.',
-        prerequisites: [
-            'Completion of GHG Accounting course or equivalent',
-            'Basic knowledge of auditing principles',
-            'Industry experience of 2+ years'
-        ],
-        objectives: [
-            'Understand ISO 14064 framework',
-            'Conduct verification audits',
-            'Validate GHG reports',
-            'Ensure compliance with international standards'
-        ],
-        modules: [
-            { title: 'Standard Requirements', duration: '2 weeks' },
-            { title: 'Verification Process', duration: '4 weeks' }
-        ],
-        instructor: 'Dr. Amit Kumar',
-        instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
-        highlights: [
-            'ISO 14064-1 & 14064-2 Focus',
-            'Verification Audit Simulation',
-            'Validation Methodology',
-            'Global Compliance Standards'
-        ],
-        reviews: [
-            { id: 1, user: 'Sneha P.', rating: 5, comment: 'Very thorough coverage of the ISO standard.' }
-        ],
-        published: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: 'lca',
-        slug: 'life-cycle-assessment',
-        title: 'Life Cycle Assessment (LCA)',
-        category: 'Environmental',
-        level: 'Advanced',
-        duration: '8 weeks',
-        price: 20000,
-        description: 'Complete guide to conducting Life Cycle Assessments from goal definition to interpretation.',
-        prerequisites: [
-            'Engineering or Science background',
-            'Understanding of manufacturing processes',
-            'Basic statistics knowledge'
-        ],
-        objectives: [
-            'Master LCA methodology',
-            'Use LCA software tools',
-            'Conduct impact assessments',
-            'Interpret and communicate results'
-        ],
-        modules: [
-            { title: 'LCA Methodology', duration: '3 weeks' },
-            { title: 'Inventory & Analysis', duration: '5 weeks' }
-        ],
-        instructor: 'Dr. Amit Kumar',
-        instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
-        highlights: [
-            'Cradle-to-Grave Analysis',
-            'LCA Software Tools Guide',
-            'Environmental Impact Metrics',
-            'Product Carbon Footprinting'
-        ],
-        reviews: [],
-        published: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: 'carbon-footprinting',
-        slug: 'carbon-footprinting',
-        title: 'Carbon Footprinting for Organizations',
-        category: 'Climate',
-        level: 'Beginner',
-        duration: '4 weeks',
-        price: 12000,
-        description: 'Learn to measure, manage and reduce organizational carbon footprints.',
-        prerequisites: [
-            'None - Beginner Friendly',
-            'Interest in sustainability',
-            'Basic computer skills'
-        ],
-        objectives: [
-            'Calculate organizational carbon footprint',
-            'Identify emission hotspots',
-            'Develop reduction strategies',
-            'Create carbon neutrality roadmaps'
-        ],
-        modules: [
-            { title: 'Footprint Foundations', duration: '2 weeks' },
-            { title: 'Reduction Strategies', duration: '2 weeks' }
-        ],
-        instructor: 'Dr. Amit Kumar',
-        instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
-        highlights: [
-            'Measure Org Carbon Footprint',
-            'Identify Emission Hotspots',
-            'Reduction Strategy Planning',
-            'Beginner Friendly Approach'
-        ],
-        reviews: [
-            { id: 1, user: 'Vikram S.', rating: 5, comment: 'Perfect for beginners. Explained complex topics simply.' },
-            { id: 2, user: 'Anjali D.', rating: 4, comment: 'Good overview, would have liked more case studies.' }
-        ],
-        published: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: 'esg-strategy',
-        slug: 'esg-strategy-implementation',
-        title: 'ESG Strategy & Implementation',
-        category: 'Sustainability',
-        level: 'Intermediate',
-        duration: '8 weeks',
-        price: 16000,
-        description: 'Develop and implement comprehensive ESG strategies aligned with global frameworks.',
-        prerequisites: [
-            'Management or Strategy experience',
-            'Basic understanding of corporate governance'
-        ],
-        objectives: [
-            'Understand ESG frameworks (GRI, SASB, TCFD)',
-            'Develop ESG strategy',
-            'Implement ESG programs',
-            'Measure and report ESG performance'
-        ],
-        modules: [
-            { title: 'Frameworks & Disclosures', duration: '4 weeks' },
-            { title: 'Strategic Integration', duration: '4 weeks' }
-        ],
-        instructor: 'Dr. Amit Kumar',
-        instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
-        highlights: [
-            'GRI, SASB & TCFD Frameworks',
-            'ESG Strategic Integration',
-            'Performance Measurement',
-            'Reporting & Disclosures'
-        ],
-        reviews: [],
-        published: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: 'materiality',
-        slug: 'materiality-assessment',
-        title: 'Materiality Assessment for Sustainability',
-        category: 'Sustainability',
-        level: 'Intermediate',
-        duration: '4 weeks',
-        price: 10000,
-        description: 'Master double materiality assessment and integrate it into sustainability strategy.',
-        prerequisites: [
-            'Basic ESG knowledge',
-            'Experience in stakeholder engagement'
-        ],
-        objectives: [
-            'Understand materiality concepts',
-            'Conduct stakeholder engagement',
-            'Perform impact and financial materiality analysis',
-            'Create materiality matrices'
-        ],
-        modules: [
-            { title: 'Assessment Principles', duration: '2 weeks' },
-            { title: 'Stakeholder Engagement', duration: '2 weeks' }
-        ],
-        instructor: 'Dr. Amit Kumar',
-        instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
-        highlights: [
-            'Double Materiality Workshop',
-            'Stakeholder Engagement Map',
-            'Financial Impact Analysis',
-            'Materiality Matrix Design'
-        ],
-        reviews: [],
-        published: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    }
-];
+// Course service for managing course data via API
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/courses';
 
 export const courseService = {
-    // Initialize courses
-    initializeCourses: () => {
-        // Clear and force update to ensure sync
-        localStorage.setItem(COURSES_KEY, JSON.stringify(defaultCourses));
-
-        if (!localStorage.getItem(REGISTRATIONS_KEY)) {
-            localStorage.setItem(REGISTRATIONS_KEY, JSON.stringify([]));
-        }
-    },
-
     // Get all courses
-    getAllCourses: () => {
-        const courses = localStorage.getItem(COURSES_KEY);
-        return courses ? JSON.parse(courses) : [];
+    getAllCourses: async () => {
+        try {
+            const response = await fetch(`${API_URL}`);
+            if (!response.ok) throw new Error('Failed to fetch courses');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching all courses:', error);
+            return [];
+        }
     },
 
     // Get published courses
-    getPublishedCourses: () => {
-        const courses = courseService.getAllCourses();
-        return courses.filter(course => course.published);
+    getPublishedCourses: async () => {
+        try {
+            const response = await fetch(`${API_URL}/published`);
+            if (!response.ok) throw new Error('Failed to fetch published courses');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching published courses:', error);
+            return [];
+        }
     },
 
     // Get course by slug
-    getCourseBySlug: (slug) => {
-        const courses = courseService.getAllCourses();
-        return courses.find(course => course.slug === slug);
+    getCourseBySlug: async (slug) => {
+        try {
+            const response = await fetch(`${API_URL}/slug/${slug}`);
+            if (!response.ok) throw new Error('Course not found');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching course by slug:', error);
+            return null;
+        }
     },
 
     // Get course by ID
-    getCourseById: (id) => {
-        const courses = courseService.getAllCourses();
-        return courses.find(course => course.id === id);
-    },
-
-    // Create course
-    createCourse: (courseData) => {
-        const courses = courseService.getAllCourses();
-        const newCourse = {
-            ...courseData,
-            id: Date.now().toString(),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        };
-        courses.push(newCourse);
-        localStorage.setItem(COURSES_KEY, JSON.stringify(courses));
-        return newCourse;
-    },
-
-    // Update course
-    updateCourse: (id, courseData) => {
-        const courses = courseService.getAllCourses();
-        const index = courses.findIndex(course => course.id === id);
-        if (index !== -1) {
-            courses[index] = {
-                ...courses[index],
-                ...courseData,
-                updatedAt: new Date().toISOString()
-            };
-            localStorage.setItem(COURSES_KEY, JSON.stringify(courses));
-            return courses[index];
+    getCourseById: async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}`);
+            if (!response.ok) throw new Error('Course not found');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching course by ID:', error);
+            return null;
         }
-        return null;
     },
 
-    // Delete course
-    deleteCourse: (id) => {
-        const courses = courseService.getAllCourses();
-        const filtered = courses.filter(course => course.id !== id);
-        localStorage.setItem(COURSES_KEY, JSON.stringify(filtered));
-        return true;
-    },
-
-    // Register for course
-    registerForCourse: (courseId, userEmail, userName) => {
-        const registrations = JSON.parse(localStorage.getItem(REGISTRATIONS_KEY) || '[]');
-        const existing = registrations.find(r => r.courseId === courseId && r.userEmail === userEmail);
-
-        if (existing) {
-            return { success: false, message: 'Already registered for this course' };
+    // Create course (Admin only)
+    createCourse: async (courseData, token) => {
+        try {
+            const response = await fetch(`${API_URL}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(courseData)
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create course');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error creating course:', error);
+            throw error;
         }
-
-        const registration = {
-            id: Date.now().toString(),
-            courseId,
-            userEmail,
-            userName,
-            registeredAt: new Date().toISOString(),
-            status: 'active',
-            progress: 0
-        };
-
-        registrations.push(registration);
-        localStorage.setItem(REGISTRATIONS_KEY, JSON.stringify(registrations));
-        return { success: true, registration };
     },
 
-    // Get user registrations
-    getUserRegistrations: (userEmail) => {
-        const registrations = JSON.parse(localStorage.getItem(REGISTRATIONS_KEY) || '[]');
-        return registrations.filter(r => r.userEmail === userEmail);
-    },
-
-    // Check if user is registered
-    isUserRegistered: (courseId, userEmail) => {
-        const registrations = JSON.parse(localStorage.getItem(REGISTRATIONS_KEY) || '[]');
-        return registrations.some(r => r.courseId === courseId && r.userEmail === userEmail);
-    },
-
-    // Get all registrations (admin)
-    getAllRegistrations: () => {
-        return JSON.parse(localStorage.getItem(REGISTRATIONS_KEY) || '[]');
-    },
-
-    // Update registration progress
-    updateProgress: (registrationId, progress) => {
-        const registrations = JSON.parse(localStorage.getItem(REGISTRATIONS_KEY) || '[]');
-        const index = registrations.findIndex(r => r.id === registrationId);
-        if (index !== -1) {
-            registrations[index].progress = progress;
-            registrations[index].updatedAt = new Date().toISOString();
-            localStorage.setItem(REGISTRATIONS_KEY, JSON.stringify(registrations));
-            return registrations[index];
+    // Update course (Admin only)
+    updateCourse: async (id, courseData, token) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(courseData)
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update course');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error updating course:', error);
+            throw error;
         }
-        return null;
+    },
+
+    // Delete course (Admin only)
+    deleteCourse: async (id, token) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete course');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error deleting course:', error);
+            throw error;
+        }
+    },
+
+    // Registration Methods
+    registerForCourse: async (courseId, userId, token) => {
+        try {
+            const response = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ courseId })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Registration failed');
+            return { success: true, ...data };
+        } catch (error) {
+            console.error('Error registering for course:', error);
+            return { success: false, message: error.message };
+        }
+    },
+
+    getUserRegistrations: async (email, token) => {
+        try {
+            const response = await fetch(`${API_URL}/my-registrations`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) throw new Error('Failed to fetch registrations');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching registrations:', error);
+            return [];
+        }
+    },
+
+    isUserRegistered: async (courseId, email, token) => {
+        try {
+            const response = await fetch(`${API_URL}/check-registration/${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            return data.registered;
+        } catch (error) {
+            console.error('Error checking registration:', error);
+            return false;
+        }
+    },
+
+    updateProgress: async (courseId, progressData, token) => {
+        try {
+            const response = await fetch(`${API_URL}/progress`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ courseId, ...progressData })
+            });
+            if (!response.ok) throw new Error('Failed to update progress');
+            return await response.json();
+        } catch (error) {
+            console.error('Error updating progress:', error);
+            throw error;
+        }
     }
 };
-
-// Initialize on load
-if (typeof window !== 'undefined') {
-    courseService.initializeCourses();
-}

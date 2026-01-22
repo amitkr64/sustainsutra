@@ -9,7 +9,7 @@ import { courseService } from '@/services/courseService';
 
 const MyCourses = () => {
     const { user } = useAuth();
-    const { registrations } = useCourses();
+    const { registrations, courses, loading } = useCourses();
     const navigate = useNavigate();
 
     if (!user) {
@@ -25,12 +25,28 @@ const MyCourses = () => {
         );
     }
 
-    const enrolledCourses = registrations.map(reg => ({
-        ...courseService.getCourseById(reg.courseId),
-        registrationId: reg.id,
-        registeredAt: reg.registeredAt,
-        progress: reg.progress || 0
-    })).filter(c => c.id);
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-navy flex items-center justify-center text-offwhite">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-dimmed">Loading your courses...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const enrolledCourses = registrations.map(reg => {
+        const foundCourse = courses.find(c => (c._id === reg.courseId || c.id === reg.courseId));
+        if (!foundCourse) return null;
+
+        return {
+            ...foundCourse,
+            registrationId: reg.id,
+            registeredAt: reg.registeredAt,
+            progress: reg.progress || 0
+        };
+    }).filter(c => c !== null);
 
     return (
         <>
@@ -87,7 +103,7 @@ const MyCourses = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {enrolledCourses.map((course, index) => (
                                 <motion.div
-                                    key={course.id}
+                                    key={course._id || course.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}

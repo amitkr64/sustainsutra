@@ -17,17 +17,45 @@ const CourseDetailPage = () => {
     const { user } = useAuth();
     const { registerForCourse, isRegistered } = useCourses();
     const { toast } = useToast();
-    const [loading, setLoading] = useState(false);
+    const [course, setCourse] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [registering, setRegistering] = useState(false);
 
-    const course = courseService.getCourseBySlug(slug) || courseService.getAllCourses().find(c => c.slug === slug);
-    const registered = isRegistered(course?.id);
+    useEffect(() => {
+        const fetchCourse = async () => {
+            setLoading(true);
+            try {
+                const data = await courseService.getCourseBySlug(slug);
+                setCourse(data);
+            } catch (error) {
+                console.error('Error fetching course:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourse();
+    }, [slug]);
 
-    if (!course) {
+    const registered = isRegistered(course?._id || course?.id);
+
+    if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <h2 className="text-2xl font-playfair text-offwhite mb-4">Course Not Found</h2>
-                    <Link to="/courses" className="text-gold hover:underline">
+                    <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-dimmed">Loading course details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!course) {
+        return (
+            <div className="min-h-screen flex items-center justify-center pt-20">
+                <div className="text-center">
+                    <h2 className="text-3xl font-playfair text-offwhite mb-4">Course Not Found</h2>
+                    <p className="text-dimmed mb-8">The course you are looking for might have been moved or deleted.</p>
+                    <Link to="/courses" className="px-6 py-3 bg-gold text-navy rounded-lg font-bold hover:bg-gold/90 transition-colors">
                         ← Back to Courses
                     </Link>
                 </div>
@@ -46,9 +74,9 @@ const CourseDetailPage = () => {
             return;
         }
 
-        setLoading(true);
+        setRegistering(true);
         try {
-            const result = await registerForCourse(course.id);
+            const result = await registerForCourse(course._id || course.id);
             if (result.success) {
                 toast({
                     title: "Registration Successful!",
@@ -69,7 +97,7 @@ const CourseDetailPage = () => {
                 variant: "destructive"
             });
         } finally {
-            setLoading(false);
+            setRegistering(false);
         }
     };
 
@@ -155,11 +183,11 @@ const CourseDetailPage = () => {
                                 ) : (
                                     <button
                                         onClick={handleRegister}
-                                        disabled={loading}
+                                        disabled={registering}
                                         className="w-full py-3 px-6 bg-gradient-sage-forest text-offwhite rounded-lg font-medium 
                                                  hover:opacity-90 transition-smooth disabled:opacity-50"
                                     >
-                                        {loading ? 'Enrolling...' : 'Enroll Now'}
+                                        {registering ? 'Enrolling...' : 'Enroll Now'}
                                     </button>
                                 )}
 
@@ -349,15 +377,14 @@ const CourseDetailPage = () => {
                         </div>
                     )}
 
-                    {/* Related Courses */}
                     <div className="border-t border-white/10 pt-16">
                         <h2 className="text-3xl font-playfair text-offwhite mb-8">Related Courses</h2>
                         <div className="grid md:grid-cols-3 gap-6">
-                            {courseService.getAllCourses()
-                                .filter(c => c.category === course.category && c.id !== course.id && c.published)
+                            {(useCourses().courses || [])
+                                .filter(c => c.category === course.category && (c._id !== (course._id || course.id)) && c.published)
                                 .slice(0, 3)
                                 .map(relatedCourse => (
-                                    <Link key={relatedCourse.id} to={`/courses/${relatedCourse.slug}`} className="glassmorphism rounded-xl p-6 hover:translate-y-[-5px] transition-transform block">
+                                    <Link key={relatedCourse._id || relatedCourse.id} to={`/courses/${relatedCourse.slug}`} className="glassmorphism rounded-xl p-6 hover:translate-y-[-5px] transition-transform block">
                                         <div className="flex justify-between items-start mb-4">
                                             <span className="px-2 py-1 bg-white/10 text-xs rounded text-gold">{relatedCourse.category}</span>
                                             <span className="text-xs text-dimmed">{relatedCourse.level}</span>

@@ -1,24 +1,9 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const User = require('./models/userModel');
-const Course = require('./models/courseModel');
-const connectDB = require('./config/db');
+const Course = require('../models/courseModel');
 
-dotenv.config();
-
-const initialUsers = [
-    {
-        name: 'Admin User',
-        email: 'admin@sustainsutra.com',
-        password: 'admin123',
-        role: 'admin',
-        phone: '1234567890'
-    }
-];
-
+// Initial course data for Demo Mode
 const initialCourses = [
     {
-        id: 'ghg-accounting',
+        _id: '65ae12345678901234567890',
         slug: 'greenhouse-gas-accounting',
         title: 'Greenhouse Gas (GHG) Accounting',
         category: 'Climate',
@@ -53,7 +38,7 @@ const initialCourses = [
         published: true
     },
     {
-        id: 'iso-14064',
+        _id: '65ae12345678901234567891',
         slug: 'iso-14064-verification',
         title: 'ISO 14064 Verification & Validation',
         category: 'Standards',
@@ -87,7 +72,7 @@ const initialCourses = [
         published: true
     },
     {
-        id: 'lca',
+        _id: '65ae12345678901234567892',
         slug: 'life-cycle-assessment',
         title: 'Life Cycle Assessment (LCA)',
         category: 'Environmental',
@@ -121,7 +106,7 @@ const initialCourses = [
         published: true
     },
     {
-        id: 'carbon-footprinting',
+        _id: '65ae12345678901234567893',
         slug: 'carbon-footprinting',
         title: 'Carbon Footprinting for Organizations',
         category: 'Climate',
@@ -156,43 +141,130 @@ const initialCourses = [
     }
 ];
 
-const seedData = async () => {
+// @desc    Get all courses
+// @route   GET /api/courses
+// @access  Public
+const getCourses = async (req, res) => {
     try {
-        await connectDB();
-
-        console.log('Seeder running...');
-
-        // Clear existing data
-        await User.deleteMany();
-        await Course.deleteMany();
-
-        // Insert new data
-        await User.insertMany(initialUsers);
-        await Course.insertMany(initialCourses);
-
-        console.log('Data Imported Successfully!');
-        process.exit();
+        if (global.isDemoMode) {
+            return res.json(initialCourses);
+        }
+        const courses = await Course.find({});
+        res.json(courses);
     } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        res.status(500).json({ message: error.message });
     }
 };
 
-const destroyData = async () => {
+// @desc    Get published courses
+// @route   GET /api/courses/published
+// @access  Public
+const getPublishedCourses = async (req, res) => {
     try {
-        await connectDB();
-        await User.deleteMany();
-        await Course.deleteMany();
-        console.log('Data Destroyed!');
-        process.exit();
+        if (global.isDemoMode) {
+            return res.json(initialCourses.filter(c => c.published));
+        }
+        const courses = await Course.find({ published: true });
+        res.json(courses);
     } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        res.status(500).json({ message: error.message });
     }
 };
 
-if (process.argv[2] === '-d') {
-    destroyData();
-} else {
-    seedData();
-}
+// @desc    Get course by slug
+// @route   GET /api/courses/slug/:slug
+// @access  Public
+const getCourseBySlug = async (req, res) => {
+    try {
+        if (global.isDemoMode) {
+            const course = initialCourses.find(c => c.slug === req.params.slug);
+            return course ? res.json(course) : res.status(404).json({ message: 'Course not found' });
+        }
+        const course = await Course.findOne({ slug: req.params.slug });
+        if (course) {
+            res.json(course);
+        } else {
+            res.status(404).json({ message: 'Course not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Create a course
+// @route   POST /api/courses
+// @access  Private/Admin
+const createCourse = async (req, res) => {
+    try {
+        if (global.isDemoMode) {
+            const newCourse = { ...req.body, _id: Date.now().toString() };
+            initialCourses.push(newCourse);
+            return res.status(201).json(newCourse);
+        }
+        const course = new Course(req.body);
+        const createdCourse = await course.save();
+        res.status(201).json(createdCourse);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// @desc    Update a course
+// @route   PUT /api/courses/:id
+// @access  Private/Admin
+const updateCourse = async (req, res) => {
+    try {
+        if (global.isDemoMode) {
+            const index = initialCourses.findIndex(c => c._id === req.params.id);
+            if (index !== -1) {
+                initialCourses[index] = { ...initialCourses[index], ...req.body };
+                return res.json(initialCourses[index]);
+            }
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        const course = await Course.findById(req.params.id);
+        if (course) {
+            Object.assign(course, req.body);
+            const updatedCourse = await course.save();
+            res.json(updatedCourse);
+        } else {
+            res.status(404).json({ message: 'Course not found' });
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// @desc    Delete a course
+// @route   DELETE /api/courses/:id
+// @access  Private/Admin
+const deleteCourse = async (req, res) => {
+    try {
+        if (global.isDemoMode) {
+            const index = initialCourses.findIndex(c => c._id === req.params.id);
+            if (index !== -1) {
+                initialCourses.splice(index, 1);
+                return res.json({ message: 'Course removed' });
+            }
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        const course = await Course.findById(req.params.id);
+        if (course) {
+            await Course.deleteOne({ _id: req.params.id });
+            res.json({ message: 'Course removed' });
+        } else {
+            res.status(404).json({ message: 'Course not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = {
+    getCourses,
+    getPublishedCourses,
+    getCourseBySlug,
+    createCourse,
+    updateCourse,
+    deleteCourse
+};

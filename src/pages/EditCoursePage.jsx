@@ -5,22 +5,36 @@ import { Helmet } from 'react-helmet';
 import { courseService } from '@/services/courseService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 import { ArrowLeft, Save } from 'lucide-react';
 
 const EditCoursePage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
+    const { token } = useAuth();
     const [formData, setFormData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const course = courseService.getCourseById(id);
-        if (course) {
-            setFormData(course);
-        } else {
-            toast({ title: "Course not found", variant: "destructive" });
-            navigate('/admin');
-        }
+        const fetchCourse = async () => {
+            setLoading(true);
+            try {
+                const course = await courseService.getCourseById(id);
+                if (course) {
+                    setFormData(course);
+                } else {
+                    toast({ title: "Course not found", variant: "destructive" });
+                    navigate('/admin');
+                }
+            } catch (error) {
+                console.error('Error fetching course:', error);
+                toast({ title: "Error", description: "Failed to load course", variant: "destructive" });
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourse();
     }, [id]);
 
     const handleChange = (e) => {
@@ -30,9 +44,9 @@ const EditCoursePage = () => {
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         try {
-            courseService.updateCourse(id, formData);
+            await courseService.updateCourse(id, formData, token);
             toast({ title: "Course Updated!" });
             navigate('/admin');
         } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { GraduationCap, Search, Filter, CheckCircle } from 'lucide-react';
@@ -10,12 +10,27 @@ const CoursesLandingPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedLevel, setSelectedLevel] = useState('all');
-    const [isLoading, setIsLoading] = useState(false);
+    const [courses, setCourses] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const courses = courseService.getPublishedCourses();
+    useEffect(() => {
+        const fetchCourses = async () => {
+            setIsLoading(true);
+            try {
+                const data = await courseService.getPublishedCourses();
+                setCourses(data);
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
 
     const categories = useMemo(() => {
-        const cats = new Set(courses.map(c => c.category));
+        if (!courses || courses.length === 0) return ['all'];
+        const cats = new Set(courses.map(c => c.category).filter(Boolean));
         return ['all', ...Array.from(cats)];
     }, [courses]);
 
@@ -178,15 +193,35 @@ const CoursesLandingPage = () => {
             {/* Courses Grid */}
             <section className="py-16">
                 <div className="container mx-auto px-4">
-                    {filteredCourses.length === 0 ? (
+                    {isLoading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <CourseCardSkeleton key={i} />
+                            ))}
+                        </div>
+                    ) : filteredCourses.length === 0 ? (
                         <div className="text-center py-20">
-                            <p className="text-dimmed text-lg">No courses found matching your criteria.</p>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="glassmorphism p-12 rounded-3xl"
+                            >
+                                <Search className="mx-auto text-gold mb-4 opacity-50" size={48} />
+                                <h3 className="text-2xl font-playfair text-offwhite mb-2">No Courses Found</h3>
+                                <p className="text-dimmed">We couldn't find any courses matching your search criteria.</p>
+                                <button
+                                    onClick={() => { setSearchTerm(''); setSelectedCategory('all'); setSelectedLevel('all'); }}
+                                    className="mt-6 text-gold hover:text-white transition-colors"
+                                >
+                                    Clear all filters
+                                </button>
+                            </motion.div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredCourses.map((course, index) => (
                                 <motion.div
-                                    key={course.id}
+                                    key={course._id || course.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.5, delay: index * 0.1 }}

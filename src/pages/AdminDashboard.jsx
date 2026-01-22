@@ -24,6 +24,7 @@ const AdminDashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { toast } = useToast();
     const navigate = useNavigate();
+    const { token } = useAuth();
 
     useEffect(() => {
         loadData();
@@ -31,21 +32,22 @@ const AdminDashboard = () => {
 
     const loadData = async () => {
         try {
-            const [blogsData, appointmentsData, subscribersData] = await Promise.all([
+            const [blogsData, appointmentsData, subscribersData, coursesData] = await Promise.all([
                 blogService.getAll(),
                 appointmentService.getAllAppointments(),
-                newsletterService.getAll()
+                newsletterService.getAll(),
+                courseService.getAllCourses()
             ]);
 
             setBlogs(blogsData || []);
-            setCourses(courseService.getAllCourses() || []);
+            setCourses(coursesData || []);
             setAppointments(appointmentsData || []);
             setSubscribers(subscribersData || []);
         } catch (error) {
             console.error('Error loading dashboard data:', error);
             // Fallbacks for when API is down
             setBlogs([]);
-            setCourses(courseService.getAllCourses() || []);
+            setCourses(await courseService.getAllCourses() || []);
             setAppointments([]);
             setSubscribers([]);
         }
@@ -61,7 +63,7 @@ const AdminDashboard = () => {
 
     const handleDeleteCourse = async (id) => {
         if (window.confirm('Are you sure?')) {
-            await courseService.deleteCourse(id);
+            await courseService.deleteCourse(id, token);
             await loadData();
             toast({ title: "Course Deleted", variant: "destructive" });
         }
@@ -215,16 +217,16 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody>
                                     {courses.map(course => (
-                                        <tr key={course.id} className="border-b border-white/5">
+                                        <tr key={course._id || course.id} className="border-b border-white/5">
                                             <td className="p-4 text-white">{course.title}</td>
                                             <td className="p-4 text-offwhite/80">{course.category}</td>
                                             <td className="p-4 text-offwhite/80">{course.level}</td>
                                             <td className="p-4 text-gold">₹{course.price?.toLocaleString('en-IN')}</td>
                                             <td className="p-4 text-right space-x-2">
-                                                <Link to={`/admin/course/${course.id}/edit`}>
+                                                <Link to={`/admin/course/${course._id || course.id}/edit`}>
                                                     <button className="p-2 hover:text-gold"><Edit size={16} /></button>
                                                 </Link>
-                                                <button onClick={() => handleDeleteCourse(course.id)} className="p-2 hover:text-red-400">
+                                                <button onClick={() => handleDeleteCourse(course._id || course.id)} className="p-2 hover:text-red-400">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </td>

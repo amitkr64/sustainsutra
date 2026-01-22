@@ -16,7 +16,7 @@ export const CourseProvider = ({ children }) => {
     const [courses, setCourses] = useState([]);
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
+    const { user, token } = useAuth();
 
     useEffect(() => {
         loadCourses();
@@ -25,10 +25,11 @@ export const CourseProvider = ({ children }) => {
         }
     }, [user]);
 
-    const loadCourses = () => {
+    const loadCourses = async () => {
+        setLoading(true);
         try {
-            const allCourses = courseService.getAllCourses();
-            setCourses(allCourses);
+            const allCourses = await courseService.getAllCourses();
+            setCourses(allCourses || []);
         } catch (error) {
             console.error('Error loading courses:', error);
         } finally {
@@ -36,10 +37,17 @@ export const CourseProvider = ({ children }) => {
         }
     };
 
-    const loadUserRegistrations = () => {
+    const loadUserRegistrations = async () => {
         if (user?.email) {
-            const userRegs = courseService.getUserRegistrations(user.email);
-            setRegistrations(userRegs);
+            try {
+                // Note: getUserRegistrations need to be implemented in courseService
+                if (courseService.getUserRegistrations) {
+                    const userRegs = await courseService.getUserRegistrations(user.email, token);
+                    setRegistrations(userRegs || []);
+                }
+            } catch (error) {
+                console.error('Error loading registrations:', error);
+            }
         }
     };
 
@@ -48,38 +56,59 @@ export const CourseProvider = ({ children }) => {
             throw new Error('Must be logged in to register');
         }
 
-        const result = courseService.registerForCourse(
-            courseId,
-            user.email,
-            user.name || user.email
-        );
+        try {
+            const result = await courseService.registerForCourse(
+                courseId,
+                user._id || user.id,
+                token
+            );
 
-        if (result.success) {
-            loadUserRegistrations();
+            if (result.success) {
+                await loadUserRegistrations();
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error registering for course:', error);
+            return { success: false, message: error.message };
         }
-
-        return result;
     };
 
     const isRegistered = (courseId) => {
-        return courseService.isUserRegistered(courseId, user?.email);
+        // Since registrations is loaded on mount/user change, we can check locally
+        return registrations.some(r => r.courseId === courseId);
     };
 
-    const createCourse = (courseData) => {
-        const newCourse = courseService.createCourse(courseData);
-        loadCourses();
-        return newCourse;
+    const createCourse = async (courseData) => {
+        try {
+            const newCourse = await courseService.createCourse(courseData, token);
+            await loadCourses();
+            return newCourse;
+        } catch (error) {
+            console.error('Error creating course:', error);
+            throw error;
+        }
     };
 
-    const updateCourse = (id, courseData) => {
-        const updated = courseService.updateCourse(id, courseData);
-        loadCourses();
-        return updated;
+    const updateCourse = async (id, courseData) => {
+        try {
+            const updated = await courseService.updateCourse(id, courseData, token);
+            await loadCourses();
+            return updated;
+        } catch (error) {
+            console.error('Error updating course:', error);
+            throw error;
+        }
     };
 
-    const deleteCourse = (id) => {
-        courseService.deleteCourse(id);
-        loadCourses();
+    const deleteCourse = async (id) => {
+        try {
+            await courseService.deleteCourse(id, token);
+            await loadCourses();
+        } catch (error) {
+            console.error('Error deleting course:', error);
+            throw error;
+        }
     };
 
     const value = {

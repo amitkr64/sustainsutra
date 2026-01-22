@@ -106,11 +106,11 @@ npm start
 docker compose up -d
 
 # Access the application
-http://localhost:8081
+http://localhost:8085
 ```
 
 ### Docker Services
-- **Frontend**: Port 8081 (Nginx)
+- **Frontend**: Port 8085 (Nginx)
 - **Backend**: Port 5000 (Express API)
 - **MongoDB**: Port 27017
 

@@ -12,22 +12,30 @@ const EditBlogPage = () => {
     const [blogData, setBlogData] = useState(null);
 
     useEffect(() => {
-        const data = blogService.getById(id);
-        if (data) {
-            // Ensure tags is a string for the editor
-            const formattedData = {
-                ...data,
-                tags: Array.isArray(data.tags) ? data.tags.join(', ') : data.tags
-            };
-            setBlogData(formattedData);
-        } else {
-            toast({
-                title: "Error",
-                description: "Blog post not found",
-                variant: "destructive"
-            });
-            navigate('/admin');
-        }
+        const fetchBlog = async () => {
+            try {
+                const data = await blogService.getBlogById(id);
+                if (data) {
+                    // Ensure tags is a string for the editor
+                    const formattedData = {
+                        ...data,
+                        tags: Array.isArray(data.tags) ? data.tags.join(', ') : data.tags
+                    };
+                    setBlogData(formattedData);
+                } else {
+                    toast({
+                        title: "Error",
+                        description: "Blog post not found",
+                        variant: "destructive"
+                    });
+                    navigate('/admin');
+                }
+            } catch (error) {
+                console.error('Error fetching blog:', error);
+                navigate('/admin');
+            }
+        };
+        fetchBlog();
     }, [id, navigate, toast]);
 
     if (!blogData) return <div className="text-center text-white pt-32">Loading...</div>;

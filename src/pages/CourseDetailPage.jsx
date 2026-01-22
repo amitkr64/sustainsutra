@@ -19,7 +19,7 @@ const CourseDetailPage = () => {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
 
-    const course = courseService.getCourseBySlug(slug);
+    const course = courseService.getCourseBySlug(slug) || courseService.getAllCourses().find(c => c.slug === slug);
     const registered = isRegistered(course?.id);
 
     if (!course) {
@@ -183,6 +183,46 @@ const CourseDetailPage = () => {
                 </div>
             </section>
 
+            {/* Course Highlights - NEW PROMINENT SECTION */}
+            {course.highlights && course.highlights.length > 0 && (
+                <section className="py-12 bg-navy relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-col md:flex-row items-center gap-8 bg-gold/5 border border-gold/20 rounded-3xl p-8 backdrop-blur-sm relative z-10 shadow-2xl">
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl" />
+                            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-sage/10 rounded-full blur-3xl" />
+
+                            <div className="md:w-1/3 relative z-10">
+                                <h2 className="text-3xl md:text-4xl font-playfair text-gold mb-4 leading-tight">
+                                    Exclusive <br />
+                                    <span className="text-offwhite">Course Highlights</span>
+                                </h2>
+                                <p className="text-dimmed leading-relaxed">Key value propositions that make this training stand out in the industry.</p>
+                            </div>
+                            <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
+                                {course.highlights.map((highlight, index) => (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, x: 20 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.1 }}
+                                        className="flex items-center gap-4 group bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-gold/30 hover:bg-white/10 transition-all duration-300"
+                                    >
+                                        <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center border border-gold/20 group-hover:bg-gold group-hover:text-navy transition-all duration-300 flex-shrink-0">
+                                            <TrendingUp size={24} />
+                                        </div>
+                                        <span className="text-lg font-medium text-offwhite group-hover:text-gold transition-colors">
+                                            {highlight}
+                                        </span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+                </section>
+            )}
+
             {/* Course Content */}
             <section className="py-16">
                 <div className="container mx-auto px-4 max-w-5xl">
@@ -205,7 +245,7 @@ const CourseDetailPage = () => {
                         </div>
                     </div>
 
-                    {/* Prerequisites - NEW */}
+                    {/* Prerequisites */}
                     {course.prerequisites && (
                         <div className="mb-12">
                             <h2 className="text-3xl font-playfair text-offwhite mb-6">Prerequisites</h2>
@@ -309,12 +349,12 @@ const CourseDetailPage = () => {
                         </div>
                     )}
 
-                    {/* Related Courses - NEW */}
+                    {/* Related Courses */}
                     <div className="border-t border-white/10 pt-16">
                         <h2 className="text-3xl font-playfair text-offwhite mb-8">Related Courses</h2>
                         <div className="grid md:grid-cols-3 gap-6">
                             {courseService.getAllCourses()
-                                .filter(c => c.category === course.category && c.id !== course.id)
+                                .filter(c => c.category === course.category && c.id !== course.id && c.published)
                                 .slice(0, 3)
                                 .map(relatedCourse => (
                                     <Link key={relatedCourse.id} to={`/courses/${relatedCourse.slug}`} className="glassmorphism rounded-xl p-6 hover:translate-y-[-5px] transition-transform block">

@@ -28,8 +28,8 @@ const UserProfilePage = () => {
 
     const [showPasswordSection, setShowPasswordSection] = useState(false);
 
-    const handleProfileUpdate = () => {
-        const result = updateProfile(profileData);
+    const handleProfileUpdate = async () => {
+        const result = await updateProfile(profileData);
         if (result.success) {
             toast({ title: "Profile Updated Successfully!" });
             setIsEditing(false);
@@ -38,7 +38,7 @@ const UserProfilePage = () => {
         }
     };
 
-    const handlePasswordChange = () => {
+    const handlePasswordChange = async () => {
         if (passwordData.newPassword !== passwordData.confirmPassword) {
             toast({ title: "Error", description: "Passwords don't match", variant: "destructive" });
             return;
@@ -49,7 +49,7 @@ const UserProfilePage = () => {
             return;
         }
 
-        const result = changePassword(passwordData.currentPassword, passwordData.newPassword);
+        const result = await changePassword(passwordData.currentPassword, passwordData.newPassword);
         if (result.success) {
             toast({ title: "Password Changed Successfully!" });
             setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });

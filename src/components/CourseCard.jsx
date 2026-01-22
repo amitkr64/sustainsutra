@@ -35,9 +35,21 @@ const CourseCard = ({ course }) => {
                 {course.title}
             </h3>
 
-            <p className="text-dimmed text-sm mb-6 line-clamp-3 flex-grow">
+            <p className="text-dimmed text-sm mb-4 line-clamp-2">
                 {course.description}
             </p>
+
+            {/* Course Highlights on Card */}
+            {course.highlights && course.highlights.length > 0 && (
+                <div className="mb-6 space-y-2">
+                    {course.highlights.slice(0, 3).map((highlight, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs text-offwhite/80">
+                            <TrendingUp size={12} className="text-gold flex-shrink-0" />
+                            <span className="line-clamp-1">{highlight}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-2 text-sm text-dimmed">

@@ -189,7 +189,7 @@ function App() {
                                             <ul className="space-y-2 text-dimmed text-sm">
                                                 <li><a href="/about" className="hover:text-gold transition-smooth">About Us</a></li>
                                                 <li><a href="/our-approach" className="hover:text-gold transition-smooth">Our Approach</a></li>
-                                                <li><a href="/courses" className="hover:text-gold transition-smooth">Courses</a></li>
+                                                <li><a href="/courses" className="hover:text-gold transition-smooth">Academy</a></li>
                                                 <li><a href="/carbon-calculator" className="hover:text-gold transition-smooth">Carbon Calculator</a></li>
                                                 <li><a href="/insights" className="hover:text-gold transition-smooth">Insights</a></li>
                                                 <li><a href="/book-appointment" className="hover:text-gold transition-smooth">Contact Us</a></li>
@@ -208,11 +208,11 @@ function App() {
                                             <p className="text-dimmed text-xs mb-3">
                                                 Subscribe to our newsletter for sustainability insights
                                             </p>
-                                            <form onSubmit={(e) => {
+                                            <form onSubmit={async (e) => {
                                                 e.preventDefault();
                                                 const email = e.target.email.value;
                                                 try {
-                                                    newsletterService.subscribe(email);
+                                                    await newsletterService.subscribe(email);
                                                     toast({
                                                         title: "Subscribed!",
                                                         description: "Thank you for subscribing to our newsletter."

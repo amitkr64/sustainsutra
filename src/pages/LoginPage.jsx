@@ -36,16 +36,19 @@ const LoginPage = () => {
         setError('');
         setIsLoading(true);
 
-        setTimeout(() => {
-            const result = login(loginData.email, loginData.password);
+        try {
+            const result = await login(loginData.email, loginData.password);
             if (result.success) {
                 const from = location.state?.from?.pathname || '/';
                 navigate(from, { replace: true });
             } else {
                 setError(result.message);
             }
+        } catch (err) {
+            setError(err.message || 'An error occurred during login');
+        } finally {
             setIsLoading(false);
-        }, 800);
+        }
     };
 
     const handleRegister = async (e) => {
@@ -66,8 +69,8 @@ const LoginPage = () => {
 
         setIsLoading(true);
 
-        setTimeout(() => {
-            const result = register({
+        try {
+            const result = await register({
                 name: registerData.name,
                 email: registerData.email,
                 phone: registerData.phone,
@@ -79,8 +82,11 @@ const LoginPage = () => {
             } else {
                 setError(result.message);
             }
+        } catch (err) {
+            setError(err.message || 'An error occurred during registration');
+        } finally {
             setIsLoading(false);
-        }, 800);
+        }
     };
 
     return (

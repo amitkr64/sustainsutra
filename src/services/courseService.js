@@ -32,6 +32,12 @@ const defaultCourses = [
         ],
         instructor: 'Dr. Amit Kumar',
         instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
+        highlights: [
+            'Master Scope 1, 2 & 3 Emissions',
+            'GHG Protocol Standard Training',
+            'Hands-on Excel Modeling',
+            'BRSR Alignment Support'
+        ],
         reviews: [
             { id: 1, user: 'Priya S.', rating: 5, comment: 'Excellent course! The practical exercises on Scope 3 were very helpful.' },
             { id: 2, user: 'Rahul M.', rating: 4, comment: 'Great content, though the pace was a bit fast in the beginning.' }
@@ -66,6 +72,12 @@ const defaultCourses = [
         ],
         instructor: 'Dr. Amit Kumar',
         instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
+        highlights: [
+            'ISO 14064-1 & 14064-2 Focus',
+            'Verification Audit Simulation',
+            'Validation Methodology',
+            'Global Compliance Standards'
+        ],
         reviews: [
             { id: 1, user: 'Sneha P.', rating: 5, comment: 'Very thorough coverage of the ISO standard.' }
         ],
@@ -99,6 +111,12 @@ const defaultCourses = [
         ],
         instructor: 'Dr. Amit Kumar',
         instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
+        highlights: [
+            'Cradle-to-Grave Analysis',
+            'LCA Software Tools Guide',
+            'Environmental Impact Metrics',
+            'Product Carbon Footprinting'
+        ],
         reviews: [],
         published: true,
         createdAt: new Date().toISOString(),
@@ -130,6 +148,12 @@ const defaultCourses = [
         ],
         instructor: 'Dr. Amit Kumar',
         instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
+        highlights: [
+            'Measure Org Carbon Footprint',
+            'Identify Emission Hotspots',
+            'Reduction Strategy Planning',
+            'Beginner Friendly Approach'
+        ],
         reviews: [
             { id: 1, user: 'Vikram S.', rating: 5, comment: 'Perfect for beginners. Explained complex topics simply.' },
             { id: 2, user: 'Anjali D.', rating: 4, comment: 'Good overview, would have liked more case studies.' }
@@ -163,6 +187,12 @@ const defaultCourses = [
         ],
         instructor: 'Dr. Amit Kumar',
         instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
+        highlights: [
+            'GRI, SASB & TCFD Frameworks',
+            'ESG Strategic Integration',
+            'Performance Measurement',
+            'Reporting & Disclosures'
+        ],
         reviews: [],
         published: true,
         createdAt: new Date().toISOString(),
@@ -193,6 +223,12 @@ const defaultCourses = [
         ],
         instructor: 'Dr. Amit Kumar',
         instructorBio: 'Ph.D. in Environmental Science with 15+ years of experience in carbon accounting and climate policy. Certified lead auditor for ISO 14064.',
+        highlights: [
+            'Double Materiality Workshop',
+            'Stakeholder Engagement Map',
+            'Financial Impact Analysis',
+            'Materiality Matrix Design'
+        ],
         reviews: [],
         published: true,
         createdAt: new Date().toISOString(),

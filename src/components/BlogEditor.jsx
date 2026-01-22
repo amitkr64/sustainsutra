@@ -54,7 +54,7 @@ const BlogEditor = ({ initialData, isEditing = false }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e, statusOverride = null) => {
+    const handleSubmit = async (e, statusOverride = null) => {
         e.preventDefault();
 
         if (!formData.title || !formData.content || !formData.author) {
@@ -74,17 +74,17 @@ const BlogEditor = ({ initialData, isEditing = false }) => {
 
         try {
             if (isEditing) {
-                blogService.update(initialData.id, dataToSave);
+                await blogService.update(initialData.id || initialData._id, dataToSave);
                 toast({ title: "Success", description: "Blog post updated successfully" });
             } else {
-                blogService.create(dataToSave);
+                await blogService.create(dataToSave);
                 toast({ title: "Success", description: "New blog post created successfully" });
             }
             navigate('/admin');
         } catch (error) {
             toast({
                 title: "Error",
-                description: "Failed to save blog post",
+                description: error.message || "Failed to save blog post",
                 variant: "destructive"
             });
         }

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { GraduationCap, Search, Filter } from 'lucide-react';
+import { GraduationCap, Search, Filter, CheckCircle } from 'lucide-react';
 import { courseService } from '@/services/courseService';
 import CourseCard from '@/components/CourseCard';
 
@@ -36,32 +36,81 @@ const CoursesLandingPage = () => {
                 <meta name="description" content="Master sustainability with expert-led courses in GHG Accounting, ISO 14064, LCA, Carbon Footprinting, ESG Strategy, and Materiality Assessment." />
             </Helmet>
 
-            {/* Hero Section */}
-            <section className="relative py-20 bg-gradient-to-br from-navy via-forest to-navy overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-20 left-10 w-72 h-72 bg-gold rounded-full filter blur-3xl"></div>
-                    <div className="absolute bottom-20 right-10 w-96 h-96 bg-sage rounded-full filter blur-3xl"></div>
+            {/* Premium Hero Section */}
+            <section className="relative min-h-[60vh] flex items-center pt-32 pb-20 overflow-hidden">
+                {/* Background Image with Overlay */}
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80"
+                        alt="Education"
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/95 to-navy/80" />
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center max-w-4xl mx-auto"
-                    >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-6">
-                            <GraduationCap className="text-gold" size={20} />
-                            <span className="text-gold font-medium">Professional Training</span>
-                        </div>
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/20 border border-gold/30 rounded-full mb-6 backdrop-blur-md">
+                                <GraduationCap className="text-gold" size={20} />
+                                <span className="text-gold font-medium tracking-wide uppercase text-xs">Academic Excellence</span>
+                            </div>
 
-                        <h1 className="text-5xl md:text-6xl font-playfair text-offwhite mb-6">
-                            Master <span className="text-gold">Sustainability</span> Skills
-                        </h1>
-                        <p className="text-xl text-dimmed max-w-2xl mx-auto leading-relaxed">
-                            Expert-led courses designed to elevate your career in ESG, climate action, and sustainable business practices.
-                        </p>
-                    </motion.div>
+                            <h1 className="text-5xl md:text-7xl font-playfair text-offwhite mb-6 leading-tight">
+                                Professional <br />
+                                <span className="text-gold italic">Sustainability</span> Training
+                            </h1>
+                            <p className="text-xl text-dimmed max-w-xl leading-relaxed mb-8">
+                                Gain industry-recognized certifications and practical expertise from Dr. Amit Kumar and global ESG experts. Transform your career with data-driven climate action.
+                            </p>
+
+                            <div className="flex flex-wrap gap-4">
+                                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                                    <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                                    <span className="text-offwhite text-sm">Live & Interactive</span>
+                                </div>
+                                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                                    <div className="w-2 h-2 rounded-full bg-sage animate-pulse" />
+                                    <span className="text-offwhite text-sm">Industry Projects</span>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="hidden lg:block"
+                        >
+                            <div className="relative">
+                                <div className="absolute -inset-4 bg-gold/20 blur-3xl rounded-full" />
+                                <div className="glassmorphism rounded-3xl p-8 border-gold/20 relative z-10 overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+                                    <h3 className="text-2xl font-playfair text-offwhite mb-6">Why SustainSutra?</h3>
+                                    <ul className="space-y-4">
+                                        {[
+                                            'Global Accreditation Alignment',
+                                            'Real-world Case Studies',
+                                            'Post-Training Support Ecosystem',
+                                            'Practical Tools & Templates Included'
+                                        ].map((item, i) => (
+                                            <li key={i} className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                                    <CheckCircle size={14} className="text-gold" />
+                                                </div>
+                                                <span className="text-dimmed leading-snug">{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
             </section>
 

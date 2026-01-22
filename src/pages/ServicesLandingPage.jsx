@@ -2,174 +2,233 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BarChart3, Globe, Layers, FileSpreadsheet, ShieldCheck, GraduationCap, Zap, Trash2, RefreshCw, Package, Leaf, Droplet } from 'lucide-react';
+import {
+    ArrowRight, BarChart3, Globe, Layers, FileSpreadsheet,
+    ShieldCheck, GraduationCap, Zap, Trash2, RefreshCw,
+    Package, Leaf, Droplet, Target, Award, Shield
+} from 'lucide-react';
 
 const ServicesLandingPage = () => {
     const services = [
         {
             id: 'carbon-footprinting',
             title: 'Carbon Footprinting',
-            description: 'Comprehensive quantification of organizational carbon footprints across Scope 1, 2, 3 and product-level emissions.',
-            icon: <BarChart3 className="w-10 h-10 text-gold" />,
+            description: 'Engineering high-precision GHG inventories across Scope 1, 2, and 3 to establish science-based decarbonization baselines.',
+            icon: <BarChart3 className="w-8 h-8" />,
             link: '/services/carbon-footprinting',
-            delay: 0.1
+            category: 'Advisory'
         },
         {
             id: 'ghg-mapping',
             title: 'GHG Mapping',
-            description: 'Systematic mapping and accounting of greenhouse gas emissions across organizational boundaries.',
-            icon: <Globe className="w-10 h-10 text-gold" />,
+            description: 'Strategic source identification and boundary setting to ensure complete transparency in organizational emissions accounting.',
+            icon: <Globe className="w-8 h-8" />,
             link: '/services/ghg-mapping',
-            delay: 0.15
+            category: 'Accounting'
         },
         {
             id: 'esg-strategy',
             title: 'ESG Strategy',
-            description: 'Holistic ESG strategy development aligned with business objectives and stakeholder expectations.',
-            icon: <Layers className="w-10 h-10 text-gold" />,
+            description: 'Transforming sustainability into institutional value through double materiality and board-level strategic alignment.',
+            icon: <Layers className="w-8 h-8" />,
             link: '/services/esg-strategy',
-            delay: 0.2
+            category: 'Strategic'
         },
         {
             id: 'brsr-reporting',
             title: 'BRSR Reporting',
-            description: 'SEBI Business Responsibility and Sustainability Reporting framework implementation and reporting.',
-            icon: <FileSpreadsheet className="w-10 h-10 text-gold" />,
+            description: 'End-to-end SEBI compliance support for top-listed entities, ensuring robust and audit-ready sustainability disclosures.',
+            icon: <FileSpreadsheet className="w-8 h-8" />,
             link: '/services/brsr-reporting',
-            delay: 0.25
+            category: 'Compliance'
         },
         {
             id: 'iso-verification',
             title: 'ISO Verification',
-            description: 'Third-party verification and assurance of greenhouse gas emissions data and reports.',
-            icon: <ShieldCheck className="w-10 h-10 text-gold" />,
+            description: 'Independent third-party assurance of carbon data according to ISO 14064, enhancing stakeholder trust and credibility.',
+            icon: <ShieldCheck className="w-8 h-8" />,
             link: '/services/iso-verification',
-            delay: 0.3
+            category: 'Assurance'
         },
         {
             id: 'training',
-            title: 'Training & Capacity',
-            description: 'Comprehensive training programs to build internal expertise in sustainability reporting.',
-            icon: <GraduationCap className="w-10 h-10 text-gold" />,
+            title: 'Academy & Training',
+            description: 'Upskilling executive and operational teams on global standards like GRI, SASB, and Net-Zero methodologies.',
+            icon: <GraduationCap className="w-8 h-8" />,
             link: '/services/training-capacity',
-            delay: 0.35
+            category: 'Capacity Building'
         },
         {
             id: 'energy-audits',
             title: 'Energy Audits',
-            description: 'Comprehensive energy auditing to identify inefficiencies and optimize operational costs.',
-            icon: <Zap className="w-10 h-10 text-gold" />,
+            description: 'Technical assessments to identify efficiency gaps and implement cost-saving decarbonization measures.',
+            icon: <Zap className="w-8 h-8" />,
             link: '/services/energy-audits',
-            delay: 0.4
-        },
-        {
-            id: 'waste-management',
-            title: 'Waste Management',
-            description: 'Strategic waste management consulting to minimize generation and establish circular practices.',
-            icon: <Trash2 className="w-10 h-10 text-gold" />,
-            link: '/services/waste-management',
-            delay: 0.45
+            category: 'Technical'
         },
         {
             id: 'circular-economy',
             title: 'Circular Economy',
-            description: 'Transform from linear to circular business models that regenerate resources and create value.',
-            icon: <RefreshCw className="w-10 h-10 text-gold" />,
+            description: 'Redesigning linear value chains into restorative systems that maximize resource utility and minimize waste.',
+            icon: <RefreshCw className="w-8 h-8" />,
             link: '/services/circular-economy',
-            delay: 0.5
-        },
-        {
-            id: 'epr',
-            title: 'Extended Producer Responsibility',
-            description: 'Navigate EPR regulations with expert compliance support for plastics, e-waste, batteries, and tires.',
-            icon: <Package className="w-10 h-10 text-gold" />,
-            link: '/services/epr',
-            delay: 0.55
-        },
-        {
-            id: 'cleaner-production',
-            title: 'Cleaner Production',
-            description: 'Implement cleaner production methodologies to reduce environmental impact at the source.',
-            icon: <Leaf className="w-10 h-10 text-gold" />,
-            link: '/services/cleaner-production',
-            delay: 0.6
+            category: 'Innovation'
         },
         {
             id: 'resource-efficiency',
             title: 'Resource Efficiency',
-            description: 'Optimize water, energy, and material consumption to reduce costs and environmental footprint.',
-            icon: <Droplet className="w-10 h-10 text-gold" />,
+            description: 'Optimizing water, energy, and material throughput to build operational resilience in a resource-constrained world.',
+            icon: <Droplet className="w-8 h-8" />,
             link: '/services/resource-efficiency',
-            delay: 0.65
+            category: 'Operations'
         }
     ];
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const cardVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { duration: 0.5 }
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-navy text-offwhite pt-20">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
-                <title>Our Services | SustainSutra</title>
-                <meta name="description" content="Explore SustainSutra's comprehensive ESG services including Carbon Footprinting, GHG Mapping, Strategy, Reporting, and Training." />
+                <title>Expert Advisory Services | SustainSutra</title>
+                <meta name="description" content="Explore SustainSutra's elite range of ESG advisory, GHG accounting, and sustainability strategy services." />
             </Helmet>
 
-            {/* Hero */}
-            <section className="relative py-24 bg-navy overflow-hidden">
-                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center" />
-                <div className="container relative z-10 px-4 text-center">
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
+            {/* Elite Hero Section */}
+            <section className="relative min-h-[60vh] flex items-center pt-32 pb-20 overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+                        alt="Global ESG"
+                        className="w-full h-full object-cover opacity-20 scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy to-navy/80" />
+                </div>
+
+                <div className="container relative z-10 px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-5xl md:text-6xl font-playfair text-white mb-6"
+                        transition={{ duration: 0.8 }}
+                        className="max-w-4xl"
                     >
-                        Our Services
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-xl text-offwhite/80 max-w-2xl mx-auto"
-                    >
-                        Engineering sustainable pathways with precision, compliance, and strategic foresight.
-                    </motion.p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-8">
+                            <Target className="text-gold" size={16} />
+                            <span className="text-gold font-bold tracking-widest uppercase text-xs">Net-Zero Pathways</span>
+                        </div>
+                        <h1 className="text-6xl md:text-8xl font-playfair text-white mb-8 leading-[1.1]">
+                            Elite <span className="text-gold italic">Advisory</span> <br />
+                            Solutions
+                        </h1>
+                        <p className="text-xl md:text-2xl text-offwhite/80 max-w-2xl font-light leading-relaxed">
+                            Engineering environmental resilience through high-precision carbon accounting, strategic foresight, and regulatory mastery.
+                        </p>
+                    </motion.div>
                 </div>
             </section>
 
-            {/* Services Grid */}
-            <section className="py-20 px-4">
+            {/* Strategic Pillars Summary */}
+            <section className="py-16 bg-navy/50 border-y border-white/5">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                        <div className="flex items-start gap-6">
+                            <div className="text-gold flex-shrink-0"><Award size={40} /></div>
+                            <div>
+                                <h4 className="text-lg font-bold text-white mb-2">Technical Rigor</h4>
+                                <p className="text-sm text-dimmed leading-relaxed">Our methodologies are anchored in ISO 14064, GHG Protocol, and GRI standards for audit-ready precision.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-6">
+                            <div className="text-gold flex-shrink-0"><Shield size={40} /></div>
+                            <div>
+                                <h4 className="text-lg font-bold text-white mb-2">Regulatory Mastery</h4>
+                                <p className="text-sm text-dimmed leading-relaxed">In-depth expertise in SEBI BRSR, CBAM, and CSRD ensures your organization remains ahead of global mandates.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-6">
+                            <div className="text-gold flex-shrink-0"><Globe size={40} /></div>
+                            <div>
+                                <h4 className="text-lg font-bold text-white mb-2">Global Vision</h4>
+                                <p className="text-sm text-dimmed leading-relaxed">Tailored strategies that align local operational data with global decarbonization trends and investor expectations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Service Showcase Grid */}
+            <section className="py-32 px-4">
                 <div className="container mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
                         {services.map((service) => (
                             <motion.div
                                 key={service.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: service.delay }}
-                                className="group relative bg-white/5 border border-white/10 rounded-xl p-8 hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 shadow-lg hover:shadow-2xl overflow-hidden"
+                                variants={cardVariants}
+                                className="group relative"
                             >
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    {service.icon}
-                                </div>
+                                <Link to={service.link} className="block h-full">
+                                    <div className="glassmorphism h-full p-10 rounded-3xl border-white/5 hover:border-gold/30 hover:bg-white/10 transition-all duration-500 hover:-translate-y-3 shadow-2xl overflow-hidden group">
+                                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/20 transition-all" />
 
-                                <div className="mb-6 inline-block p-3 bg-navy rounded-lg border border-gold/30 group-hover:border-gold transition-colors">
-                                    {service.icon}
-                                </div>
+                                        <div className="mb-8 inline-flex items-center justify-center w-16 h-16 bg-navy border border-white/10 rounded-2xl text-gold group-hover:bg-gold group-hover:text-navy transition-all duration-300">
+                                            {service.icon}
+                                        </div>
 
-                                <h3 className="text-2xl font-playfair text-offwhite mb-4 group-hover:text-gold transition-colors">
-                                    {service.title}
-                                </h3>
+                                        <div className="text-xs font-bold text-gold uppercase tracking-[0.2em] mb-4 opacity-70">
+                                            {service.category}
+                                        </div>
 
-                                <p className="text-offwhite/70 mb-8 line-clamp-3">
-                                    {service.description}
-                                </p>
+                                        <h3 className="text-3xl font-playfair text-white mb-6 leading-tight group-hover:text-gold transition-colors">
+                                            {service.title}
+                                        </h3>
 
-                                <Link
-                                    to={service.link}
-                                    className="inline-flex items-center text-gold font-medium hover:text-white transition-colors group-hover:translate-x-2 duration-300"
-                                >
-                                    Learn More <ArrowRight className="ml-2 w-4 h-4" />
+                                        <p className="text-dimmed leading-relaxed mb-10 text-lg line-clamp-3">
+                                            {service.description}
+                                        </p>
+
+                                        <div className="flex items-center gap-3 text-gold font-bold border-t border-white/5 pt-8 group-hover:gap-5 transition-all">
+                                            View Methodology <ArrowRight size={20} />
+                                        </div>
+                                    </div>
                                 </Link>
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Consultation CTA */}
+            <section className="py-24 bg-gradient-sage-forest section-padding text-center">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-4xl md:text-6xl font-playfair text-white mb-10 max-w-3xl mx-auto">
+                        Connect with our <span className="text-gold">Principal Advisors</span>
+                    </h2>
+                    <Link
+                        to="/book-appointment"
+                        className="inline-flex items-center gap-3 bg-white text-navy px-12 py-6 rounded-full font-bold text-xl hover:bg-gold hover:scale-105 transition-all shadow-2xl"
+                    >
+                        Initiate Strategic Dialogue <ArrowRight />
+                    </Link>
                 </div>
             </section>
         </div>

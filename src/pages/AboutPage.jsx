@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { Target, Users, Award, TrendingUp, Globe, Heart, Linkedin, Mail } from 'lucide-react';
-import { teamService } from '../services/teamService';
+import { Target, Users, Award, TrendingUp, Globe, Shield, Linkedin, Mail, CheckCircle, ArrowRight, Zap, Microscope } from 'lucide-react';
+import { teamService } from '@/services/teamService';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const AboutPage = () => {
     const [team, setTeam] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTeam = async () => {
@@ -15,290 +18,269 @@ const AboutPage = () => {
         fetchTeam();
     }, []);
 
+    const stats = [
+        { label: "CO₂e Managed", value: "2.5M+", unit: "Tonnes" },
+        { label: "Global Clients", value: "500+", unit: "Entities" },
+        { label: "Industry Sectors", value: "15+", unit: "Expertise" },
+        { label: "Project Success", value: "100%", unit: "Delivery" }
+    ];
+
     return (
-        <>
+        <div className="min-h-screen bg-navy text-offwhite font-ibm selection:bg-gold/30">
             <Helmet>
-                <title>About Us | SustainSutra</title>
-                <meta name="description" content="Learn about SustainSutra's mission to drive sustainable transformation across industries through expert consulting and training." />
+                <title>Institutional Profile | SustainSutra</title>
+                <meta name="description" content="SustainSutra is an elite ESG consulting firm engineering NetZero pathways through technical rigor and strategic foresight." />
             </Helmet>
 
-            <div className="min-h-screen bg-navy">
-                {/* Hero Section */}
-                <section className="pt-32 pb-16 px-4 bg-gradient-to-b from-navy to-sage/10">
-                    <div className="container mx-auto max-w-4xl text-center">
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className="text-5xl md:text-6xl font-playfair text-offwhite mb-6"
-                        >
-                            Driving Sustainable Transformation
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="text-xl text-dimmed leading-relaxed"
-                        >
-                            SustainSutra is a leading sustainability consulting firm dedicated to helping organizations navigate the complex landscape of ESG, carbon management, and regulatory compliance.
-                        </motion.p>
-                    </div>
-                </section>
+            {/* Elite Hero Section */}
+            <section className="relative min-h-[85vh] flex items-center pt-32 pb-20 overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"
+                        alt="Corporate"
+                        className="w-full h-full object-cover opacity-15 scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy to-navy/40" />
+                </div>
 
-                {/* Mission, Vision, Values */}
-                <section className="section-padding bg-navy/95">
-                    <div className="container mx-auto px-4">
-                        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-8 text-center"
-                            >
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-sage-forest rounded-full mb-6">
-                                    <Target className="text-offwhite" size={32} />
-                                </div>
-                                <h3 className="text-2xl font-playfair text-offwhite mb-4">Our Mission</h3>
-                                <p className="text-dimmed leading-relaxed">
-                                    To empower organizations with the knowledge, tools, and strategies needed to achieve meaningful sustainability outcomes while driving business value.
-                                </p>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 0.1 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-8 text-center"
-                            >
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-sage-forest rounded-full mb-6">
-                                    <Globe className="text-offwhite" size={32} />
-                                </div>
-                                <h3 className="text-2xl font-playfair text-offwhite mb-4">Our Vision</h3>
-                                <p className="text-dimmed leading-relaxed">
-                                    A world where every business operates as a force for good, balancing profitability with environmental stewardship and social responsibility.
-                                </p>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 0.2 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-8 text-center"
-                            >
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-sage-forest rounded-full mb-6">
-                                    <Heart className="text-offwhite" size={32} />
-                                </div>
-                                <h3 className="text-2xl font-playfair text-offwhite mb-4">Our Values</h3>
-                                <p className="text-dimmed leading-relaxed">
-                                    Integrity, Excellence, Innovation, and Impact. We believe in science-based solutions and transparent, measurable results.
-                                </p>
-                            </motion.div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Our Story */}
-                <section className="section-padding bg-gradient-to-b from-navy/95 to-navy">
-                    <div className="container mx-auto px-4 max-w-4xl">
+                <div className="container relative z-10 px-4">
+                    <div className="flex flex-col lg:flex-row gap-20 items-center">
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            viewport={{ once: true }}
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className="lg:w-3/5"
                         >
-                            <h2 className="text-4xl font-playfair text-offwhite mb-8 text-center">Our Story</h2>
-                            <div className="glassmorphism rounded-xl p-8 space-y-6 text-dimmed leading-relaxed">
-                                <p>
-                                    Founded in 2018, SustainSutra emerged from a simple observation: while businesses increasingly recognized the importance of sustainability, many struggled to translate commitment into action. The gap between aspiration and implementation was wide, and the need for expert guidance was clear.
-                                </p>
-                                <p>
-                                    Our founders, veterans of the environmental consulting and corporate sustainability sectors, came together with a shared vision: to create a firm that would bridge this gap through a unique combination of technical expertise, practical experience, and deep understanding of business realities.
-                                </p>
-                                <p>
-                                    Today, SustainSutra serves over 500 organizations across 15 industry sectors, from manufacturing and energy to IT and financial services. We've helped our clients reduce over 2.5 million tonnes of CO₂e, achieve ISO certifications, navigate complex regulatory frameworks, and build sustainability into their core business strategies.
-                                </p>
-                                <p>
-                                    But numbers tell only part of the story. What drives us is the transformation we witness—companies moving from compliance-driven checkbox exercises to genuine sustainability leadership, creating value for shareholders while contributing to a healthier planet and more equitable society.
-                                </p>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-8">
+                                <Shield className="text-gold" size={16} />
+                                <span className="text-gold font-bold tracking-widest uppercase text-xs">Institutional Profile</span>
                             </div>
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* What Sets Us Apart */}
-                <section className="section-padding bg-navy/95">
-                    <div className="container mx-auto px-4">
-                        <h2 className="text-4xl font-playfair text-offwhite mb-12 text-center">What Sets Us Apart</h2>
-                        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-6"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
-                                        <Award className="text-gold" size={24} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-offwhite mb-2">Deep Technical Expertise</h3>
-                                        <p className="text-dimmed">
-                                            Our team includes certified GHG auditors, ISO lead assessors, LCA practitioners, and ESG specialists with decades of combined experience.
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-6"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
-                                        <Users className="text-gold" size={24} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-offwhite mb-2">Industry-Specific Solutions</h3>
-                                        <p className="text-dimmed">
-                                            We understand that sustainability challenges vary by sector. Our solutions are tailored to your industry's unique context and constraints.
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, delay: 0.1 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-6"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
-                                        <TrendingUp className="text-gold" size={24} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-offwhite mb-2">Results-Driven Approach</h3>
-                                        <p className="text-dimmed">
-                                            We focus on measurable outcomes, not just reports. Every engagement is designed to deliver tangible environmental and business value.
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, delay: 0.1 }}
-                                viewport={{ once: true }}
-                                className="glassmorphism rounded-xl p-6"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
-                                        <Globe className="text-gold" size={24} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-offwhite mb-2">Global Standards, Local Context</h3>
-                                        <p className="text-dimmed">
-                                            We bring international best practices while understanding Indian regulatory requirements and business realities.
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Leadership Team - NEW */}
-                <section className="section-padding bg-gradient-to-b from-navy to-navy/95">
-                    <div className="container mx-auto px-4">
-                        <h2 className="text-4xl font-playfair text-offwhite mb-12 text-center">Our Leadership</h2>
-                        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                            {team.map((member, idx) => (
-                                <motion.div
-                                    key={member.id || idx}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: idx * 0.1 }}
-                                    viewport={{ once: true }}
-                                    className="glassmorphism rounded-xl overflow-hidden group"
-                                >
-                                    <div className="h-64 overflow-hidden relative">
-                                        <img
-                                            src={member.image}
-                                            alt={member.name}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent opacity-60"></div>
-
-                                        {/* Social Links Overlay */}
-                                        <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-navy/40 backdrop-blur-sm">
-                                            {member.linkedin && (
-                                                <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/10 hover:bg-gold hover:text-navy text-white rounded-full transition-colors">
-                                                    <Linkedin size={20} />
-                                                </a>
-                                            )}
-                                            {member.email && (
-                                                <a href={`mailto:${member.email}`} className="p-3 bg-white/10 hover:bg-gold hover:text-navy text-white rounded-full transition-colors">
-                                                    <Mail size={20} />
-                                                </a>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="p-6 relative">
-                                        <h3 className="text-2xl font-playfair text-offwhite mb-1">{member.name}</h3>
-                                        <p className="text-gold font-medium text-sm mb-4">{member.role}</p>
-                                        <p className="text-dimmed text-sm leading-relaxed">
-                                            {member.bio}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* CTA Section */}
-                <section className="section-padding bg-gradient-sage-forest">
-                    <div className="container mx-auto px-4 text-center max-w-3xl">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            viewport={{ once: true }}
-                        >
-                            <h2 className="text-4xl font-playfair text-offwhite mb-6">
-                                Ready to Start Your Sustainability Journey?
-                            </h2>
-                            <p className="text-dimmed text-lg mb-8">
-                                Let's discuss how we can help your organization achieve its sustainability goals.
+                            <h1 className="text-6xl md:text-8xl font-playfair text-white mb-8 leading-[1.05]">
+                                Engineering a <br />
+                                <span className="text-gold italic">Resilient</span> Future
+                            </h1>
+                            <p className="text-xl md:text-3xl text-offwhite/80 max-w-2xl font-light leading-relaxed border-l-4 border-gold pl-8">
+                                SustainSutra is an elite advisory firm dedicated to bridging the gap between corporate ambition and climate reality through rigorous science and strategic clarity.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="/book-appointment"
-                                    className="px-8 py-4 bg-gold text-navy rounded-lg font-semibold hover:bg-gold/90 transition-all"
+                            <div className="mt-12 flex gap-6">
+                                <Button
+                                    className="px-10 py-7 text-lg rounded-full"
+                                    onClick={() => navigate('/services')}
                                 >
-                                    Schedule a Consultation
-                                </a>
-                                <a
-                                    href="/services"
-                                    className="px-8 py-4 bg-white/10 text-offwhite rounded-lg font-semibold hover:bg-white/20 transition-all border border-white/20"
+                                    Our Expertise
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="px-10 py-7 text-lg rounded-full"
+                                    onClick={() => {
+                                        const el = document.getElementById('our-story');
+                                        el?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
                                 >
-                                    Explore Our Services
-                                </a>
+                                    Genesis
+                                </Button>
                             </div>
                         </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1, delay: 0.2 }}
+                            className="lg:w-2/5 grid grid-cols-2 gap-4"
+                        >
+                            {stats.map((stat, i) => (
+                                <div key={i} className="glassmorphism p-8 rounded-3xl border-white/5 text-center group hover:border-gold/30 transition-all">
+                                    <div className="text-4xl font-playfair text-gold mb-2 group-hover:scale-110 transition-transform">{stat.value}</div>
+                                    <div className="text-xs font-bold text-white uppercase tracking-widest">{stat.label}</div>
+                                    <div className="text-[10px] text-dimmed mt-1">{stat.unit}</div>
+                                </div>
+                            ))}
+                        </motion.div>
                     </div>
-                </section>
-            </div>
-        </>
+                </div>
+            </section>
+
+            {/* Strategic Intent (Mission/Vision) */}
+            <section className="py-32 bg-navy relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-gold/5 blur-[120px] rounded-full translate-x-1/2" />
+                <div className="container mx-auto px-4 relative z-10">
+                    <div className="grid md:grid-cols-3 gap-12">
+                        {[
+                            {
+                                icon: <Target size={32} />,
+                                title: "Strategic Intent",
+                                desc: "To weaponize data and science to transform sustainability from a cost center into a core pillar of institutional value."
+                            },
+                            {
+                                icon: <Globe size={32} />,
+                                title: "Global Mandate",
+                                desc: "Standardizing NetZero transitions for diverse sectors, ensuring global compliance meets local operational excellence."
+                            },
+                            {
+                                icon: <Microscope size={32} />,
+                                title: "Technical Rigor",
+                                desc: "Our approach is anchored in high-fidelity accounting, ensuring every tonne of CO₂e is traced with audit-ready precision."
+                            }
+                        ].map((item, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                viewport={{ once: true }}
+                                className="group"
+                            >
+                                <div className="mb-8 w-20 h-20 bg-white/5 rounded-3xl border border-white/10 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-navy transition-all duration-500">
+                                    {item.icon}
+                                </div>
+                                <h3 className="text-3xl font-playfair text-white mb-6 tracking-wide">{item.title}</h3>
+                                <p className="text-dimmed leading-relaxed text-lg">{item.desc}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* The Genesis (Our Story) */}
+            <section id="our-story" className="py-32 bg-navy/50 border-y border-white/5">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-col lg:flex-row gap-20 items-center">
+                        <div className="lg:w-1/2">
+                            <div className="aspect-square relative rounded-3xl overflow-hidden shadow-2xl">
+                                <img
+                                    src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop"
+                                    alt="SustainSutra Office"
+                                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-navy transition-opacity" />
+                                <div className="absolute bottom-10 left-10 right-10 p-8 glassmorphism rounded-2xl border-white/10">
+                                    <div className="text-gold font-playfair text-3xl mb-2">Since 2018</div>
+                                    <p className="text-white font-medium">Redefining the DNA of sustainability consulting in Asia.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="lg:w-1/2">
+                            <h2 className="text-4xl md:text-6xl font-playfair text-white mb-10 leading-tight">
+                                From Observation <br />
+                                to <span className="text-gold">Impact</span>
+                            </h2>
+                            <div className="space-y-8 text-xl font-light text-dimmed leading-relaxed">
+                                <p>
+                                    Founded in 2018, SustainSutra emerged from a singular insight: while corporations understood the 'Why' of sustainability, they were fundamentally paralyzed by the 'How'.
+                                </p>
+                                <p>
+                                    We realized that generic advice wasn't enough. The market needed <span className="text-white font-medium">engineering rigor</span>—a firm that could translate complex greenhouse gas protocols into actionable operational blueprints.
+                                </p>
+                                <p>
+                                    Today, we operate as a high-fidelity advisory node for over 500 organizations. We don't just write reports; we build the technical infrastructure that allows companies to survive and lead in a world of carbon taxes and ESG disclosure mandates.
+                                </p>
+                            </div>
+                            <div className="mt-12 flex items-center gap-4 text-gold font-bold">
+                                <CheckCircle size={24} />
+                                <span>ISO 14064-1 & ISO 14064-2 Global Accreditation Alignment</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Strategic Advantage */}
+            <section className="py-32">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-20 max-w-4xl mx-auto">
+                        <h2 className="text-5xl font-playfair text-white mb-6">The Sutra Advantage</h2>
+                        <p className="text-xl text-dimmed font-light">What differentiates our approach in a crowded advisory market.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {[
+                            { title: "Technical Sovereignty", icon: <Zap /> },
+                            { title: "Vertical Specialization", icon: <TrendingUp /> },
+                            { title: "Regulatory Foresight", icon: <Globe /> },
+                            { title: "Audit Verification", icon: <Award /> }
+                        ].map((item, i) => (
+                            <motion.div
+                                key={i}
+                                whileHover={{ y: -10 }}
+                                className="glassmorphism p-10 rounded-4xl border-white/5 flex flex-col items-center text-center"
+                            >
+                                <div className="text-gold mb-6 scale-150">{item.icon}</div>
+                                <h3 className="text-xl font-bold text-white mb-4 leading-tight">{item.title}</h3>
+                                <p className="text-sm text-dimmed leading-relaxed">System-wide integration of ESG metrics into core business workflows.</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Leadership Section */}
+            <section className="py-32 bg-gradient-to-b from-navy to-navy/95">
+                <div className="container mx-auto px-4">
+                    <div className="flex justify-between items-end mb-16">
+                        <div>
+                            <div className="text-gold font-bold tracking-[0.3em] uppercase text-xs mb-4">Board of Directors</div>
+                            <h2 className="text-5xl md:text-7xl font-playfair text-white leading-none">The Leadership</h2>
+                        </div>
+                        <p className="hidden md:block text-dimmed max-w-sm text-right font-light italic">
+                            A synergy of environmental scientists, strategic consultants, and regulatory experts.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+                        {team.map((member, idx) => (
+                            <motion.div
+                                key={member.id || idx}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: idx * 0.1 }}
+                                viewport={{ once: true }}
+                                className="group"
+                            >
+                                <div className="relative rounded-3xl overflow-hidden mb-8 aspect-[4/5] shadow-2xl">
+                                    <img
+                                        src={member.image}
+                                        alt={member.name}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors" />
+
+                                    {/* Link Overlay */}
+                                    <div className="absolute bottom-6 right-6 flex flex-col gap-3 translate-y-20 group-hover:translate-y-0 transition-transform duration-500">
+                                        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gold text-navy rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                                            <Linkedin size={20} />
+                                        </a>
+                                        <a href={`mailto:${member.email}`} className="w-12 h-12 bg-white text-navy rounded-full flex items-center justify-center hover:bg-gold transition-colors">
+                                            <Mail size={20} />
+                                        </a>
+                                    </div>
+                                </div>
+                                <h3 className="text-3xl font-playfair text-white mb-2">{member.name}</h3>
+                                <div className="text-gold font-bold uppercase tracking-widest text-xs mb-4">{member.role}</div>
+                                <p className="text-dimmed leading-relaxed">{member.bio}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Bottom CTA */}
+            <section className="py-40 relative overflow-hidden text-center">
+                <div className="absolute inset-0 bg-gold/5" />
+                <div className="container relative z-10 px-4">
+                    <h2 className="text-5xl md:text-8xl font-playfair text-white mb-12 leading-tight">
+                        Engineer Your <br />
+                        <span className="text-gold underline underline-offset-8">Compliance</span> Evolution
+                    </h2>
+                    <Button
+                        size="lg"
+                        className="px-16 py-10 text-2xl rounded-full shadow-3xl hover:scale-105"
+                        onClick={() => navigate('/book-appointment')}
+                    >
+                        Consult Our Principal Advisor <ArrowRight className="ml-4" />
+                    </Button>
+                </div>
+            </section>
+        </div>
     );
 };
 

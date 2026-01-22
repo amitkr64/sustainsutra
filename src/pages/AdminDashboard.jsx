@@ -28,39 +28,54 @@ const AdminDashboard = () => {
         loadData();
     }, []);
 
-    const loadData = () => {
-        setBlogs(blogService.getAll());
-        setCourses(courseService.getAllCourses());
-        setAppointments(appointmentService.getAllAppointments());
-        setSubscribers(newsletterService.getAll());
+    const loadData = async () => {
+        try {
+            const [blogsData, appointmentsData, subscribersData] = await Promise.all([
+                blogService.getAll(),
+                appointmentService.getAllAppointments(),
+                newsletterService.getAll()
+            ]);
+
+            setBlogs(blogsData || []);
+            setCourses(courseService.getAllCourses() || []);
+            setAppointments(appointmentsData || []);
+            setSubscribers(subscribersData || []);
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            // Fallbacks for when API is down
+            setBlogs([]);
+            setCourses(courseService.getAllCourses() || []);
+            setAppointments([]);
+            setSubscribers([]);
+        }
     };
 
-    const handleDeleteBlog = (id) => {
+    const handleDeleteBlog = async (id) => {
         if (window.confirm('Are you sure?')) {
-            blogService.delete(id);
-            loadData();
+            await blogService.delete(id);
+            await loadData();
             toast({ title: "Blog Deleted", variant: "destructive" });
         }
     };
 
-    const handleDeleteCourse = (id) => {
+    const handleDeleteCourse = async (id) => {
         if (window.confirm('Are you sure?')) {
-            courseService.deleteCourse(id);
-            loadData();
+            await courseService.deleteCourse(id);
+            await loadData();
             toast({ title: "Course Deleted", variant: "destructive" });
         }
     };
 
-    const handleUpdateAppointment = (id, status) => {
-        appointmentService.updateAppointmentStatus(id, status);
-        loadData();
+    const handleUpdateAppointment = async (id, status) => {
+        await appointmentService.updateAppointmentStatus(id, status);
+        await loadData();
         toast({ title: "Appointment Updated" });
     };
 
-    const handleUnsubscribe = (id) => {
+    const handleUnsubscribe = async (id) => {
         if (confirm("Remove this subscriber?")) {
-            newsletterService.unsubscribe(id);
-            loadData();
+            await newsletterService.unsubscribe(id);
+            await loadData();
             toast({ title: "Subscriber Removed" });
         }
     };
@@ -68,7 +83,6 @@ const AdminDashboard = () => {
     const stats = {
         blogs: blogs.length,
         courses: courses.length,
-        appointments: appointments.length,
         appointments: appointments.length,
         pendingAppointments: appointments.filter(a => a.status === 'pending').length,
         subscribers: subscribers.length

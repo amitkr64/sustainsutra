@@ -4,98 +4,91 @@ import ServicePageTemplate from '@/components/ServicePageTemplate';
 const ESGStrategyPage = () => {
     return (
         <ServicePageTemplate
-            title="ESG Strategy & Consulting"
-            heroImage="https://images.unsplash.com/photo-1691109972364-0f3b7ce93527"
-            overview="Holistic ESG strategy development aligned with business objectives and stakeholder expectations to drive long-term sustainable value."
+            title="ESG Strategy"
+            heroImage="https://images.unsplash.com/photo-1460925895917-afdab827c52f"
+            overview="Engineering holistic ESG strategies that transform sustainability from a compliance mandate into a competitive advantage."
+            executiveSummary="Environmental, Social, and Governance (ESG) performance is no longer a peripheral concern—it is a core driver of institutional value and long-term resilience. Our strategy team works with executive leadership to identify material risks and opportunities, establishing a robust framework for ethical growth. We move beyond generic checklists to build a purpose-driven strategy that aligns with your unique business model, stakeholder expectations, and global sustainability frameworks, ensuring your organization is built to thrive in a low-carbon economy."
             keyFeatures={[
-                "Materiality Assessment",
-                "ESG Risk Mapping",
-                "Strategy Roadmap Development",
-                "Stakeholder Engagement Workshops",
-                "Rating Agency Alignment (MSCI, DJSI)",
-                "Policy Formulation"
+                "Double Materiality Assessment",
+                "ESG Risk & Opportunity Mapping",
+                "Net-Zero Transition Planning",
+                "Stakeholder Engagement Systems",
+                "Rating Agency (MSCI/DJSI) Optimization",
+                "Sustainable Finance Alignment"
             ]}
             standards={[
-                "GRI Standards",
-                "SASB (Sustainability Accounting Standards Board)",
-                "TCFD (Task Force on Climate-related Financial Disclosures)",
-                "UN SDGs Alignment",
-                "IFRS S1 & S2"
+                "GRI & SASB Standards",
+                "TCFD & TNFD Frameworks",
+                "IFRS S1 & S2 Disclosures",
+                "UN SDGs Integration",
+                "Science Based Targets (SBTi)"
             ]}
             deliverables={[
                 "Comprehensive ESG Strategy Document",
                 "Double Materiality Matrix",
-                "Implementation Roadmap & KPIs",
-                "Executive Presentation Deck",
-                "ESG Policy Framework"
+                "PHased Implementation Roadmap",
+                "Executive Governance Framework",
+                "ESG Policy & Code of Conduct"
             ]}
             methodology={[
                 {
-                    title: "Baseline Assessment",
-                    description: "Evaluate current ESG performance, data availability, and peer benchmarking to understand starting position."
+                    title: "Status Quo Analysis",
+                    description: "Benchmarking current performance against peers and identifying compliance gaps in existing disclosures."
                 },
                 {
-                    title: "Double Materiality",
-                    description: "Identify issues that impact the business (financial materiality) and how the business impacts the world (impact materiality)."
+                    title: "Materiality Determination",
+                    description: "Conducting multi-stakeholder workshops to identify issues with significant financial and social impact."
                 },
                 {
-                    title: "Goal Setting",
-                    description: "Define ambition levels and set SMART goals for material topics aligned with global frameworks (e.g., Net Zero, SDGs)."
+                    title: "Pillar Development",
+                    description: "Synthesizing material topics into strategic pillars with defined ambition levels and SMART targets."
                 },
                 {
-                    title: "Strategic Roadmap",
-                    description: "Develop a phased action plan with clear ownership, timelines, and resource requirements."
+                    title: "Governance Integration",
+                    description: "Establishing board-level oversight and internal management structures for tracking ESG performance."
                 },
                 {
-                    title: "Integration & Governance",
-                    description: " embed ESG into core business strategy, risk management, and board oversight structures."
+                    title: "Disclosure Strategy",
+                    description: "Mapping performance data to global reporting standards to ensure transparency and high ESG ratings."
                 }
             ]}
             processSteps={[
                 {
-                    title: "Discovery",
-                    description: "Leadership interviews and document review to understand business context."
+                    title: "Phase I: Discovery",
+                    description: "Strategic interviews and document review."
                 },
                 {
-                    title: "Stakeholder Engagement",
-                    description: "Surveys and workshops with employees, investors, customers, and suppliers."
+                    title: "Phase II: Materiality",
+                    description: "Double materiality mapping and matrix design."
                 },
                 {
-                    title: "Strategy Formulation",
-                    description: "Iterative development of strategic pillars, commitments, and targets."
+                    title: "Phase III: Formulation",
+                    description: "Target setting and roadmap development."
                 },
                 {
-                    title: "Validation",
-                    description: "Stress-testing strategy with executive leadership and refining implementation plans."
+                    title: "Phase IV: Launch",
+                    description: "Policy rollout and reporting framework setup."
                 }
             ]}
             benefits={[
                 {
-                    title: "Risk Mitigation",
-                    description: "Proactively identify and manage emerging non-financial risks like climate change and supply chain disruptions."
-                },
-                {
                     title: "Capital Access",
-                    description: "Attract impact investors and secure lower cost of capital through strong ESG performance."
+                    description: "Attract institutional investors and secure favorable lending terms through superior ESG credentials."
                 },
                 {
-                    title: "Talent Attraction",
-                    description: "Appeal to purpose-driven talent and increase employee engagement and retention."
+                    title: "Operational Resilience",
+                    description: "Proactively manage physical and transition risks related to climate and social changes."
                 },
                 {
-                    title: "Brand Value",
-                    description: "Enhance corporate reputation and build trust with conscious consumers and partners."
+                    title: "Brand Loyalty",
+                    description: "Align with the values of conscious consumers and purpose-driven talent to increase market share."
                 },
                 {
-                    title: "Innovation Driver",
-                    description: "Stimulate product and process innovation through sustainability constraints and opportunities."
-                },
-                {
-                    title: "Regulatory Future-Proofing",
-                    description: "Stay ahead of evolving global regulations and disclosure mandates."
+                    title: "Regulatory Agility",
+                    description: "Effortlessly adapt to emerging global mandates like CSRD and national requirements like BRSR."
                 }
             ]}
-            ctaText="Develop ESG Strategy"
+            ctaText="Request Strategy Consultation"
         />
     );
 };

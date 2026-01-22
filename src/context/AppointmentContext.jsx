@@ -25,39 +25,39 @@ export const AppointmentProvider = ({ children }) => {
         setLoading(false);
     }, [user]);
 
-    const loadUserAppointments = () => {
+    const loadUserAppointments = async () => {
         if (user?.email) {
-            const userApts = appointmentService.getUserAppointments(user.email);
+            const userApts = await appointmentService.getUserAppointments(user.email);
             setUserAppointments(userApts);
         }
     };
 
-    const loadAllAppointments = () => {
-        const allApts = appointmentService.getAllAppointments();
+    const loadAllAppointments = async () => {
+        const allApts = await appointmentService.getAllAppointments();
         setAppointments(allApts);
     };
 
     const createAppointment = async (appointmentData) => {
-        const newAppointment = appointmentService.createAppointment(appointmentData);
-        loadUserAppointments();
+        const newAppointment = await appointmentService.createAppointment(appointmentData);
+        await loadUserAppointments();
         return newAppointment;
     };
 
-    const updateAppointmentStatus = (id, status, notes) => {
-        const updated = appointmentService.updateAppointmentStatus(id, status, notes);
-        loadAllAppointments();
-        if (user) loadUserAppointments();
+    const updateAppointmentStatus = async (id, status, notes) => {
+        const updated = await appointmentService.updateAppointmentStatus(id, status, notes);
+        await loadAllAppointments();
+        if (user) await loadUserAppointments();
         return updated;
     };
 
-    const deleteAppointment = (id) => {
-        appointmentService.deleteAppointment(id);
-        loadAllAppointments();
-        if (user) loadUserAppointments();
+    const deleteAppointment = async (id) => {
+        await appointmentService.deleteAppointment(id);
+        await loadAllAppointments();
+        if (user) await loadUserAppointments();
     };
 
-    const checkAvailability = (date, timeSlot) => {
-        return appointmentService.checkAvailability(date, timeSlot);
+    const checkAvailability = async (date, timeSlot) => {
+        return await appointmentService.checkAvailability(date, timeSlot);
     };
 
     const value = {

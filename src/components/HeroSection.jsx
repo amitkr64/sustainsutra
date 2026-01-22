@@ -53,7 +53,7 @@ const HeroSection = () => {
                         <div className="flex flex-wrap gap-4 pt-6">
                             <Button
                                 onClick={scrollToContact}
-                                className="bg-gold hover:bg-gold/90 text-navy font-bold px-8 py-6 text-lg rounded-lg transition-all hover:scale-105 shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:shadow-[0_0_30px_rgba(197,160,89,0.5)]"
+                                className="px-8 py-6 text-lg rounded-lg shadow-xl shadow-gold/20"
                             >
                                 Start Audit
                                 <ArrowRight className="ml-2" size={20} />
@@ -65,7 +65,7 @@ const HeroSection = () => {
                                     if (element) element.scrollIntoView({ behavior: 'smooth' });
                                 }}
                                 variant="outline"
-                                className="border-2 border-white/20 text-offwhite hover:bg-white/10 hover:border-white/40 font-medium px-8 py-6 text-lg rounded-lg transition-all backdrop-blur-md"
+                                className="px-8 py-6 text-lg rounded-lg"
                             >
                                 Learn More
                             </Button>

@@ -25,8 +25,14 @@ const UserManagement = () => {
         filterUsers();
     }, [users, searchQuery]);
 
-    const loadUsers = () => {
-        setUsers(userService.getAll());
+    const loadUsers = async () => {
+        try {
+            const data = await userService.getAll();
+            setUsers(data || []);
+        } catch (error) {
+            console.error('Error loading users:', error);
+            setUsers([]);
+        }
     };
 
     const filterUsers = () => {
@@ -43,14 +49,14 @@ const UserManagement = () => {
         setFilteredUsers(filtered);
     };
 
-    const changeUserRole = (userId, newRole) => {
+    const changeUserRole = async (userId, newRole) => {
         if (!confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
             return;
         }
 
         try {
-            userService.update(userId, { role: newRole });
-            loadUsers();
+            await userService.update(userId, { role: newRole });
+            await loadUsers();
             toast({
                 title: "Role Updated!",
                 description: `User role changed to ${newRole}.`
@@ -64,14 +70,14 @@ const UserManagement = () => {
         }
     };
 
-    const handleDeleteUser = (userId) => {
+    const handleDeleteUser = async (userId) => {
         if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
             return;
         }
 
         try {
-            userService.delete(userId);
-            loadUsers();
+            await userService.delete(userId);
+            await loadUsers();
             toast({
                 title: "User Deleted",
                 description: "The user has been permanently removed."
@@ -85,13 +91,13 @@ const UserManagement = () => {
         }
     };
 
-    const handleAddUser = (e) => {
+    const handleAddUser = async (e) => {
         e.preventDefault();
         try {
-            userService.create(newUser);
+            await userService.create(newUser);
             setNewUser({ name: '', email: '', password: '', role: 'user' });
             setShowAddForm(false);
-            loadUsers();
+            await loadUsers();
             toast({ title: "User Created", description: `${newUser.name} has been added.` });
         } catch (error) {
             toast({ title: "Error", description: error.message, variant: 'destructive' });

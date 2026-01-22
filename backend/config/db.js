@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 
 const connectDB = async (retryCount = 2) => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
+        const conn = await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+        });
         console.log(`\x1b[32m%s\x1b[0m`, `✓ MongoDB Connected: ${conn.connection.host}`);
         global.isDemoMode = false;
     } catch (error) {

@@ -8,6 +8,9 @@ const connectDB = require('./config/db');
 // Load env vars
 dotenv.config();
 
+// Initialize Demo Mode
+global.isDemoMode = false;
+
 // Connect to database
 connectDB();
 

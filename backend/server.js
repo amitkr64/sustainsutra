@@ -8,8 +8,8 @@ const connectDB = require('./config/db');
 // Load env vars
 dotenv.config();
 
-// Initialize Demo Mode
-global.isDemoMode = false;
+// Initialize Demo Mode (Default to true, will be set to false if DB connects successfully)
+global.isDemoMode = true;
 global.mockUsers = [
     {
         _id: 'demo-admin-id',

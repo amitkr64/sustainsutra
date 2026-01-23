@@ -120,6 +120,7 @@ const loginUser = asyncHandler(async (req, res) => {
             const isPlainMatch = (email === 'admin@sustainsutra.com' && password === 'admin123');
 
             if (isPasswordMatch || isPlainMatch) {
+                console.log(`[AUTH DEBUG] Demo Mode: Successful login for ${email} (ID: ${user._id})`);
                 return res.json({
                     _id: user._id,
                     name: user.name,

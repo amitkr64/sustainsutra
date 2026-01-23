@@ -13,9 +13,13 @@ const protect = asyncHandler(async (req, res, next) => {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Get user from the token
             if (global.isDemoMode) {
-                req.user = global.mockUsers.find(u => u._id === decoded.id);
+                // Find user in mock array
+                req.user = global.mockUsers.find(u => String(u._id) === String(decoded.id));
+
+                if (!req.user) {
+                    console.log(`[AUTH DEBUG] Demo Mode: User ID ${decoded.id} not found in mockUsers (Length: ${global.mockUsers.length})`);
+                }
             } else {
                 req.user = await User.findById(decoded.id).select('-password');
             }

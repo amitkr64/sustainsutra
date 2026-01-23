@@ -6,7 +6,7 @@
  * Check if user has CCTS entity role
  */
 const cctsEntity = (req, res, next) => {
-    if (req.user && (req.user.role === 'ccts-entity' || req.user.role === 'ccts-admin')) {
+    if (req.user && (req.user.role === 'ccts-entity' || req.user.role === 'ccts-admin' || req.user.role === 'admin')) {
         next();
     } else {
         res.status(403);
@@ -18,7 +18,7 @@ const cctsEntity = (req, res, next) => {
  * Check if user has CCTS verifier role
  */
 const cctsVerifier = (req, res, next) => {
-    if (req.user && (req.user.role === 'ccts-verifier' || req.user.role === 'ccts-admin')) {
+    if (req.user && (req.user.role === 'ccts-verifier' || req.user.role === 'ccts-admin' || req.user.role === 'admin')) {
         next();
     } else {
         res.status(403);
@@ -30,7 +30,7 @@ const cctsVerifier = (req, res, next) => {
  * Check if user has CCTS admin role
  */
 const cctsAdmin = (req, res, next) => {
-    if (req.user && req.user.role === 'ccts-admin') {
+    if (req.user && (req.user.role === 'ccts-admin' || req.user.role === 'admin')) {
         next();
     } else {
         res.status(403);
@@ -42,7 +42,7 @@ const cctsAdmin = (req, res, next) => {
  * Check if user has any CCTS role (entity, verifier, or admin)
  */
 const anyCCTSRole = (req, res, next) => {
-    if (req.user && ['ccts-entity', 'ccts-verifier', 'ccts-admin'].includes(req.user.role)) {
+    if (req.user && ['ccts-entity', 'ccts-verifier', 'ccts-admin', 'admin'].includes(req.user.role)) {
         next();
     } else {
         res.status(403);

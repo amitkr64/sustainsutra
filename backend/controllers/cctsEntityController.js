@@ -72,7 +72,7 @@ const getEntityById = asyncHandler(async (req, res) => {
     }
 
     // Check authorization: user must be the entity owner or admin
-    if (req.user.role !== 'ccts-admin' && entity.user.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'ccts-admin' && req.user.role !== 'admin' && entity.user.toString() !== req.user._id.toString()) {
         res.status(403);
         throw new Error('Not authorized to view this entity');
     }
@@ -170,7 +170,7 @@ const updateEntity = asyncHandler(async (req, res) => {
     }
 
     // Check authorization
-    if (req.user.role !== 'ccts-admin' && entity.user.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'ccts-admin' && req.user.role !== 'admin' && entity.user.toString() !== req.user._id.toString()) {
         res.status(403);
         throw new Error('Not authorized to update this entity');
     }
@@ -263,7 +263,7 @@ const getEntityDashboard = asyncHandler(async (req, res) => {
     }
 
     // Check authorization
-    if (req.user.role !== 'ccts-admin' && entity.user.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'ccts-admin' && req.user.role !== 'admin' && entity.user.toString() !== req.user._id.toString()) {
         res.status(403);
         throw new Error('Not authorized to view this dashboard');
     }

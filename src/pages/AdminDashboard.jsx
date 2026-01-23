@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import { blogService } from '@/services/blogService';
 import { courseService } from '@/services/courseService';
 import { appointmentService } from '@/services/appointmentService';

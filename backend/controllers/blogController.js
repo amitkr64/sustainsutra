@@ -1,10 +1,23 @@
-const asyncHandler = require('express-async-handler');
-const Blog = require('../models/blogModel');
+// 🛡️ Mock Storage for Demo Mode
+let mockBlogs = [
+    {
+        _id: 'mock-blog-1',
+        title: 'The Future of Carbon Markets in India',
+        author: 'SustainSutra Team',
+        status: 'published',
+        content: 'Sample content...',
+        excerpt: 'Understanding the impact of CCTS 2024 guidelines.',
+        createdAt: new Date().toISOString()
+    }
+];
 
 // @desc    Get all blogs
 // @route   GET /api/blogs
 // @access  Public
 const getBlogs = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        return res.json(mockBlogs);
+    }
     const blogs = await Blog.find({});
     res.json(blogs);
 });

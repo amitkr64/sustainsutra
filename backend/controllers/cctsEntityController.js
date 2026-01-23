@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const CCTSEntity = require('../models/cctsEntityModel');
 const User = require('../models/userModel');
+// 🛡️ Mock Storage for Demo Mode
+let mockEntities = [];
 
 /**
  * @desc    Get all CCTS entities (Admin only)
@@ -8,6 +10,13 @@ const User = require('../models/userModel');
  * @access  Private/Admin
  */
 const getAllEntities = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        return res.json({
+            success: true,
+            count: mockEntities.length,
+            data: mockEntities
+        });
+    }
     const { status, sector, search } = req.query;
 
     let query = {};
@@ -44,6 +53,13 @@ const getAllEntities = asyncHandler(async (req, res) => {
  * @access  Private/Entity
  */
 const getMyEntity = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        const entity = mockEntities.find(e => e.user === req.user._id) || mockEntities[0];
+        return res.json({
+            success: true,
+            data: entity || null
+        });
+    }
     const entity = await CCTSEntity.findOne({ user: req.user._id });
 
     if (!entity) {
@@ -89,6 +105,20 @@ const getEntityById = asyncHandler(async (req, res) => {
  * @access  Private/Admin
  */
 const createEntity = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        const entity = {
+            _id: 'mock-entity-' + Date.now(),
+            ...req.body,
+            status: 'active',
+            createdAt: new Date().toISOString()
+        };
+        mockEntities.push(entity);
+        return res.status(201).json({
+            success: true,
+            message: 'Entity registered successfully (Demo Mode)',
+            data: entity
+        });
+    }
     const {
         entityName,
         plantAddress,

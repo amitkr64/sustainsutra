@@ -15,14 +15,19 @@ export const useAppointments = () => {
 export const AppointmentProvider = ({ children }) => {
     const [appointments, setAppointments] = useState([]);
     const [userAppointments, setUserAppointments] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
+    const { user, isAdmin } = useAuth();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (user?.email) {
+        if (user) {
             loadUserAppointments();
+            if (isAdmin && isAdmin()) {
+                loadAllAppointments();
+            }
+        } else {
+            setUserAppointments([]);
+            setAppointments([]);
         }
-        setLoading(false);
     }, [user]);
 
     const loadUserAppointments = async () => {

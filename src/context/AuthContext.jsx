@@ -5,6 +5,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -12,6 +13,7 @@ export const AuthProvider = ({ children }) => {
         const currentUser = userService.getCurrentUser();
         if (currentUser) {
             setUser(currentUser);
+            setToken(currentUser.token);
             setIsAuthenticated(true);
         }
         setLoading(false);
@@ -23,6 +25,7 @@ export const AuthProvider = ({ children }) => {
             const newUser = await userService.create(userData); // Now async
             // userService.create already saves to localStorage thanks to our update
             setUser(newUser);
+            setToken(newUser.token);
             setIsAuthenticated(true);
             setLoading(false);
             return { success: true };
@@ -37,6 +40,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const sessionUser = await userService.login(email, password); // Now async
             setUser(sessionUser);
+            setToken(sessionUser.token);
             setIsAuthenticated(true);
             setLoading(false);
             return { success: true };
@@ -49,6 +53,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         userService.logout();
         setUser(null);
+        setToken(null);
         setIsAuthenticated(false);
     };
 
@@ -82,6 +87,7 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             user,
+            token,
             isAuthenticated,
             loading,
             login,

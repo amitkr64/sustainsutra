@@ -20,11 +20,30 @@ const userSchema = mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin', 'instructor'],
+        enum: ['user', 'admin', 'instructor', 'ccts-entity', 'ccts-verifier', 'ccts-admin'],
         default: 'user'
     },
     bio: {
         type: String
+    },
+    // CCTS-specific fields
+    cctsEntity: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CCTSEntity'
+        // For users with 'ccts-entity' role
+    },
+    verifierAccreditation: {
+        accreditationNumber: String,
+        accreditationAuthority: {
+            type: String,
+            default: 'Bureau of Energy Efficiency (BEE)'
+        },
+        validFrom: Date,
+        validUntil: Date,
+        scope: [String],
+        // Sectors authorized to verify: ['Cement', 'Steel', 'Textile', etc.]
+        certificate: String
+        // URL to accreditation certificate
     }
 }, {
     timestamps: true

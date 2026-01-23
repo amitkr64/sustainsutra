@@ -10,6 +10,7 @@
 
 ## 🌟 **Features**
 
+- **CCTS Compliance**: Carbon Credit Trading Scheme management (Entity/Verifier workflows)
 - **GHG Audit Engine**: ISO 14064-1 compliant carbon calculator with Scope 1, 2, and 3 emissions tracking
 - **Payment Integration**: Secure report generation with configurable pricing
 - **Admin Dashboard**: Complete control over users, content, emission factors, and payment settings

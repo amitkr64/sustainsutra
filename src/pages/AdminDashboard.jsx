@@ -5,10 +5,11 @@ import { blogService } from '@/services/blogService';
 import { courseService } from '@/services/courseService';
 import { appointmentService } from '@/services/appointmentService';
 import { newsletterService } from '@/services/newsletterService';
+import { getAllEntities } from '@/services/cctsEntityService';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Helmet } from 'react-helmet';
-import { Plus, Edit, Trash2, Eye, Search, FileText, CheckCircle, Clock, GraduationCap, Calendar, Users } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Search, FileText, CheckCircle, Clock, GraduationCap, Calendar, Users, LayoutDashboard } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import EmissionFactorManager from '@/components/EmissionFactorManager';
 import UserManagement from '@/components/UserManagement';
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
     const [courses, setCourses] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [subscribers, setSubscribers] = useState([]);
+    const [cctsEntities, setCCTSEntities] = useState([]);
     const [activeTab, setActiveTab] = useState('blogs');
     const [searchTerm, setSearchTerm] = useState('');
     const { toast } = useToast();
@@ -33,17 +35,19 @@ const AdminDashboard = () => {
 
     const loadData = async () => {
         try {
-            const [blogsData, appointmentsData, subscribersData, coursesData] = await Promise.all([
+            const [blogsData, appointmentsData, subscribersData, coursesData, cctsData] = await Promise.all([
                 blogService.getAll(),
                 appointmentService.getAllAppointments(),
                 newsletterService.getAll(),
-                courseService.getAllCourses()
+                courseService.getAllCourses(),
+                getAllEntities(token)
             ]);
 
             setBlogs(blogsData || []);
             setCourses(coursesData || []);
             setAppointments(appointmentsData || []);
             setSubscribers(subscribersData || []);
+            setCCTSEntities(cctsData?.data || []);
         } catch (error) {
             console.error('Error loading dashboard data:', error);
             // Fallbacks for when API is down
@@ -51,6 +55,7 @@ const AdminDashboard = () => {
             setCourses(await courseService.getAllCourses() || []);
             setAppointments([]);
             setSubscribers([]);
+            setCCTSEntities([]);
         }
     };
 
@@ -89,7 +94,8 @@ const AdminDashboard = () => {
         courses: courses.length,
         appointments: appointments.length,
         pendingAppointments: appointments.filter(a => a.status === 'pending').length,
-        subscribers: subscribers.length
+        subscribers: subscribers.length,
+        cctsEntities: cctsEntities.length
     };
 
     return (
@@ -134,14 +140,22 @@ const AdminDashboard = () => {
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.pendingAppointments}</p>
                     </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-offwhite/80 font-medium">CCTS Entities</h3>
+                            <LayoutDashboard className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.cctsEntities}</p>
+                    </div>
                 </div>
 
                 {/* Tabs */}
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="bg-white/5 border border-white/10">
+                    <TabsList className="bg-white/5 border border-white/10 flex-wrap h-auto p-1">
                         <TabsTrigger value="blogs">Blogs</TabsTrigger>
                         <TabsTrigger value="courses">Courses</TabsTrigger>
                         <TabsTrigger value="appointments">Appointments</TabsTrigger>
+                        <TabsTrigger value="ccts" className="text-gold font-semibold">CCTS</TabsTrigger>
                         <TabsTrigger value="resources">Resources</TabsTrigger>
                         <TabsTrigger value="emission-factors">Emission Factors</TabsTrigger>
                         <TabsTrigger value="users">Users</TabsTrigger>
@@ -282,6 +296,60 @@ const AdminDashboard = () => {
                                             </td>
                                         </tr>
                                     ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabsContent>
+
+                    {/* CCTS Compliance Tab */}
+                    <TabsContent value="ccts" className="mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-playfair text-white">Consolidated CCTS Entities</h2>
+                            <Link to="/admin/ccts/register-entity">
+                                <Button className="bg-gold text-navy hover:bg-gold/90 font-bold">
+                                    <Plus className="w-4 h-4 mr-2" /> Register Entity
+                                </Button>
+                            </Link>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/5">
+                                    <tr className="border-b border-white/10">
+                                        <th className="p-4 text-left text-offwhite/60">Entity Name</th>
+                                        <th className="p-4 text-left text-offwhite/60">Registration No.</th>
+                                        <th className="p-4 text-left text-offwhite/60">Sector</th>
+                                        <th className="p-4 text-left text-offwhite/60">Baseline GEI</th>
+                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {cctsEntities.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="p-8 text-center text-offwhite/60 italic">
+                                                No entities registered yet. Click "Register Entity" to add one.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        cctsEntities.map(entity => (
+                                            <tr key={entity._id} className="border-b border-white/5 hover:bg-white/5">
+                                                <td className="p-4 text-white font-medium">{entity.entityName}</td>
+                                                <td className="p-4 text-offwhite/80">{entity.registrationNumber}</td>
+                                                <td className="p-4 text-offwhite/80">{entity.sector}</td>
+                                                <td className="p-4 text-gold font-mono">{entity.baselineData?.ghgIntensity.toFixed(4)}</td>
+                                                <td className="p-4 text-right space-x-2">
+                                                    <Link to={`/ccts/dashboard?entityId=${entity._id}`}>
+                                                        <button className="p-2 hover:text-gold text-offwhite/60" title="View Dashboard">
+                                                            <LayoutDashboard size={16} />
+                                                        </button>
+                                                    </Link>
+                                                    <button className="p-2 hover:text-red-400 text-offwhite/60" title="Delete">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>

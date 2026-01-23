@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -103,7 +103,30 @@ const Header = () => {
                         </DropdownMenu>
                     </li>
 
-                    {/* 2. Academy (Linked to Course Landing Page) */}
+                    {/* 2. CCTS (Carbon Credit Trading Scheme) */}
+                    <li>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="flex items-center gap-1 text-offwhite hover:text-gold transition-smooth font-medium outline-none">
+                                CCTS <ChevronDown className="w-4 h-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-navy border border-white/10 text-offwhite w-64 shadow-2xl backdrop-blur-xl">
+                                <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/ccts/dashboard')}>
+                                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                                    Compliance Dashboard
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/ccts/monitoring-data')}>
+                                    <FileText className="w-4 h-4 mr-2" />
+                                    Monitoring Reports
+                                </DropdownMenuItem>
+                                <div className="border-t border-white/5 my-1" />
+                                <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/resources/regulatory-updates')}>
+                                    Regulatory Guidelines
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </li>
+
+                    {/* 3. Academy (Linked to Course Landing Page) */}
                     <li>
                         <Link to="/courses" className="text-offwhite hover:text-gold transition-smooth font-medium flex items-center gap-1">
                             Academy
@@ -189,6 +212,10 @@ const Header = () => {
                                     <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/my-courses')}>
                                         <BookOpen size={16} className="mr-2" />
                                         My Academy
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/ccts/dashboard')}>
+                                        <LayoutDashboard size={16} className="mr-2" />
+                                        CCTS Dashboard
                                     </DropdownMenuItem>
                                     {(user?.role === 'admin' || user?.role === 'instructor') && (
                                         <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/admin')}>

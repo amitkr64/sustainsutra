@@ -48,6 +48,12 @@ import ResetPasswordPage from '@/pages/ResetPasswordPage';
 // Tools
 import CarbonCalculatorPage from '@/pages/CarbonCalculatorPage';
 
+// CCTS (Carbon Credit Trading Scheme) pages
+import CCTSDashboard from '@/pages/CCTSDashboard';
+import MonitoringDataForm from '@/pages/MonitoringDataForm';
+import MonitoringDataList from '@/pages/MonitoringDataList';
+import EntityRegistration from '@/pages/EntityRegistration';
+
 // Company pages
 import AboutPage from '@/pages/AboutPage';
 import OurApproachPage from '@/pages/OurApproachPage';
@@ -152,8 +158,15 @@ function App() {
                                         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                                         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
+                                        {/* CCTS - Protected Routes */}
+                                        <Route path="/ccts/dashboard" element={<ProtectedRoute><CCTSDashboard /></ProtectedRoute>} />
+                                        <Route path="/ccts/monitoring-data" element={<ProtectedRoute><MonitoringDataList /></ProtectedRoute>} />
+                                        <Route path="/ccts/monitoring-data/new" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
+                                        <Route path="/ccts/monitoring-data/edit/:id" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
+
                                         {/* Admin - Protected Routes */}
                                         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+                                        <Route path="/admin/ccts/register-entity" element={<RoleProtectedRoute allowedRoles={['admin']}><EntityRegistration /></RoleProtectedRoute>} />
                                         <Route path="/admin/blog/new" element={<ProtectedRoute><CreateBlogPage /></ProtectedRoute>} />
                                         <Route path="/admin/blog/:id/edit" element={<ProtectedRoute><EditBlogPage /></ProtectedRoute>} />
                                         <Route path="/admin/course/new" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><CreateCoursePage /></RoleProtectedRoute>} />

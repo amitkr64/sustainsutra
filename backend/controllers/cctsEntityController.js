@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const CCTSEntity = require('../models/cctsEntityModel');
 const User = require('../models/userModel');
 // 🛡️ Mock Storage for Demo Mode
-let mockEntities = [];
+let mockEntities = global.mockEntities;
 
 /**
  * @desc    Get all CCTS entities (Admin only)

@@ -10,6 +10,30 @@ dotenv.config();
 
 // Initialize Demo Mode
 global.isDemoMode = false;
+global.mockUsers = [
+    {
+        _id: 'demo-admin-id',
+        name: 'Admin User',
+        email: 'admin@sustainsutra.com',
+        // Hash for 'admin123'
+        password: '$2a$10$89J8R9u9Y8u9Y8u9Y8u9Y.u9Y8u9Y8u9Y8u9Y8u9Y8u9Y8u9Y8u9Y',
+        role: 'admin'
+    }
+];
+global.mockEntities = [];
+global.mockBlogs = [
+    {
+        _id: 'mock-blog-1',
+        title: 'The Future of Carbon Markets in India',
+        author: 'SustainSutra Team',
+        status: 'published',
+        content: 'Sample content...',
+        excerpt: 'Understanding the impact of CCTS 2024 guidelines.',
+        categories: ['Climate', 'Policy'],
+        createdAt: new Date().toISOString()
+    }
+];
+global.mockAppointments = [];
 
 // Connect to database
 connectDB();

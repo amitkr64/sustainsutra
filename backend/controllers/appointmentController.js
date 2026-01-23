@@ -1,10 +1,16 @@
 const asyncHandler = require('express-async-handler');
 const Appointment = require('../models/appointmentModel');
 
+// 🛡️ Mock Storage for Demo Mode
+let mockAppointments = global.mockAppointments;
+
 // @desc    Get all appointments
 // @route   GET /api/appointments
 // @access  Private/Admin
 const getAppointments = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        return res.json(mockAppointments);
+    }
     const appointments = await Appointment.find({}).sort({ createdAt: -1 });
     res.json(appointments);
 });

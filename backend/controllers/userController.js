@@ -4,19 +4,7 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 
 // 🛡️ Mock Storage for Demo Mode
-global.mockUsers = global.mockUsers || [
-    {
-        _id: 'demo-admin-id',
-        name: 'Admin User',
-        email: 'admin@sustainsutra.com',
-        // This is a bcrypt hash for 'admin123'
-        password: '$2a$10$89J8R9u9Y8u9Y8u9Y8u9Y.u9Y8u9Y8u9Y8u9Y8u9Y8u9Y8u9Y8u9Y',
-        role: 'admin'
-    }
-];
 let mockUsers = global.mockUsers;
-// @desc    Register new user (Dummy placeholder to match next lines)
-const registerUserDummy = null;
 
 // Note: For Demo Mode robustness, we will also allow a plain text 'admin123' check if the hash fails.
 

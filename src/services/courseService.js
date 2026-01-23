@@ -1,5 +1,5 @@
 // Course service for managing course data via API
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/courses';
+const API_URL = '/api/courses';
 
 export const courseService = {
     // Get all courses

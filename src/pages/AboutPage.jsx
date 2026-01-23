@@ -33,7 +33,7 @@ const AboutPage = () => {
             </Helmet>
 
             {/* Elite Hero Section */}
-            <section className="relative min-h-[85vh] flex items-center pt-32 pb-20 overflow-hidden">
+            <section className="relative min-h-[85vh] flex items-center pt-12 pb-20 overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
                         src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"

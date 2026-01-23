@@ -30,11 +30,14 @@ const CCTSDashboard = () => {
 
             // Get entity profile
             const entityRes = await getMyEntity(token);
-            setEntity(entityRes.data);
 
-            // Get dashboard data
-            const dashboardRes = await getEntityDashboard(token, entityRes.data._id);
-            setDashboard(dashboardRes.data);
+            if (entityRes && entityRes.data) {
+                setEntity(entityRes.data);
+
+                // Get dashboard data
+                const dashboardRes = await getEntityDashboard(token, entityRes.data._id);
+                setDashboard(dashboardRes.data);
+            }
 
             // Try to get current year's balance
             try {
@@ -58,7 +61,7 @@ const CCTSDashboard = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray flex items-center justify-center">
+            <div className="min-h-screen bg-navy flex items-center justify-center">
                 <div className="text-gold text-xl">Loading dashboard...</div>
             </div>
         );
@@ -66,7 +69,7 @@ const CCTSDashboard = () => {
 
     if (!entity) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray flex items-center justify-center p-8">
+            <div className="min-h-screen bg-navy flex items-center justify-center p-8">
                 <div className="text-center">
                     <AlertCircle className="w-16 h-16 text-gold mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-offwhite mb-2">No Entity Profile Found</h2>
@@ -101,7 +104,7 @@ const CCTSDashboard = () => {
                 <meta name="description" content="Carbon Credit Trading Scheme compliance dashboard" />
             </Helmet>
 
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray py-20 px-4">
+            <div className="min-h-screen bg-navy py-20 px-4">
                 <div className="container mx-auto max-w-7xl">
 
                     {/* Header */}
@@ -116,15 +119,15 @@ const CCTSDashboard = () => {
                     {/* Status Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         {/* Baseline Card */}
-                        <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-6 hover:border-gold/60 transition-all">
+                        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-gold/60 transition-all">
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="text-offwhite/70 text-sm font-semibold">Baseline GEI</h3>
                                 <BarChart3 className="w-5 h-5 text-blue-400" />
                             </div>
                             <p className="text-3xl font-bold text-offwhite mb-1">
-                                {dashboard?.baseline.ghgIntensity.toFixed(4)}
+                                {dashboard?.baseline?.ghgIntensity?.toFixed(4) || '0.0000'}
                             </p>
-                            <p className="text-xs text-offwhite/60">tCO₂e/tonne ({dashboard?.baseline.year})</p>
+                            <p className="text-xs text-offwhite/60">tCO₂e/tonne ({dashboard?.baseline?.year || 'N/A'})</p>
                         </div>
 
                         {/* Reports Card */}
@@ -172,7 +175,7 @@ const CCTSDashboard = () => {
                                 <>
                                     <p className={`text-3xl font-bold mb-1 ${cccBalance.netPosition >= 0 ? 'text-emerald-400' : 'text-red-400'
                                         }`}>
-                                        {cccBalance.netPosition >= 0 ? '+' : ''}{cccBalance.netPosition.toFixed(2)}
+                                        {cccBalance.netPosition >= 0 ? '+' : ''}{cccBalance?.netPosition?.toFixed(2)}
                                     </p>
                                     <p className="text-xs text-offwhite/60">
                                         {cccBalance.netPosition >= 0 ? 'Surplus' : 'Deficit'} tCO₂e
@@ -185,7 +188,7 @@ const CCTSDashboard = () => {
                     </div>
 
                     {/* Compliance Trajectory Chart */}
-                    <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-6 mb-8">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 mb-8">
                         <h2 className="text-2xl font-bold text-gold mb-6">Compliance Trajectory</h2>
                         {dashboard && (
                             <ComplianceTrajectoryChart
@@ -205,7 +208,7 @@ const CCTSDashboard = () => {
 
                     {/* Quick Actions */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-6">
+                        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
                             <h3 className="text-xl font-bold text-gold mb-4">Quick Actions</h3>
                             <div className="space-y-3">
                                 <Button
@@ -239,24 +242,24 @@ const CCTSDashboard = () => {
                                 <div className="space-y-3 text-offwhite">
                                     <div className="flex justify-between">
                                         <span className="text-offwhite/70">Target GEI:</span>
-                                        <span className="font-semibold">{cccBalance.targetGEI.toFixed(4)} tCO₂e/tonne</span>
+                                        <span className="font-semibold">{cccBalance?.targetGEI?.toFixed(4)} tCO₂e/tonne</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-offwhite/70">Achieved GEI:</span>
-                                        <span className="font-semibold">{cccBalance.achievedGEI.toFixed(4)} tCO₂e/tonne</span>
+                                        <span className="font-semibold">{cccBalance?.achievedGEI?.toFixed(4)} tCO₂e/tonne</span>
                                     </div>
                                     <div className="border-t border-gold/20 pt-3">
                                         <div className="flex justify-between">
                                             <span className="text-offwhite/70">Credits Issued:</span>
-                                            <span className="font-semibold text-emerald-400">+{cccBalance.creditIssuance.toFixed(2)}</span>
+                                            <span className="font-semibold text-emerald-400">+{cccBalance?.creditIssuance?.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-offwhite/70">Surrender Requirement:</span>
-                                            <span className="font-semibold text-red-400">-{cccBalance.surrenderRequirement.toFixed(2)}</span>
+                                            <span className="font-semibold text-red-400">-{cccBalance?.surrenderRequirement?.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between mt-2">
                                             <span className="text-offwhite/70">Offsets Applied:</span>
-                                            <span className="font-semibold">+{cccBalance.totalOffsetsUsed.toFixed(2)}</span>
+                                            <span className="font-semibold">+{cccBalance?.totalOffsetsUsed?.toFixed(2)}</span>
                                         </div>
                                     </div>
                                     <div className="border-t border-gold/20 pt-3">
@@ -264,7 +267,7 @@ const CCTSDashboard = () => {
                                             <span className="font-bold">Net Position:</span>
                                             <span className={`font-bold ${cccBalance.netPosition >= 0 ? 'text-emerald-400' : 'text-red-400'
                                                 }`}>
-                                                {cccBalance.netPosition >= 0 ? '+' : ''}{cccBalance.netPosition.toFixed(2)} tCO₂e
+                                                {cccBalance.netPosition >= 0 ? '+' : ''}{cccBalance?.netPosition?.toFixed(2)} tCO₂e
                                             </span>
                                         </div>
                                     </div>

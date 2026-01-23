@@ -48,8 +48,8 @@ const VerificationDetail = () => {
             setLoading(true);
             const payload = {
                 monitoringData: id,
-                entity: report.entity._id,
-                complianceYear: report.complianceYear,
+                entity: report?.entity?._id || report?.entity?.id,
+                complianceYear: report?.complianceYear,
                 verificationOutcome: outcome, // 'Positive' or 'Negative'
                 verifiedData: {
                     totalGHG: parseFloat(verifiedEmissions),
@@ -96,7 +96,7 @@ const VerificationDetail = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Left: Entity Submission */}
-                        <div className="bg-white/5 border border-white/10 rounded-lg p-6">
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl">
                             <h2 className="text-xl font-semibold text-offwhite mb-4 flex items-center gap-2">
                                 <FileText className="text-blue-400" /> Entity Submission
                             </h2>
@@ -112,11 +112,11 @@ const VerificationDetail = () => {
                                 </div>
                                 <div className="flex justify-between border-b border-white/5 pb-2">
                                     <span>Reported Total GHG:</span>
-                                    <span className="text-gold font-bold">{report.calculatedData?.totalGHG.toFixed(2)} tCO₂e</span>
+                                    <span className="text-gold font-bold">{report.calculatedData?.totalGHG?.toFixed(2)} tCO₂e</span>
                                 </div>
                                 <div className="flex justify-between border-b border-white/5 pb-2">
                                     <span>Reported GEI:</span>
-                                    <span className="text-gold font-bold">{report.calculatedData?.ghgIntensity.toFixed(4)} tCO₂e/tonne</span>
+                                    <span className="text-gold font-bold">{report.calculatedData?.ghgIntensity?.toFixed(4)} tCO₂e/tonne</span>
                                 </div>
 
                                 <div className="pt-4">
@@ -131,7 +131,8 @@ const VerificationDetail = () => {
                         </div>
 
                         {/* Right: Verifier Assessment */}
-                        <div className="bg-white/5 border border-gold/30 rounded-lg p-6">
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 blur-[100px] -z-10 group-hover:bg-gold/20 transition-all" />
                             <h2 className="text-xl font-semibold text-offwhite mb-4 flex items-center gap-2">
                                 <CheckCircle className="text-green-400" /> Verification Findings
                             </h2>
@@ -143,7 +144,7 @@ const VerificationDetail = () => {
                                         type="number"
                                         value={verifiedEmissions}
                                         onChange={(e) => setVerifiedEmissions(e.target.value)}
-                                        className="w-full bg-navy border border-gold/30 rounded px-4 py-2 text-offwhite"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none transition-all"
                                     />
                                     <p className="text-xs text-offwhite/50 mt-1">Adjust if discrepancies found during audit.</p>
                                 </div>
@@ -153,7 +154,7 @@ const VerificationDetail = () => {
                                     <select
                                         value={materialityCheck}
                                         onChange={(e) => setMaterialityCheck(e.target.value)}
-                                        className="w-full bg-navy border border-gold/30 rounded px-4 py-2 text-offwhite"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none transition-all"
                                     >
                                         <option value="Pass">Pass (Discrepancy &lt; 5%)</option>
                                         <option value="Fail">Fail (Discrepancy &gt; 5%)</option>
@@ -166,7 +167,7 @@ const VerificationDetail = () => {
                                         value={verifierComments}
                                         onChange={(e) => setVerifierComments(e.target.value)}
                                         rows={4}
-                                        className="w-full bg-navy border border-gold/30 rounded px-4 py-2 text-offwhite"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none transition-all"
                                         placeholder="Describe methodology, site visit findings, and basis for opinion..."
                                     />
                                 </div>

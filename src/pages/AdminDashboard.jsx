@@ -99,7 +99,7 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-navy pt-24 px-4 pb-12">
+        <div className="min-h-screen bg-navy pt-12 px-4 pb-12">
             <Helmet>
                 <title>Admin Dashboard | SustainSutra</title>
             </Helmet>
@@ -157,7 +157,6 @@ const AdminDashboard = () => {
                         <TabsTrigger value="appointments">Appointments</TabsTrigger>
                         <TabsTrigger value="ccts" className="text-gold font-semibold">CCTS</TabsTrigger>
                         <TabsTrigger value="resources">Resources</TabsTrigger>
-                        <TabsTrigger value="emission-factors">Emission Factors</TabsTrigger>
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
                         <TabsTrigger value="team">Team</TabsTrigger>
@@ -336,7 +335,7 @@ const AdminDashboard = () => {
                                                 <td className="p-4 text-white font-medium">{entity.entityName}</td>
                                                 <td className="p-4 text-offwhite/80">{entity.registrationNumber}</td>
                                                 <td className="p-4 text-offwhite/80">{entity.sector}</td>
-                                                <td className="p-4 text-gold font-mono">{entity.baselineData?.ghgIntensity.toFixed(4)}</td>
+                                                <td className="p-4 text-gold font-mono">{entity.baselineData?.ghgIntensity?.toFixed(4) || '0.0000'}</td>
                                                 <td className="p-4 text-right space-x-2">
                                                     <Link to={`/ccts/dashboard?entityId=${entity._id}`}>
                                                         <button className="p-2 hover:text-gold text-offwhite/60" title="View Dashboard">
@@ -360,10 +359,7 @@ const AdminDashboard = () => {
                         <ResourceManager />
                     </TabsContent>
 
-                    {/* Emission Factors Tab */}
-                    <TabsContent value="emission-factors" className="mt-6">
-                        <EmissionFactorManager />
-                    </TabsContent>
+
 
                     {/* Users Tab */}
                     <TabsContent value="users" className="mt-6">

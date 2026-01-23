@@ -105,7 +105,7 @@ function App() {
                             <div className="min-h-screen bg-navy text-offwhite flex flex-col">
                                 <Header />
 
-                                <main className="flex-grow">
+                                <main className="flex-grow pt-20 lg:pt-28">
                                     <Routes>
                                         {/* Public Routes */}
                                         <Route path="/" element={<HomePage />} />

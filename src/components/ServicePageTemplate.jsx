@@ -49,7 +49,7 @@ const ServicePageTemplate = ({
             </Helmet>
 
             {/* Premium Hero Section */}
-            <section className="relative min-h-[75vh] flex items-center overflow-hidden pt-20">
+            <section className="relative min-h-[60vh] flex items-center overflow-hidden pt-12">
                 <div className="absolute inset-0 z-0">
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105"

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { emissionFactorService } from '@/services/emissionFactorService';
+import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2, Edit2, Upload, Search, Filter } from 'lucide-react';
 
-const EmissionFactorManager = () => {
+const EmissionFactorManager = ({ onDataChange }) => {
     const { toast } = useToast();
+    const { token } = useAuth();
     const [factors, setFactors] = useState([]);
     const [filteredFactors, setFilteredFactors] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -32,8 +34,8 @@ const EmissionFactorManager = () => {
         filterFactors();
     }, [factors, searchQuery, scopeFilter]);
 
-    const loadFactors = () => {
-        const allFactors = emissionFactorService.getAll();
+    const loadFactors = async () => {
+        const allFactors = await emissionFactorService.getAll();
         setFactors(allFactors);
     };
 
@@ -58,19 +60,20 @@ const EmissionFactorManager = () => {
         setFilteredFactors(filtered);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (editingFactor) {
-            emissionFactorService.update(editingFactor.id, formData);
+            await emissionFactorService.update(editingFactor.id, formData, token);
             toast({ title: "Emission Factor Updated!" });
         } else {
-            emissionFactorService.add(formData);
+            await emissionFactorService.add(formData, token);
             toast({ title: "Emission Factor Added!" });
         }
 
         resetForm();
         loadFactors();
+        if (onDataChange) onDataChange();
     };
 
     const handleEdit = (factor) => {
@@ -87,11 +90,12 @@ const EmissionFactorManager = () => {
         setShowAddModal(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this emission factor?')) {
-            emissionFactorService.delete(id);
+            await emissionFactorService.delete(id, token);
             toast({ title: "Emission Factor Deleted" });
             loadFactors();
+            if (onDataChange) onDataChange();
         }
     };
 
@@ -125,6 +129,7 @@ const EmissionFactorManager = () => {
                         description: `${result.count} emission factors added.`
                     });
                     loadFactors();
+                    if (onDataChange) onDataChange();
                     setShowBulkUploadModal(false);
                 } else {
                     toast({
@@ -242,8 +247,8 @@ const EmissionFactorManager = () => {
                                     <td className="px-4 py-3 text-sm text-offwhite">{factor.name}</td>
                                     <td className="px-4 py-3 text-sm text-offwhite">
                                         <span className={`px-2 py-1 rounded text-xs ${factor.scope === 1 ? 'bg-orange-500/20 text-orange-400' :
-                                                factor.scope === 2 ? 'bg-yellow-500/20 text-yellow-400' :
-                                                    'bg-blue-500/20 text-blue-400'
+                                            factor.scope === 2 ? 'bg-yellow-500/20 text-yellow-400' :
+                                                'bg-blue-500/20 text-blue-400'
                                             }`}>
                                             Scope {factor.scope}
                                         </span>

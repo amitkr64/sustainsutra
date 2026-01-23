@@ -32,8 +32,12 @@ const CarbonCalculatorPage = () => {
     const [paymentFee, setPaymentFee] = useState(999);
 
     useEffect(() => {
-        const factors = emissionFactorService.getAll();
-        setEmissionFactors(factors);
+        const loadFactors = async () => {
+            const factors = await emissionFactorService.getAll();
+            setEmissionFactors(factors);
+        };
+
+        loadFactors();
 
         // Initialize with one activity per scope if empty
         if (scope1Activities.length === 0) addActivity(1);
@@ -214,7 +218,7 @@ const CarbonCalculatorPage = () => {
                 <title>GHG Audit Engine | SustainSutra</title>
             </Helmet>
 
-            <div className="pt-32 pb-24 container mx-auto px-4 max-w-7xl">
+            <div className="pt-12 pb-24 container mx-auto px-4 max-w-7xl">
                 {/* Product Header */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-16">
                     <div className="max-w-2xl">

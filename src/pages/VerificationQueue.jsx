@@ -33,7 +33,7 @@ const VerificationQueue = () => {
                 data = res.data;
             } else {
                 // Get completed verification reports by me
-                const res = await getVerificationReports(token, { verifierId: user._id });
+                const res = await getVerificationReports(token, { verifierId: user?._id || user?.id });
                 data = res.data;
             }
 
@@ -58,7 +58,7 @@ const VerificationQueue = () => {
                 <title>Verification Queue | CCTS Verifier | SustainSutra</title>
             </Helmet>
 
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray py-20 px-4">
+            <div className="min-h-screen bg-navy py-20 px-4">
                 <div className="container mx-auto max-w-6xl">
 
                     {/* Header */}
@@ -86,7 +86,7 @@ const VerificationQueue = () => {
                     </div>
 
                     {/* Queue Content */}
-                    <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg overflow-hidden min-h-[400px]">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden min-h-[400px] shadow-2xl">
                         {loading ? (
                             <div className="flex items-center justify-center h-64 text-gold">Loading queue...</div>
                         ) : reports.length === 0 ? (
@@ -102,14 +102,14 @@ const VerificationQueue = () => {
                             </div>
                         ) : (
                             <table className="w-full">
-                                <thead className="bg-mediumgray/50 border-b border-gold/30">
+                                <thead className="bg-white/5 border-b border-white/10 uppercase tracking-widest text-[10px]">
                                     <tr>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Entity</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Year</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Total Emissions</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Sector</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Status</th>
-                                        <th className="px-6 py-4 text-right text-sm font-semibold text-gold">Action</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Entity</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Year</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Total Emissions</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Sector</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Status</th>
+                                        <th className="px-6 py-4 text-right font-black text-gold/60">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gold/10">

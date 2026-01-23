@@ -140,7 +140,7 @@ const EntityRegistration = () => {
                 <title>Register Entity | CCTS Admin | SustainSutra</title>
             </Helmet>
 
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray py-20 px-4">
+            <div className="min-h-screen bg-navy py-20 px-4">
                 <div className="container mx-auto max-w-4xl">
                     <div className="flex items-center mb-8">
                         <Button
@@ -153,7 +153,7 @@ const EntityRegistration = () => {
                         <h1 className="text-3xl font-bold text-gold">Register New Entity</h1>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-8 space-y-8">
+                    <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-[32px] p-8 space-y-8 shadow-4xl">
 
                         {/* 1. Basic Information */}
                         <div>
@@ -170,7 +170,7 @@ const EntityRegistration = () => {
                                         required
                                         value={formData.entityName}
                                         onChange={e => handleInputChange(null, 'entityName', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                         placeholder="e.g. Acme Steel Ltd."
                                     />
                                 </div>
@@ -181,7 +181,7 @@ const EntityRegistration = () => {
                                         required
                                         value={formData.registrationNumber}
                                         onChange={e => handleInputChange(null, 'registrationNumber', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -190,7 +190,7 @@ const EntityRegistration = () => {
                                         required
                                         value={formData.sector}
                                         onChange={e => handleInputChange(null, 'sector', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     >
                                         <option value="">Select Sector</option>
                                         <option value="Iron & Steel">Iron & Steel</option>
@@ -214,7 +214,7 @@ const EntityRegistration = () => {
                                         type="text"
                                         value={formData.address.street}
                                         onChange={e => handleInputChange('address', 'street', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -223,7 +223,7 @@ const EntityRegistration = () => {
                                         type="text"
                                         value={formData.address.city}
                                         onChange={e => handleInputChange('address', 'city', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -232,7 +232,7 @@ const EntityRegistration = () => {
                                         type="text"
                                         value={formData.address.state}
                                         onChange={e => handleInputChange('address', 'state', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -241,7 +241,7 @@ const EntityRegistration = () => {
                                         type="text"
                                         value={formData.address.pincode}
                                         onChange={e => handleInputChange('address', 'pincode', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                             </div>
@@ -258,7 +258,7 @@ const EntityRegistration = () => {
                                         required
                                         value={formData.contactPerson.name}
                                         onChange={e => handleInputChange('contactPerson', 'name', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -268,7 +268,7 @@ const EntityRegistration = () => {
                                         required
                                         value={formData.contactPerson.email}
                                         onChange={e => handleInputChange('contactPerson', 'email', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -277,7 +277,7 @@ const EntityRegistration = () => {
                                         type="text"
                                         value={formData.contactPerson.phone}
                                         onChange={e => handleInputChange('contactPerson', 'phone', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -286,14 +286,14 @@ const EntityRegistration = () => {
                                         type="text"
                                         value={formData.contactPerson.designation}
                                         onChange={e => handleInputChange('contactPerson', 'designation', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                             </div>
                         </div>
 
                         {/* 4. Baseline Data */}
-                        <div className="bg-mediumgray/20 p-6 rounded-lg border border-gold/10">
+                        <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                             <h3 className="text-lg font-semibold text-gold mb-4">Baseline Data (Reference Year)</h3>
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                 <div>
@@ -301,7 +301,7 @@ const EntityRegistration = () => {
                                     <select
                                         value={formData.baselineData.year}
                                         onChange={e => handleInputChange('baselineData', 'year', e.target.value)}
-                                        className="w-full bg-darkgray border border-gold/30 rounded px-3 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
                                     >
                                         <option value="2021-22">2021-22</option>
                                         <option value="2022-23">2022-23</option>
@@ -316,7 +316,7 @@ const EntityRegistration = () => {
                                         step="0.01"
                                         value={formData.baselineData.totalProduction}
                                         onChange={e => handleInputChange('baselineData', 'totalProduction', e.target.value)}
-                                        className="w-full bg-darkgray border border-gold/30 rounded px-3 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
@@ -327,12 +327,12 @@ const EntityRegistration = () => {
                                         step="0.01"
                                         value={formData.baselineData.totalGHGEmissions}
                                         onChange={e => handleInputChange('baselineData', 'totalGHGEmissions', e.target.value)}
-                                        className="w-full bg-darkgray border border-gold/30 rounded px-3 py-2 text-offwhite focus:border-gold outline-none"
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-offwhite/80 mb-1 text-sm">Calculated GEI</label>
-                                    <div className="w-full bg-darkgray/50 border border-gold/10 rounded px-3 py-2 text-gold font-mono font-bold">
+                                    <div className="w-full bg-navy/50 border border-white/10 rounded-xl px-3 py-2 text-gold font-mono font-bold">
                                         {formData.baselineData.ghgIntensity.toFixed(4)}
                                     </div>
                                     <p className="text-xs text-offwhite/50 mt-1">tCO₂e / tonne product</p>
@@ -360,7 +360,7 @@ const EntityRegistration = () => {
                                                 <select
                                                     value={target.complianceYear}
                                                     onChange={e => updateTarget(index, 'complianceYear', e.target.value)}
-                                                    className="w-full bg-darkgray border border-gold/30 rounded px-3 py-2 text-offwhite text-sm"
+                                                    className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite text-sm focus:border-gold outline-none"
                                                 >
                                                     <option value="2024-25">2024-25</option>
                                                     <option value="2025-26">2025-26</option>
@@ -377,7 +377,7 @@ const EntityRegistration = () => {
                                                     step="0.0001"
                                                     value={target.targetGEI}
                                                     onChange={e => updateTarget(index, 'targetGEI', e.target.value)}
-                                                    className="w-full bg-darkgray border border-gold/30 rounded px-3 py-2 text-offwhite text-sm"
+                                                    className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite text-sm focus:border-gold outline-none"
                                                 />
                                             </div>
                                             <Button type="button" onClick={() => removeTarget(index)} size="icon" variant="ghost" className="text-red-400 hover:bg-red-950/30">

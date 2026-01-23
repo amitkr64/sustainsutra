@@ -188,7 +188,7 @@ const MonitoringDataForm = () => {
         try {
             const payload = {
                 ...formData,
-                entity: entity._id,
+                entity: entity?._id || entity?.id,
                 status: 'Draft'
             };
 
@@ -213,7 +213,7 @@ const MonitoringDataForm = () => {
         try {
             const payload = {
                 ...formData,
-                entity: entity._id,
+                entity: entity?._id || entity?.id,
                 status: 'Submitted'
             };
 
@@ -242,7 +242,7 @@ const MonitoringDataForm = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray flex items-center justify-center">
+            <div className="min-h-screen bg-navy flex items-center justify-center">
                 <div className="text-gold text-xl">Loading form...</div>
             </div>
         );
@@ -254,7 +254,7 @@ const MonitoringDataForm = () => {
                 <title>Monitoring Data Form | CCTS | SustainSutra</title>
             </Helmet>
 
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray py-20 px-4">
+            <div className="min-h-screen bg-navy py-20 px-4">
                 <div className="container mx-auto max-w-5xl">
 
                     {/* Header */}
@@ -270,10 +270,10 @@ const MonitoringDataForm = () => {
                         {[1, 2, 3, 4, 5].map(step => (
                             <div key={step} className="flex items-center">
                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${currentStep === step
-                                        ? 'bg-gold text-darkgray'
-                                        : currentStep > step
-                                            ? 'bg-green-500 text-white'
-                                            : 'bg-darkgray border-2 border-gold/30 text-offwhite/50'
+                                    ? 'bg-gold text-darkgray'
+                                    : currentStep > step
+                                        ? 'bg-green-500 text-white'
+                                        : 'bg-darkgray border-2 border-gold/30 text-offwhite/50'
                                     }`}>
                                     {step}
                                 </div>
@@ -294,7 +294,7 @@ const MonitoringDataForm = () => {
                     </div>
 
                     {/* Form Content */}
-                    <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-8">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-2xl">
 
                         {/* Step 1: Basic Information */}
                         {currentStep === 1 && (
@@ -306,7 +306,7 @@ const MonitoringDataForm = () => {
                                     <select
                                         value={formData.complianceYear}
                                         onChange={(e) => handleInputChange(null, 'complianceYear', e.target.value)}
-                                        className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite"
+                                        className="w-full bg-navy border border-white/10 rounded-lg px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     >
                                         <option value="2024-25">2024-25</option>
                                         <option value="2025-26">2025-26</option>
@@ -322,7 +322,7 @@ const MonitoringDataForm = () => {
                                             type="date"
                                             value={formData.reportingPeriod.startDate}
                                             onChange={(e) => handleInputChange('reportingPeriod', 'startDate', e.target.value)}
-                                            className="w-full bg-mediumgray border border-gold/30 rounded px-4 py-2 text-offwhite"
+                                            className="w-full bg-navy border border-white/10 rounded-lg px-4 py-2 text-offwhite focus:border-gold outline-none"
                                         />
                                     </div>
                                     <div>
@@ -354,7 +354,7 @@ const MonitoringDataForm = () => {
                                 ) : (
                                     <div className="space-y-4">
                                         {formData.rawMaterials.map((material, index) => (
-                                            <div key={index} className="bg-mediumgray/50 border border-gold/20 rounded p-4">
+                                            <div key={index} className="bg-white/5 border border-white/10 rounded-xl p-4">
                                                 <div className="grid grid-cols-2 gap-4 mb-4">
                                                     <div>
                                                         <label className="block text-offwhite/70 text-sm mb-1">Material Name</label>
@@ -363,7 +363,7 @@ const MonitoringDataForm = () => {
                                                             value={material.material}
                                                             onChange={(e) => updateRawMaterial(index, 'material', e.target.value)}
                                                             placeholder="e.g., Iron Ore"
-                                                            className="w-full bg-darkgray border border-gold/30 rounded px-3 py-2 text-offwhite"
+                                                            className="w-full bg-navy border border-white/10 rounded-lg px-3 py-2 text-offwhite focus:border-gold outline-none"
                                                         />
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2">
@@ -446,7 +446,7 @@ const MonitoringDataForm = () => {
                                         <p className="text-offwhite/60 text-center py-4">No fuels added.</p>
                                     ) : (
                                         formData.fuelInputs.map((fuel, index) => (
-                                            <div key={index} className="bg-mediumgray/50 border border-gold/20 rounded p-4">
+                                            <div key={index} className="bg-white/5 border border-white/10 rounded-xl p-4">
                                                 <div className="grid grid-cols-3 gap-4 mb-4">
                                                     <div>
                                                         <label className="block text-offwhite/70 text-sm mb-1">Fuel Type</label>
@@ -684,7 +684,7 @@ const MonitoringDataForm = () => {
 
                                 {/* Calculation Results */}
                                 {calculationResult && (
-                                    <div className="bg-mediumgray/50 border border-green-500/50 rounded-lg p-6">
+                                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6">
                                         <h3 className="text-xl font-bold text-green-400 mb-4">✓ Calculation Complete</h3>
                                         <div className="grid grid-cols-2 gap-4 text-offwhite">
                                             <div>

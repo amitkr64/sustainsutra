@@ -14,7 +14,7 @@ const HeroSection = () => {
     };
 
     return (
-        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden" id="hero">
+        <section className="relative min-h-[85vh] flex items-start pt-12 overflow-hidden" id="hero">
             {/* Background Layer with Parallax-like fixed positioning */}
             <div className="absolute inset-0 z-0">
                 <div

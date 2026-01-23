@@ -67,7 +67,7 @@ const UserProfilePage = () => {
                 <title>My Profile | SustainSutra</title>
             </Helmet>
 
-            <div className="min-h-screen bg-navy pt-24 pb-12 px-4">
+            <div className="min-h-screen bg-navy pt-12 pb-12 px-4">
                 <div className="container mx-auto max-w-4xl">
                     <h1 className="text-4xl font-playfair text-gold mb-8">My Profile</h1>
 

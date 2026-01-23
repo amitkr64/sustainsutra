@@ -34,6 +34,7 @@ global.mockBlogs = [
     }
 ];
 global.mockAppointments = [];
+global.mockMonitoringData = [];
 
 // Connect to database
 connectDB();

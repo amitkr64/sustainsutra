@@ -78,7 +78,7 @@ const MonitoringDataList = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray flex items-center justify-center">
+            <div className="min-h-screen bg-navy flex items-center justify-center">
                 <div className="text-gold text-xl">Loading reports...</div>
             </div>
         );
@@ -90,7 +90,7 @@ const MonitoringDataList = () => {
                 <title>Monitoring Reports | CCTS | SustainSutra</title>
             </Helmet>
 
-            <div className="min-h-screen bg-gradient-to-br from-darkgray via-mediumgray to-darkgray py-20 px-4">
+            <div className="min-h-screen bg-navy py-20 px-4">
                 <div className="container mx-auto max-w-7xl">
 
                     {/* Header */}
@@ -109,7 +109,7 @@ const MonitoringDataList = () => {
                     </div>
 
                     {/* Filters */}
-                    <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-4 mb-6">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 mb-6">
                         <div className="flex items-center gap-4">
                             <Filter className="w-5 h-5 text-gold" />
                             <span className="text-offwhite font-semibold">Filter by Status:</span>
@@ -132,7 +132,7 @@ const MonitoringDataList = () => {
 
                     {/* Reports Table */}
                     {monitoringData.length === 0 ? (
-                        <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg p-12 text-center">
+                        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-12 text-center">
                             <FileText className="w-16 h-16 text-gold/50 mx-auto mb-4" />
                             <h3 className="text-2xl font-bold text-offwhite mb-2">No Reports Found</h3>
                             <p className="text-offwhite/60 mb-6">
@@ -150,16 +150,16 @@ const MonitoringDataList = () => {
                             </Button>
                         </div>
                     ) : (
-                        <div className="bg-darkgray/60 backdrop-blur-sm border border-gold/30 rounded-lg overflow-hidden">
+                        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
                             <table className="w-full">
-                                <thead className="bg-mediumgray/50 border-b border-gold/30">
+                                <thead className="bg-white/5 border-b border-white/10 uppercase tracking-widest text-[10px]">
                                     <tr>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Compliance Year</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Reporting Period</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">GEI</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Status</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gold">Submitted</th>
-                                        <th className="px-6 py-4 text-right text-sm font-semibold text-gold">Actions</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Compliance Year</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Reporting Period</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">GEI</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Status</th>
+                                        <th className="px-6 py-4 text-left font-black text-gold/60">Submitted</th>
+                                        <th className="px-6 py-4 text-right font-black text-gold/60">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gold/10">

@@ -4,7 +4,7 @@ import BlogEditor from '@/components/BlogEditor';
 
 const CreateBlogPage = () => {
     return (
-        <div className="min-h-screen bg-navy pt-24 px-4">
+        <div className="min-h-screen bg-navy pt-12 px-4">
             <Helmet>
                 <title>Create New Blog | SustainSutra Admin</title>
             </Helmet>

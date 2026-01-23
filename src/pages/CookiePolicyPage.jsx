@@ -8,7 +8,7 @@ const CookiePolicyPage = () => {
                 <title>Cookie Policy | SustainSutra</title>
             </Helmet>
 
-            <div className="min-h-screen bg-navy pt-32 pb-16 px-4">
+            <div className="min-h-screen bg-navy pt-16 pb-16 px-4">
                 <div className="container mx-auto max-w-4xl">
                     <h1 className="text-5xl font-playfair text-offwhite mb-8">Cookie Policy</h1>
                     <div className="glassmorphism rounded-xl p-8 space-y-6 text-dimmed leading-relaxed">

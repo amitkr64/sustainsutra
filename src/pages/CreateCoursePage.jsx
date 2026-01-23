@@ -65,7 +65,7 @@ const CreateCoursePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-navy pt-24 px-4 pb-12">
+        <div className="min-h-screen bg-navy pt-12 px-4 pb-12">
             <Helmet>
                 <title>Create Course | Admin</title>
             </Helmet>

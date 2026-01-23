@@ -11,6 +11,14 @@ const cctsCalculations = require('../services/cctsCalculations');
 const getMonitoringData = asyncHandler(async (req, res) => {
     const { complianceYear, verificationStatus } = req.query;
 
+    if (global.isDemoMode) {
+        return res.json({
+            success: true,
+            count: global.mockMonitoringData.length,
+            data: global.mockMonitoringData
+        });
+    }
+
     // Get entity for logged-in user
     let entity;
     if (req.user.role === 'ccts-entity') {
@@ -60,6 +68,13 @@ const getMonitoringData = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getMonitoringDataById = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        const data = global.mockMonitoringData.find(d => d._id === req.params.id) || global.mockMonitoringData[0];
+        return res.json({
+            success: true,
+            data: data
+        });
+    }
     const monitoringData = await MonitoringData.findById(req.params.id)
         .populate('entity', 'entityName registrationNumber sector subSector baselineYear baselineGHGIntensity targets')
         .populate('submittedBy', 'name email')
@@ -93,6 +108,20 @@ const getMonitoringDataById = asyncHandler(async (req, res) => {
  * @access  Private/Entity
  */
 const createMonitoringData = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        const monitoringData = {
+            _id: 'mock-mon-' + Date.now(),
+            ...req.body,
+            verificationStatus: 'draft',
+            createdAt: new Date().toISOString()
+        };
+        global.mockMonitoringData.push(monitoringData);
+        return res.status(201).json({
+            success: true,
+            message: 'Monitoring data created successfully (Demo Mode)',
+            data: monitoringData
+        });
+    }
     // Get entity for logged-in user
     const entity = await CCTSEntity.findOne({ user: req.user._id });
 

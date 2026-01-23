@@ -254,9 +254,9 @@ const Header = () => {
                 </button>
             </nav>
 
-            {/* Mobile Menu - FULL REWRITE for logic and completeness */}
+            {/* Mobile Menu - Full screen overlay */}
             {isMenuOpen && (
-                <div className="lg:hidden fixed inset-0 top-[116px] bg-navy/98 backdrop-blur-xl z-[49] overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="lg:hidden fixed inset-0 top-0 bg-navy/98 backdrop-blur-xl z-40 overflow-y-auto pt-24">
                     <ul className="container mx-auto px-6 py-8 flex flex-col gap-8">
                         {/* Services Group */}
                         <li>

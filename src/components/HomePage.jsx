@@ -243,7 +243,7 @@ const HomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
                         {recentBlogs.map((blog, index) => (
                             <motion.article
-                                key={blog.id}
+                                key={blog._id || blog.id || index}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: index * 0.1 }}

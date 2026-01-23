@@ -53,6 +53,9 @@ import CCTSDashboard from '@/pages/CCTSDashboard';
 import MonitoringDataForm from '@/pages/MonitoringDataForm';
 import MonitoringDataList from '@/pages/MonitoringDataList';
 import EntityRegistration from '@/pages/EntityRegistration';
+import VerificationQueue from '@/pages/VerificationQueue';
+import VerificationDetail from '@/pages/VerificationDetail';
+import EmissionFactorLibrary from '@/pages/EmissionFactorLibrary';
 
 // Company pages
 import AboutPage from '@/pages/AboutPage';
@@ -163,6 +166,13 @@ function App() {
                                         <Route path="/ccts/monitoring-data" element={<ProtectedRoute><MonitoringDataList /></ProtectedRoute>} />
                                         <Route path="/ccts/monitoring-data/new" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
                                         <Route path="/ccts/monitoring-data/edit/:id" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
+
+                                        {/* CCTS - Verifier Routes */}
+                                        <Route path="/ccts/verification-queue" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationQueue /></RoleProtectedRoute>} />
+                                        <Route path="/ccts/verification/:id" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationDetail /></RoleProtectedRoute>} />
+
+                                        {/* CCTS - Public Resources */}
+                                        <Route path="/resources/emission-factors" element={<EmissionFactorLibrary />} />
 
                                         {/* Admin - Protected Routes */}
                                         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />

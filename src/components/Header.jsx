@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard, Database } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -151,7 +151,12 @@ const Header = () => {
                                     Knowledge Center
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/carbon-calculator')}>
+                                    <Calculator className="w-4 h-4 mr-2" />
                                     Carbon Calculator
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/resources/emission-factors')}>
+                                    <Database className="w-4 h-4 mr-2" />
+                                    Emission Factor Lib
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="focus:bg-white/10 focus:text-gold cursor-pointer" onClick={() => navigate('/resources/templates')}>
                                     Downloadable Templates

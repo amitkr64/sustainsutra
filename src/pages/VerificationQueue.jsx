@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
 import { getVerificationReports, getPendingVerifications } from '@/services/cctsVerificationService';
-import { getAllMonitoringData } from '@/services/cctsMonitoringService';
+import { getMonitoringData } from '@/services/cctsMonitoringService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { Eye, CheckCircle, Clock, AlertCircle, Search, Filter, Briefcase } from 'lucide-react';
@@ -28,7 +28,7 @@ const VerificationQueue = () => {
 
             if (filter === 'pending') {
                 // Get monitoring data with status 'Submitted' or 'Under Verification'
-                const res = await getAllMonitoringData(token, { status: 'Submitted' }); // For now, fetch submitted
+                const res = await getMonitoringData(token, { status: 'Submitted' }); // For now, fetch submitted
                 // Filter for those not yet assigned or assigned to me
                 data = res.data;
             } else {
@@ -131,9 +131,9 @@ const VerificationQueue = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-2 py-1 rounded text-xs font-semibold ${item.status === 'Submitted' ? 'bg-blue-500/20 text-blue-400' :
-                                                        item.status === 'Under Verification' ? 'bg-purple-500/20 text-purple-400' :
-                                                            item.status === 'Verified' ? 'bg-green-500/20 text-green-400' :
-                                                                'bg-yellow-500/20 text-yellow-400'
+                                                    item.status === 'Under Verification' ? 'bg-purple-500/20 text-purple-400' :
+                                                        item.status === 'Verified' ? 'bg-green-500/20 text-green-400' :
+                                                            'bg-yellow-500/20 text-yellow-400'
                                                     }`}>
                                                     {item.status}
                                                 </span>

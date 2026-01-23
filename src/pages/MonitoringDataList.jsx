@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
-import { getAllMonitoringData, deleteMonitoringData } from '@/services/cctsMonitoringService';
+import { getMonitoringData, deleteMonitoringData } from '@/services/cctsMonitoringService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { Plus, Eye, Edit, Trash2, Filter, FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
@@ -24,7 +24,7 @@ const MonitoringDataList = () => {
         try {
             setLoading(true);
             const filters = filter !== 'all' ? { status: filter } : {};
-            const res = await getAllMonitoringData(token, filters);
+            const res = await getMonitoringData(token, filters);
             setMonitoringData(res.data);
         } catch (error) {
             toast({
@@ -119,8 +119,8 @@ const MonitoringDataList = () => {
                                         key={status}
                                         onClick={() => setFilter(status)}
                                         className={`px-4 py-2 rounded-lg transition-all ${filter === status
-                                                ? 'bg-gold text-darkgray font-semibold'
-                                                : 'bg-mediumgray text-offwhite/70 hover:bg-mediumgray/70'
+                                            ? 'bg-gold text-darkgray font-semibold'
+                                            : 'bg-mediumgray text-offwhite/70 hover:bg-mediumgray/70'
                                             }`}
                                     >
                                         {status === 'all' ? 'All' : status}

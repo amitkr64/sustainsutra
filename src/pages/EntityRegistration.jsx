@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { createEntity } from '@/services/cctsEntityService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { Building2, Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Building2, Save, ArrowLeft, Plus, Trash2, MapPin, User, Phone, Mail, Factory } from 'lucide-react';
 
 const EntityRegistration = () => {
     const { token } = useAuth();
@@ -17,70 +17,53 @@ const EntityRegistration = () => {
         entityName: '',
         registrationNumber: '',
         sector: '',
-        address: {
-            street: '',
+        subSector: '',
+        plantAddress: {
+            addressLine1: '',
+            addressLine2: '',
             city: '',
             state: '',
             pincode: '',
             country: 'India'
         },
-        contactPerson: {
+        contactDetails: {
+            email: '',
+            phone: '',
+            website: ''
+        },
+        complianceOfficer: {
             name: '',
             email: '',
             phone: '',
             designation: ''
         },
-        baselineData: {
-            year: '2023-24',
-            totalProduction: 0,
-            totalGHGEmissions: 0,
-            ghgIntensity: 0
-        },
+        baselineYear: '2023-24',
+        baselineProduction: 0,
+        baselineProductionUnit: 'tonnes',
+        baselineGHGIntensity: 0,
         targets: []
     });
 
-    // Calculate initial baseline GHG intensity automatically
-    const updateBaselineIntensity = (production, emissions) => {
-        const prod = parseFloat(production) || 0;
-        const emis = parseFloat(emissions) || 0;
-        if (prod > 0) {
-            setFormData(prev => ({
-                ...prev,
-                baselineData: {
-                    ...prev.baselineData,
-                    totalProduction: prod,
-                    totalGHGEmissions: emis,
-                    ghgIntensity: emis / prod
-                }
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                baselineData: {
-                    ...prev.baselineData,
-                    totalProduction: prod,
-                    totalGHGEmissions: emis,
-                    ghgIntensity: 0
-                }
-            }));
-        }
+    // Registration number format: ALMOE014MH, REFOE001MP
+    const validateRegistrationNumber = (value) => {
+        // Relaxed format: 3 letters + OE + 3 digits + 2 letters
+        const regex = /^[A-Z]{3}OE\d{3}[A-Z]{2}$/;
+        return regex.test(value.toUpperCase());
+    };
+
+    const formatRegistrationNumber = (value) => {
+        return value.toUpperCase();
     };
 
     const handleInputChange = (section, field, value) => {
         if (section) {
-            if (section === 'baselineData' && (field === 'totalProduction' || field === 'totalGHGEmissions')) {
-                const prod = field === 'totalProduction' ? value : formData.baselineData.totalProduction;
-                const emis = field === 'totalGHGEmissions' ? value : formData.baselineData.totalGHGEmissions;
-                updateBaselineIntensity(prod, emis);
-            } else {
-                setFormData(prev => ({
-                    ...prev,
-                    [section]: {
-                        ...prev[section],
-                        [field]: value
-                    }
-                }));
-            }
+            setFormData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: value
+                }
+            }));
         } else {
             setFormData(prev => ({
                 ...prev,
@@ -94,7 +77,7 @@ const EntityRegistration = () => {
             ...prev,
             targets: [
                 ...prev.targets,
-                { complianceYear: '2024-25', targetGEI: 0 }
+                { complianceYear: '2024-25', targetGEI: 0, reductionPercentage: 0 }
             ]
         }));
     };
@@ -103,8 +86,15 @@ const EntityRegistration = () => {
         const newTargets = [...formData.targets];
         newTargets[index] = {
             ...newTargets[index],
-            [field]: field === 'targetGEI' ? parseFloat(value) : value
+            [field]: field === 'targetGEI' || field === 'reductionPercentage' ? parseFloat(value) || 0 : value
         };
+        // Auto-calculate reduction percentage
+        if (field === 'targetGEI') {
+            const baseline = formData.baselineGHGIntensity || 0;
+            if (baseline > 0) {
+                newTargets[index].reductionPercentage = ((baseline - value) / baseline * 100).toFixed(2);
+            }
+        }
         setFormData(prev => ({ ...prev, targets: newTargets }));
     };
 
@@ -115,6 +105,17 @@ const EntityRegistration = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate registration number format
+        if (!validateRegistrationNumber(formData.registrationNumber)) {
+            toast({
+                title: 'Validation Error',
+                description: 'Registration number must be in format: ABCOE123XY (3 letters + OE + 3 digits + 2 letters)',
+                variant: 'destructive'
+            });
+            return;
+        }
+
         try {
             setLoading(true);
             await createEntity(token, formData);
@@ -122,7 +123,7 @@ const EntityRegistration = () => {
                 title: 'Success',
                 description: 'Entity registered successfully',
             });
-            navigate('/admin'); // Redirect to admin dashboard
+            navigate('/admin');
         } catch (error) {
             toast({
                 title: 'Error',
@@ -134,6 +135,19 @@ const EntityRegistration = () => {
         }
     };
 
+    const sectors = [
+        'Aluminium',
+        'Cement',
+        'Copper',
+        'Fertilizer',
+        'Iron & Steel',
+        'Petroleum Refinery',
+        'Pulp & Paper',
+        'Textile',
+        'Thermal Power Plant',
+        'Petrochemical'
+    ];
+
     return (
         <>
             <Helmet>
@@ -141,7 +155,7 @@ const EntityRegistration = () => {
             </Helmet>
 
             <div className="min-h-screen bg-navy py-20 px-4">
-                <div className="container mx-auto max-w-4xl">
+                <div className="container mx-auto max-w-5xl">
                     <div className="flex items-center mb-8">
                         <Button
                             variant="ghost"
@@ -175,14 +189,16 @@ const EntityRegistration = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Registration Number (CIN/GST) *</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Registration Number (CIN format) *</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.registrationNumber}
-                                        onChange={e => handleInputChange(null, 'registrationNumber', e.target.value)}
-                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        onChange={e => handleInputChange(null, 'registrationNumber', formatRegistrationNumber(e.target.value))}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite uppercase focus:border-gold outline-none"
+                                        placeholder="e.g. ALMOE014MH"
                                     />
+                                    <p className="text-xs text-offwhite/50 mt-1">Format: 3 letters + OE + 3 digits + 2 letters (e.g., ALMOE014MH)</p>
                                 </div>
                                 <div>
                                     <label className="block text-offwhite/80 mb-1 text-sm">Sector *</label>
@@ -193,71 +209,148 @@ const EntityRegistration = () => {
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     >
                                         <option value="">Select Sector</option>
-                                        <option value="Iron & Steel">Iron & Steel</option>
-                                        <option value="Cement">Cement</option>
-                                        <option value="Petrochemicals">Petrochemicals</option>
-                                        <option value="Thermal Power">Thermal Power</option>
-                                        <option value="Aluminum">Aluminum</option>
-                                        <option value="Textile">Textile</option>
+                                        {sectors.map(sector => (
+                                            <option key={sector} value={sector}>{sector}</option>
+                                        ))}
                                     </select>
                                 </div>
+                                <div>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Sub-Sector *</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.subSector}
+                                        onChange={e => handleInputChange(null, 'subSector', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        placeholder="e.g. Secondary Aluminium, Integrated Steel Plant"
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* 2. Address */}
+                        {/* 2. Plant Address */}
                         <div>
-                            <h3 className="text-lg font-semibold text-offwhite mb-4">Address</h3>
+                            <div className="flex items-center gap-2 mb-4 border-b border-gold/20 pb-2">
+                                <MapPin className="w-5 h-5 text-gold" />
+                                <h2 className="text-xl font-semibold text-offwhite">Plant Address</h2>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="md:col-span-2">
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Street Address</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Address Line 1 *</label>
                                     <input
                                         type="text"
-                                        value={formData.address.street}
-                                        onChange={e => handleInputChange('address', 'street', e.target.value)}
+                                        required
+                                        value={formData.plantAddress.addressLine1}
+                                        onChange={e => handleInputChange('plantAddress', 'addressLine1', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Address Line 2</label>
+                                    <input
+                                        type="text"
+                                        value={formData.plantAddress.addressLine2}
+                                        onChange={e => handleInputChange('plantAddress', 'addressLine2', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">City</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">City *</label>
                                     <input
                                         type="text"
-                                        value={formData.address.city}
-                                        onChange={e => handleInputChange('address', 'city', e.target.value)}
+                                        required
+                                        value={formData.plantAddress.city}
+                                        onChange={e => handleInputChange('plantAddress', 'city', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">State</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">State *</label>
                                     <input
                                         type="text"
-                                        value={formData.address.state}
-                                        onChange={e => handleInputChange('address', 'state', e.target.value)}
+                                        required
+                                        value={formData.plantAddress.state}
+                                        onChange={e => handleInputChange('plantAddress', 'state', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Pincode</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Pincode *</label>
                                     <input
                                         type="text"
-                                        value={formData.address.pincode}
-                                        onChange={e => handleInputChange('address', 'pincode', e.target.value)}
+                                        required
+                                        value={formData.plantAddress.pincode}
+                                        onChange={e => handleInputChange('plantAddress', 'pincode', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Country</label>
+                                    <input
+                                        type="text"
+                                        value={formData.plantAddress.country}
+                                        onChange={e => handleInputChange('plantAddress', 'country', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        {/* 3. Contact Person */}
+                        {/* 3. Contact Details */}
                         <div>
-                            <h3 className="text-lg font-semibold text-offwhite mb-4">Contact Person</h3>
+                            <div className="flex items-center gap-2 mb-4 border-b border-gold/20 pb-2">
+                                <Phone className="w-5 h-5 text-gold" />
+                                <h2 className="text-xl font-semibold text-offwhite">Contact Details</h2>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Email</label>
+                                    <input
+                                        type="email"
+                                        value={formData.contactDetails.email}
+                                        onChange={e => handleInputChange('contactDetails', 'email', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Phone</label>
+                                    <input
+                                        type="text"
+                                        value={formData.contactDetails.phone}
+                                        onChange={e => handleInputChange('contactDetails', 'phone', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Website</label>
+                                    <input
+                                        type="url"
+                                        value={formData.contactDetails.website}
+                                        onChange={e => handleInputChange('contactDetails', 'website', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
+                                        placeholder="https://"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 4. Compliance Officer */}
+                        <div>
+                            <div className="flex items-center gap-2 mb-4 border-b border-gold/20 pb-2">
+                                <User className="w-5 h-5 text-gold" />
+                                <h2 className="text-xl font-semibold text-offwhite">Compliance Officer</h2>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-offwhite/80 mb-1 text-sm">Name *</label>
                                     <input
                                         type="text"
                                         required
-                                        value={formData.contactPerson.name}
-                                        onChange={e => handleInputChange('contactPerson', 'name', e.target.value)}
+                                        value={formData.complianceOfficer.name}
+                                        onChange={e => handleInputChange('complianceOfficer', 'name', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
@@ -266,41 +359,47 @@ const EntityRegistration = () => {
                                     <input
                                         type="email"
                                         required
-                                        value={formData.contactPerson.email}
-                                        onChange={e => handleInputChange('contactPerson', 'email', e.target.value)}
+                                        value={formData.complianceOfficer.email}
+                                        onChange={e => handleInputChange('complianceOfficer', 'email', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Phone</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Phone *</label>
                                     <input
                                         type="text"
-                                        value={formData.contactPerson.phone}
-                                        onChange={e => handleInputChange('contactPerson', 'phone', e.target.value)}
+                                        required
+                                        value={formData.complianceOfficer.phone}
+                                        onChange={e => handleInputChange('complianceOfficer', 'phone', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Designation</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Designation *</label>
                                     <input
                                         type="text"
-                                        value={formData.contactPerson.designation}
-                                        onChange={e => handleInputChange('contactPerson', 'designation', e.target.value)}
+                                        required
+                                        value={formData.complianceOfficer.designation}
+                                        onChange={e => handleInputChange('complianceOfficer', 'designation', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-4 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        {/* 4. Baseline Data */}
+                        {/* 5. Baseline Data */}
                         <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                            <h3 className="text-lg font-semibold text-gold mb-4">Baseline Data (Reference Year)</h3>
+                            <div className="flex items-center gap-2 mb-4 border-b border-gold/20 pb-2">
+                                <Factory className="w-5 h-5 text-gold" />
+                                <h2 className="text-xl font-semibold text-gold">Baseline Data</h2>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Baseline Year</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Baseline Year *</label>
                                     <select
-                                        value={formData.baselineData.year}
-                                        onChange={e => handleInputChange('baselineData', 'year', e.target.value)}
+                                        value={formData.baselineYear}
+                                        onChange={e => handleInputChange(null, 'baselineYear', e.target.value)}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
                                     >
                                         <option value="2021-22">2021-22</option>
@@ -309,38 +408,45 @@ const EntityRegistration = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Production (tonnes)</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Baseline Production *</label>
                                     <input
                                         type="number"
                                         min="0"
                                         step="0.01"
-                                        value={formData.baselineData.totalProduction}
-                                        onChange={e => handleInputChange('baselineData', 'totalProduction', e.target.value)}
+                                        required
+                                        value={formData.baselineProduction}
+                                        onChange={e => handleInputChange(null, 'baselineProduction', parseFloat(e.target.value))}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Emissions (tCO₂e)</label>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Unit</label>
+                                    <select
+                                        value={formData.baselineProductionUnit}
+                                        onChange={e => handleInputChange(null, 'baselineProductionUnit', e.target.value)}
+                                        className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
+                                    >
+                                        <option value="tonnes">tonnes</option>
+                                        <option value="kg">kg</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-offwhite/80 mb-1 text-sm">Baseline GEI *</label>
                                     <input
                                         type="number"
                                         min="0"
-                                        step="0.01"
-                                        value={formData.baselineData.totalGHGEmissions}
-                                        onChange={e => handleInputChange('baselineData', 'totalGHGEmissions', e.target.value)}
+                                        step="0.0001"
+                                        required
+                                        value={formData.baselineGHGIntensity}
+                                        onChange={e => handleInputChange(null, 'baselineGHGIntensity', parseFloat(e.target.value))}
                                         className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite focus:border-gold outline-none"
                                     />
-                                </div>
-                                <div>
-                                    <label className="block text-offwhite/80 mb-1 text-sm">Calculated GEI</label>
-                                    <div className="w-full bg-navy/50 border border-white/10 rounded-xl px-3 py-2 text-gold font-mono font-bold">
-                                        {formData.baselineData.ghgIntensity.toFixed(4)}
-                                    </div>
-                                    <p className="text-xs text-offwhite/50 mt-1">tCO₂e / tonne product</p>
+                                    <p className="text-xs text-offwhite/50 mt-1">tCO₂e / {formData.baselineProductionUnit}</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* 5. Targets */}
+                        {/* 6. Targets */}
                         <div>
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-semibold text-offwhite">Compliance Targets</h3>
@@ -379,6 +485,12 @@ const EntityRegistration = () => {
                                                     onChange={e => updateTarget(index, 'targetGEI', e.target.value)}
                                                     className="w-full bg-navy border border-white/10 rounded-xl px-3 py-2 text-offwhite text-sm focus:border-gold outline-none"
                                                 />
+                                            </div>
+                                            <div className="flex-1">
+                                                <label className="block text-offwhite/80 mb-1 text-xs">Reduction %</label>
+                                                <div className="w-full bg-navy/50 border border-white/10 rounded-xl px-3 py-2 text-emerald-400 font-mono text-sm">
+                                                    {target.reductionPercentage}%
+                                                </div>
                                             </div>
                                             <Button type="button" onClick={() => removeTarget(index)} size="icon" variant="ghost" className="text-red-400 hover:bg-red-950/30">
                                                 <Trash2 className="w-4 h-4" />

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
 import { getMyEntity, getEntityDashboard } from '@/services/cctsEntityService';
 import { getMyCCCBalance } from '@/services/cctsCCCBalanceService';
 import ComplianceTrajectoryChart from '@/components/ComplianceTrajectoryChart';
-import { FileText, TrendingUp, TrendingDown, CheckCircle, AlertCircle, Plus, BarChart3 } from 'lucide-react';
+import { FileText, TrendingUp, TrendingDown, CheckCircle, AlertCircle, Plus, BarChart3, Activity, Target, Clock, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -108,13 +108,97 @@ const CCTSDashboard = () => {
                 <div className="container mx-auto max-w-7xl">
 
                     {/* Header */}
-                    <div className="mb-8">
+                    <div className="mb-6">
                         <h1 className="text-4xl md:text-5xl font-bold text-gold mb-2">
                             CCTS Compliance Dashboard
                         </h1>
                         <p className="text-xl text-offwhite/80">{entity.entityName}</p>
                         <p className="text-sm text-offwhite/60">Registration: {entity.registrationNumber} | Sector: {entity.sector}</p>
                     </div>
+
+                    {/* Action Alerts */}
+                    {(!cccBalance || cccBalance.complianceStatus === 'Non-Compliant') && (
+                        <div className={`rounded-xl p-4 mb-6 border flex items-start gap-3 ${
+                            !cccBalance
+                                ? 'bg-yellow-500/10 border-yellow-500/30'
+                                : 'bg-red-500/10 border-red-500/30'
+                        }`}>
+                            <AlertCircle className={`w-5 h-5 mt-0.5 flex-shrink-0 ${!cccBalance ? 'text-yellow-400' : 'text-red-400'}`} />
+                            <div>
+                                <p className={`font-semibold mb-1 ${!cccBalance ? 'text-yellow-400' : 'text-red-400'}`}>
+                                    {!cccBalance ? 'Action Required: No Data for Current Year' : 'Compliance Alert'}
+                                </p>
+                                <p className="text-sm text-offwhite/80">
+                                    {!cccBalance
+                                        ? `Please submit your monitoring data for ${currentYear} to establish your compliance status.`
+                                        : `Your entity is non-compliant for ${currentYear}. Please review your emissions data and consider purchasing carbon credits to meet the target.`
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Year-over-Year Comparison */}
+                    {dashboard?.compliance && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-offwhite/60 mb-1">Achieved GEI (Current Year)</p>
+                                        <p className="text-lg font-bold text-offwhite">
+                                            {dashboard.compliance.achievedGEI?.toFixed(4)} tCO₂e/tonne
+                                        </p>
+                                    </div>
+                                    <Activity className="w-8 h-8 text-blue-400/50" />
+                                </div>
+                            </div>
+                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-offwhite/60 mb-1">Target GEI</p>
+                                        <p className="text-lg font-bold text-green-400">
+                                            {dashboard.compliance.targetGEI?.toFixed(4)} tCO₂e/tonne
+                                        </p>
+                                    </div>
+                                    <Target className="w-8 h-8 text-green-400/50" />
+                                </div>
+                            </div>
+                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-offwhite/60 mb-1">Gap from Target</p>
+                                        <p className={`text-lg font-bold flex items-center gap-2 ${
+                                            (dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI) <= 0
+                                                ? 'text-emerald-400'
+                                                : 'text-red-400'
+                                        }`}>
+                                            {(dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI) <= 0 ? (
+                                                <ArrowDownRight className="w-5 h-5" />
+                                            ) : (dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI) > 0 ? (
+                                                <ArrowUpRight className="w-5 h-5" />
+                                            ) : (
+                                                <Minus className="w-5 h-5" />
+                                            )}
+                                            {Math.abs(dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI).toFixed(4)}
+                                        </p>
+                                    </div>
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                        (dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI) <= 0
+                                            ? 'bg-emerald-500/20'
+                                            : 'bg-red-500/20'
+                                    }`}>
+                                        <span className={`text-xs font-bold ${
+                                            (dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI) <= 0
+                                                ? 'text-emerald-400'
+                                                : 'text-red-400'
+                                        }`}>
+                                            {((dashboard.compliance.achievedGEI - dashboard.compliance.targetGEI) / dashboard.compliance.targetGEI * 100).toFixed(1)}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Status Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

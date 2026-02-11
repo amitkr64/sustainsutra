@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
@@ -7,7 +7,7 @@ import { getMyEntity } from '@/services/cctsEntityService';
 import { getEmissionFactors } from '@/services/cctsEmissionFactorService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { ChevronLeft, ChevronRight, Save, Send, Plus, Trash2, Calculator } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Save, Send, Plus, Trash2, Calculator, Info, CheckCircle, AlertTriangle } from 'lucide-react';
 
 const MonitoringDataForm = () => {
     const { id } = useParams();
@@ -163,6 +163,84 @@ const MonitoringDataForm = () => {
             fuelInputs: prev.fuelInputs.filter((_, i) => i !== index)
         }));
     };
+
+    // Real-time calculation preview
+    const previewCalculations = useMemo(() => {
+        const scope1 = formData.fuelInputs.reduce((sum, fuel) => {
+            if (!fuel.quantity || !fuel.emissionFactor) return sum;
+            return sum + (fuel.quantity * fuel.emissionFactor);
+        }, 0);
+
+        // Scope 2: Electricity (grid emission factor ~0.82 tCO2/MWh for India)
+        const gridEF = 0.82;
+        const scope2 = (formData.energyInputs.electricityConsumed || 0) * gridEF;
+
+        // Scope 3: Raw materials
+        const scope3 = formData.rawMaterials.reduce((sum, material) => {
+            if (!material.quantity || !material.emissionFactor) return sum;
+            return sum + (material.quantity * material.emissionFactor);
+        }, 0);
+
+        // Deductions (biomass, CO2 captured)
+        const biomassDeduction = (formData.exclusions.biomassUsed || 0) * (formData.exclusions.biomassFraction || 0);
+        const ccsDeduction = formData.co2Captured?.stored || 0;
+
+        const totalGHG = scope1 + scope2 + scope3 - biomassDeduction - ccsDeduction;
+        const gei = formData.productionData.totalProduction > 0
+            ? totalGHG / formData.productionData.totalProduction
+            : 0;
+
+        return {
+            scope1: scope1.toFixed(2),
+            scope2: scope2.toFixed(2),
+            scope3: scope3.toFixed(2),
+            totalGHG: totalGHG.toFixed(2),
+            gei: gei.toFixed(4),
+            deductions: (biomassDeduction + ccsDeduction).toFixed(2)
+        };
+    }, [formData]);
+
+    // Validation utilities
+    const validateNCV = (ncv, fuelType) => {
+        if (!ncv || ncv <= 0) return { valid: false, message: 'NCV must be greater than 0' };
+
+        // Typical NCV ranges (GJ/tonne)
+        const ncvRanges = {
+            'coal': { min: 15, max: 30 },
+            'lignite': { min: 5, max: 15 },
+            'natural gas': { min: 35, max: 55 },
+            'diesel': { min: 35, max: 45 },
+            'furnace oil': { min: 35, max: 45 },
+            'pet coke': { min: 28, max: 35 }
+        };
+
+        const type = fuelType?.toLowerCase();
+        for (const [key, range] of Object.entries(ncvRanges)) {
+            if (type?.includes(key)) {
+                if (ncv < range.min || ncv > range.max) {
+                    return {
+                        valid: false,
+                        message: `NCV for ${fuelType} should be between ${range.min}-${range.max} GJ/tonne`
+                    };
+                }
+                return { valid: true };
+            }
+        }
+
+        return { valid: true }; // Unknown fuel type, accept any positive value
+    };
+
+    // Emission factors by category for dropdown
+    const emissionFactorsByCategory = useMemo(() => {
+        const grouped = {};
+        emissionFactors.forEach(ef => {
+            if (!grouped[ef.category]) {
+                grouped[ef.category] = [];
+            }
+            grouped[ef.category].push(ef);
+        });
+        return grouped;
+    }, [emissionFactors]);
 
     const handleCalculate = async () => {
         try {
@@ -425,6 +503,26 @@ const MonitoringDataForm = () => {
                                         ))}
                                     </div>
                                 )}
+
+                                {/* Live Preview Panel - Step 2 */}
+                                {formData.rawMaterials.length > 0 && (
+                                    <div className="mt-6 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Calculator className="w-4 h-4 text-emerald-400" />
+                                            <h4 className="text-sm font-semibold text-emerald-400">Live Emissions Preview (Scope 3)</h4>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3 text-sm">
+                                            <div>
+                                                <p className="text-offwhite/60">Scope 3 Emissions</p>
+                                                <p className="text-lg font-bold text-offwhite">{previewCalculations.scope3} tCO₂e</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-offwhite/60">Total (All Scopes)</p>
+                                                <p className="text-lg font-bold text-gold">{previewCalculations.totalGHG} tCO₂e</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -550,6 +648,41 @@ const MonitoringDataForm = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Live Preview Panel - Step 3 */}
+                                {(formData.fuelInputs.length > 0 || formData.energyInputs.electricityConsumed > 0) && (
+                                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Calculator className="w-4 h-4 text-emerald-400" />
+                                            <h4 className="text-sm font-semibold text-emerald-400">Live Emissions Preview (Scope 1 & 2)</h4>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-3 text-sm">
+                                            <div>
+                                                <p className="text-offwhite/60">Scope 1 (Fuel)</p>
+                                                <p className="text-lg font-bold text-offwhite">{previewCalculations.scope1} tCO₂e</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-offwhite/60">Scope 2 (Electricity)</p>
+                                                <p className="text-lg font-bold text-offwhite">{previewCalculations.scope2} tCO₂e</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-offwhite/60">Total So Far</p>
+                                                <p className="text-lg font-bold text-gold">{previewCalculations.totalGHG} tCO₂e</p>
+                                            </div>
+                                        </div>
+
+                                        {/* NCV Validation Warnings */}
+                                        {formData.fuelInputs.map((fuel, idx) => {
+                                            const validation = validateNCV(fuel.ncv, fuel.fuelType);
+                                            return !validation.valid && fuel.ncv > 0 ? (
+                                                <div key={idx} className="mt-3 flex items-start gap-2 text-amber-400 text-xs">
+                                                    <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                                                    <span>{fuel.fuelType}: {validation.message}</span>
+                                                </div>
+                                            ) : null;
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         )}
 

@@ -8,7 +8,6 @@ services:
   # Frontend Service
   # ============================================
   frontend:
-    image: amitkr64/sustainsutra-frontend:latest
     container_name: sustainsutra-frontend
     restart: unless-stopped
     ports:
@@ -20,23 +19,16 @@ services:
       context: .
       dockerfile: Dockerfile
     networks:
-      - sustainsutra-network:
-        - "8085:80"
+      - sustainsutra-network
 
   # ============================================
   # Backend Service
   # ============================================
   backend:
-    image: amitkr64/sustainsutra-backend:latest
     container_name: sustainsutra-backend
     restart: unless-stopped
     ports:
       - "5000:5000"
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - sustainsutra-network:
-        - "5000:5000"
     environment:
       - NODE_ENV=production
       - PORT=5000
@@ -59,22 +51,27 @@ services:
       - SENTRY_ENVIRONMENT=production
       - MAX_FILE_SIZE=10485760
       - UPLOAD_DIR=./uploads
-        build:
+    build:
       context: ./backend
       dockerfile: Dockerfile
     networks:
-      - sustainsutra-network:
-        - "5000:5000"
-        depends_on:
-          - backend:
-            condition: service_healthy
+      - sustainsutra-network
 
-# ============================================================================
-# Production Environment - Same network but with nginx proxy
-# ============================================================================
-# To deploy in production:
-# 1. Build images: docker build -t sustainsutra-backend && docker build -t sustainsutra-frontend
-# 2. Tag images: docker tag -t sustainsutra-backend:production && docker tag -t sustainsutra-frontend:production
-# 3. Push images: docker push
-# 4. Update remote docker-compose.yml: Copy this production section to main
-# 5. Restart: docker-compose down && docker-compose up -d
+  # ============================================
+  # MongoDB Service
+  # ============================================
+  mongo:
+    image: mongo:7
+    container_name: sustainsutra-mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - sustainsutra-network
+
+networks:
+  sustainsutra-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

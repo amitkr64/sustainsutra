@@ -289,7 +289,7 @@ const BRSRAnalysisDashboard = () => {
             { id: 'social', label: 'Social', icon: Users },
             { id: 'governance', label: 'Governance', icon: ShieldCheck },
             { id: 'concerns', label: 'Concerns', icon: AlertTriangle },
-            { id: 'decarbonization', label: 'Decarbonization', icon: TrendingUp },
+            { id: 'decarbonisation', label: 'Decarbonisation', icon: TrendingUp },
             { id: 'analytics', label: 'Analytics', icon: BarChart3 },
         ];
         const envScore = Math.min(100, (metrics.renewableEnergyShare || 0) * 2 + (indicators.p6_scope1 || indicators.p6_scope2 ? 50 : 0));

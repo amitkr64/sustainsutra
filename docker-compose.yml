@@ -1,9 +1,6 @@
 # ============================================================================
 # SustainSutra - Docker Compose Configuration
 # ============================================================================
-# Development Environment - All services on internal Docker network
-# ============================================================================
-
 version: '3.8'
 
 services:
@@ -14,23 +11,17 @@ services:
     image: amitkr64/sustainsutra-frontend:latest
     container_name: sustainsutra-frontend
     restart: unless-stopped
+    ports:
+      - "8085:80"
     environment:
-      # API Configuration - Points to backend service on Docker network
       - VITE_API_URL=http://backend:5000
-      # Fallback to localhost for local development outside Docker
       - NODE_ENV=development
     build:
       context: .
       dockerfile: Dockerfile
     networks:
-      # Connect to internal network for service-to-service communication
       - sustainsutra-network:
-    ports:
-      - "8085:80"  # Published frontend port
-    depends_on:
-      - Wait for backend to be healthy before starting
-      backend:
-        condition: service_healthy
+        - "8085:80"
 
   # ============================================
   # Backend Service
@@ -39,13 +30,17 @@ services:
     image: amitkr64/sustainsutra-backend:latest
     container_name: sustainsutra-backend
     restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - sustainsutra-network:
+        - "5000:5000"
     environment:
-      # Server Configuration
-      - PORT=5000
       - NODE_ENV=production
-      # MongoDB Configuration
+      - PORT=5000
       - MONGO_URI=mongodb://mongo:27017/sustainsutra
-      # JWT Configuration (CHANGE IN PRODUCTION)
       - JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
       # Email Configuration (Optional)
       - EMAIL_HOST=smtp.gmail.com
@@ -62,31 +57,17 @@ services:
       # Sentry/Error Tracking
       - SENTRY_DSN=https://your-sentry-dsn@sentry.io
       - SENTRY_ENVIRONMENT=production
-      # File Upload Configuration
       - MAX_FILE_SIZE=10485760
       - UPLOAD_DIR=./uploads
-    build:
+        build:
       context: ./backend
       dockerfile: Dockerfile
-    volumes:
-      # Named volume for MongoDB data persistence
-      - mongo-data:/data/db
-    healthcheck:
-      # Backend health check
-      test: ["CMD", "curl", "-f", "http://backend:5000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
     networks:
-      # Connect to internal network for service-to-service communication
       - sustainsutra-network:
-    ports:
-      - "5000:5000"  # Backend API port
-    depends_on:
-      # Frontend depends on backend being healthy
-      - service_healthy:
-        condition: service_healthy
+        - "5000:5000"
+        depends_on:
+          - backend:
+            condition: service_healthy
 
 # ============================================================================
 # Production Environment - Same network but with nginx proxy
@@ -97,12 +78,3 @@ services:
 # 3. Push images: docker push
 # 4. Update remote docker-compose.yml: Copy this production section to main
 # 5. Restart: docker-compose down && docker-compose up -d
-
-# ============================================================================
-# Notes:
-# - Services use 'container_name' for proper Docker identification
-# - Frontend uses 'VITE_API_URL' environment variable to connect to backend
-# - Health checks ensure services start in correct order
-# - Named volumes improve data persistence and debugging
-# - Internal Docker network (sustainsutra-network) enables service-to-service communication
-# ============================================================================

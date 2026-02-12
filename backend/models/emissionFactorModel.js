@@ -1,158 +1,145 @@
 const mongoose = require('mongoose');
 
 const emissionFactorSchema = new mongoose.Schema({
-    source: {
+    efId: {
         type: String,
-        required: [true, 'Emission source is required'],
-        trim: true
-        // e.g., "Coal - Domestic", "Natural Gas", "Grid Electricity"
+        unique: true,
+        required: true,
+        index: true
     },
     category: {
         type: String,
-        required: [true, 'Category is required'],
-        enum: ['Fuel', 'Material', 'Electricity', 'Heat', 'Transport', 'Process']
+        required: true,
+        enum: ['fuels', 'electricity', 'transport', 'industrial', 'waste', 'agriculture', 'refrigerants', 'other'],
+        index: true
     },
-    subCategory: {
-        type: String
-        // e.g., "Stationary Combustion", "Mobile Combustion", "Industrial Process"
+    subcategory: {
+        type: String,
+        index: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    gas: {
+        type: String,
+        required: true,
+        enum: ['CO2', 'CH4', 'N2O', 'HFCs', 'PFCs', 'SF6', 'NF3', 'CO2e', 'NOx', 'CO', 'NMVOC', 'OTHER'],
+        index: true
     },
     value: {
         type: Number,
-        required: [true, 'Emission factor value is required'],
-        min: [0, 'Emission factor cannot be negative']
+        required: true
     },
     unit: {
         type: String,
-        required: [true, 'Unit is required']
-        // e.g., "tCO2e/tonne", "tCO2e/GJ", "tCO2e/MWh", "tCO2e/km"
-    },
-    scope: {
-        type: String,
-        enum: ['Scope 1', 'Scope 2', 'Scope 3'],
         required: true
+    },
+    description: {
+        type: String
+    },
+    source: {
+        type: String,
+        default: 'IPCC EFDB'
+    },
+    ipccCategory: {
+        type: String,
+        description: 'IPCC 1996 or 2006 source/sink category'
     },
     region: {
         type: String,
-        default: 'India'
-        // Can be country-specific or state-specific
+        default: 'Global',
+        index: true
     },
-    state: {
-        type: String
-        // For state-specific factors like electricity grid
-    },
-    referenceDocument: {
-        type: String,
-        required: [true, 'Reference document is required']
-        // e.g., "IPCC 2006 Guidelines", "Annexure IV CCTS 2024", "CEA CO2 Baseline Database"
-    },
-    referenceUrl: {
-        type: String
-    },
-    isDefault: {
-        type: Boolean,
-        default: true
-        // True for standard/regulatory factors, False for custom entity-specific
-    },
-    isApproved: {
-        type: Boolean,
-        default: true
-        // For custom factors that need regulatory approval
-    },
-    applicableSectors: [{
-        type: String
-        // List of sectors where this factor applies
-    }],
-    ncv: {
+    year: {
         type: Number
-        // Net Calorific Value if applicable (for fuels)
     },
-    ncvUnit: {
+    gwp: {
+        type: Number,
+        description: 'Global Warming Potential for direct CO2e conversion'
+    },
+    tags: [{
         type: String
-        // e.g., "GJ/tonne", "GJ/m³"
+    }],
+    metadata: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
     },
-    validFrom: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
-    validUntil: {
-        type: Date
-        // For factors that have expiry/update cycles
-    },
-    version: {
-        type: String,
-        default: '1.0'
-    },
-    notes: {
-        type: String
-    },
-    uploadedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-        // For custom factors uploaded by entities
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true
 });
 
-// Indexes for fast lookup
-emissionFactorSchema.index({ source: 1, category: 1, region: 1 });
-emissionFactorSchema.index({ isDefault: 1, isApproved: 1 });
-emissionFactorSchema.index({ category: 1, scope: 1 });
-emissionFactorSchema.index({ applicableSectors: 1 });
-
-// Compound index for searching
+// Text index for full-text search
 emissionFactorSchema.index({
-    source: 'text',
-    category: 'text',
-    referenceDocument: 'text'
+    name: 'text',
+    description: 'text',
+    subcategory: 'text',
+    tags: 'text'
 });
 
-// Virtual to check if factor is currently valid
-emissionFactorSchema.virtual('isCurrentlyValid').get(function () {
-    const now = new Date();
-    const validFrom = this.validFrom;
-    const validUntil = this.validUntil;
+// Compound index for common queries
+emissionFactorSchema.index({ category: 1, gas: 1 });
+emissionFactorSchema.index({ category: 1, subcategory: 1 });
 
-    if (validUntil) {
-        return now >= validFrom && now <= validUntil;
-    }
-    return now >= validFrom;
-});
-
-// Static method to find appropriate emission factor
-emissionFactorSchema.statics.findApplicableFactor = async function (options) {
-    const { source, category, region, sector } = options;
-
-    const query = {
-        source: new RegExp(source, 'i'),
-        category: category,
-        isApproved: true,
-        isCurrentlyValid: true
-    };
-
-    if (region) query.region = region;
-    if (sector) query.applicableSectors = sector;
-
-    // Prefer default factors
-    let factor = await this.findOne({ ...query, isDefault: true }).sort({ validFrom: -1 });
-
-    // If no default found, look for approved custom factors
-    if (!factor) {
-        factor = await this.findOne(query).sort({ validFrom: -1 });
-    }
-
-    return factor;
+// Static method to get category summary
+emissionFactorSchema.statics.getCategorySummary = async function () {
+    return this.aggregate([
+        { $match: { isActive: true } },
+        { $group: { _id: '$category', count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+    ]);
 };
 
-// Method to get factor with NCV for combustion calculations
-emissionFactorSchema.methods.getFactorWithNCV = function () {
+// Static method for searching with filters
+emissionFactorSchema.statics.searchFactors = async function (query = {}) {
+    const {
+        search,
+        category,
+        subcategory,
+        gas,
+        region,
+        page = 1,
+        limit = 50
+    } = query;
+
+    const filter = { isActive: true };
+
+    if (search) {
+        filter.$text = { $search: search };
+    }
+    if (category) {
+        filter.category = category;
+    }
+    if (subcategory) {
+        filter.subcategory = subcategory;
+    }
+    if (gas) {
+        filter.gas = gas;
+    }
+    if (region) {
+        filter.region = region;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [factors, total] = await Promise.all([
+        this.find(filter)
+            .sort(search ? { score: { $meta: 'textScore' } } : { category: 1, name: 1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+        this.countDocuments(filter)
+    ]);
+
     return {
-        emissionFactor: this.value,
-        unit: this.unit,
-        ncv: this.ncv,
-        ncvUnit: this.ncvUnit,
-        source: this.source
+        factors,
+        total,
+        page,
+        pages: Math.ceil(total / limit)
     };
 };
 

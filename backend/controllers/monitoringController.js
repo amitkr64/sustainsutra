@@ -11,13 +11,6 @@ const cctsCalculations = require('../services/cctsCalculations');
 const getMonitoringData = asyncHandler(async (req, res) => {
     const { complianceYear, verificationStatus } = req.query;
 
-    if (global.isDemoMode) {
-        return res.json({
-            success: true,
-            count: global.mockMonitoringData.length,
-            data: global.mockMonitoringData
-        });
-    }
 
     // Get entity for logged-in user
     let entity;
@@ -68,13 +61,6 @@ const getMonitoringData = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getMonitoringDataById = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        const data = global.mockMonitoringData.find(d => d._id === req.params.id) || global.mockMonitoringData[0];
-        return res.json({
-            success: true,
-            data: data
-        });
-    }
     const monitoringData = await MonitoringData.findById(req.params.id)
         .populate('entity', 'entityName registrationNumber sector subSector baselineYear baselineGHGIntensity targets')
         .populate('submittedBy', 'name email')

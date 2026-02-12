@@ -1,7 +1,8 @@
-import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useNavigate } from 'react-router-dom';
 
 const BRSRReportingPage = () => {
+    const navigate = useNavigate();
     return (
         <ServicePageTemplate
             title="BRSR Compliance"
@@ -89,6 +90,7 @@ const BRSRReportingPage = () => {
                 }
             ]}
             ctaText="Initiate BRSR Readiness"
+            onCtaClick={() => navigate('/brsr/dashboard')}
         />
     );
 };

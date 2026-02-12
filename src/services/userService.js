@@ -1,17 +1,14 @@
 const API_URL = '/api/users';
-const CURRENT_USER_KEY = 'user'; // Key for localStorage to store { id, name, email, role, token }
+const TOKEN_KEY = 'jwt'; // Key for httpOnly cookie
 
 export const userService = {
-    // No initialization needed for API, but can check for token
-    initialize: () => { },
+    initialize: () => {
+        // No initialization needed with httpOnly cookies
+    },
 
     getAll: async () => {
         try {
-            const response = await fetch(API_URL, {
-                headers: {
-                    'Authorization': `Bearer ${userService.getToken()}`
-                }
-            });
+            const response = await fetch(API_URL);
             if (!response.ok) throw new Error('Failed to fetch users');
             return await response.json();
         } catch (error) {
@@ -50,9 +47,7 @@ export const userService = {
                 throw new Error(data.message || 'Registration failed');
             }
 
-            if (data.token) {
-                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data));
-            }
+            // Token is now stored in httpOnly cookie, not in localStorage
             return data;
         } catch (error) {
             console.error('Registration API error:', error);
@@ -82,62 +77,66 @@ export const userService = {
                 throw new Error(data.message || 'Login failed');
             }
 
-            if (data.token) {
-                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data));
-            }
+            // Token is now stored in httpOnly cookie, not in localStorage
             return data;
         } catch (error) {
             console.error('Login API error:', error);
 
             // Fallback for demo credentials if API is down
             if (email === 'admin@sustainsutra.com' && password === 'admin123') {
-                const demoUser = {
-                    _id: 'demo-admin-id',
-                    name: 'Admin User',
-                    email: 'admin@sustainsutra.com',
-                    role: 'admin',
-                    token: 'demo-token-fallback'
-                };
-                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(demoUser));
-                return demoUser;
+                console.warn('Demo credentials fallback - not using localStorage with httpOnly cookies');
+                throw new Error('Demo credentials not supported with httpOnly cookies. Please use API.');
             }
             throw error;
         }
     },
 
-    logout: () => {
-        localStorage.removeItem(CURRENT_USER_KEY);
+    logout: async () => {
+        try {
+            await fetch(`${API_URL}/logout`, {
+                method: 'POST'
+            });
+        } catch (error) {
+            console.error('Logout API error:', error);
+        }
     },
 
-    getCurrentUser: () => {
-        const userStr = localStorage.getItem(CURRENT_USER_KEY);
-        return userStr ? JSON.parse(userStr) : null;
+    getCurrentUser: async () => {
+        try {
+            const response = await fetch(`${API_URL}/me`);
+            if (response.ok) {
+                return await response.json();
+            }
+            return null;
+        } catch (error) {
+            console.error('Get current user error:', error);
+            return null;
+        }
     },
 
     getToken: () => {
-        const user = userService.getCurrentUser();
-        return user?.token;
+        // Token is in httpOnly cookie, no client-side access
+        return null;
     },
 
     update: async (id, updates) => {
-        // Assuming we have an update endpoint. The current API might not have a generic update user endpoint built yet
-        // standard pattern: PUT /api/users/:id or PUT /api/users/profile
-        // For now, assuming PUT /api/users/:id or similar if admin, or profile update
-        // WARNING: We didn't explicitly build a 'update user' endpoint in userController yet other than 'register'
-        // We need to handle this. For now, returning mock success or implementing endpoint.
-        // Let's defer this or assume profile update.
-        // Returning local update for now to prevent crash if not critical
-        console.warn("Update user API not fully implemented yet");
-        return { ...userService.getCurrentUser(), ...updates };
+        try {
+            const response = await fetch(`${API_URL}/me`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updates)
+            });
+            if (!response.ok) throw new Error('Update failed');
+            return await response.json();
+        } catch (error) {
+            console.error('Update user API error:', error);
+            throw error;
+        }
     },
 
     delete: async (id) => {
-        // Admin only
         const response = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${userService.getToken()}`
-            }
+            method: 'DELETE'
         });
         if (!response.ok) throw new Error('Delete failed');
         return true;

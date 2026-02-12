@@ -5,27 +5,32 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const currentUser = userService.getCurrentUser();
-        if (currentUser) {
-            setUser(currentUser);
-            setToken(currentUser.token);
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
+        const checkAuth = async () => {
+            try {
+                const currentUser = await userService.getCurrentUser();
+                if (currentUser) {
+                    setUser(currentUser);
+                    setIsAuthenticated(true);
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
     }, []);
 
     const register = async (userData) => {
         setLoading(true);
         try {
-            const newUser = await userService.create(userData); // Now async
-            // userService.create already saves to localStorage thanks to our update
-            setUser(newUser);
-            setToken(newUser.token);
+            const response = await userService.create(userData);
+            setUser(response);
             setIsAuthenticated(true);
             setLoading(false);
             return { success: true };
@@ -38,9 +43,8 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const sessionUser = await userService.login(email, password); // Now async
+            const sessionUser = await userService.login(email, password);
             setUser(sessionUser);
-            setToken(sessionUser.token);
             setIsAuthenticated(true);
             setLoading(false);
             return { success: true };
@@ -50,10 +54,13 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        userService.logout();
+    const logout = async () => {
+        try {
+            await userService.logout();
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
         setUser(null);
-        setToken(null);
         setIsAuthenticated(false);
     };
 
@@ -87,7 +94,6 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             user,
-            token,
             isAuthenticated,
             loading,
             login,

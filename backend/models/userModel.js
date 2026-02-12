@@ -66,5 +66,12 @@ userSchema.pre('save', async function (next) {
     }
 });
 
+// Database indexes for performance
+userSchema.index({ email: 1 }); // Already unique, but explicit index
+userSchema.index({ role: 1 });
+userSchema.index({ cctsEntity: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ role: 1, createdAt: -1 });
+
 const User = mongoose.model('User', userSchema);
 module.exports = User;

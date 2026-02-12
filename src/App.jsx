@@ -1,77 +1,79 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { AuthProvider } from '@/context/AuthContext';
 import { CourseProvider } from '@/context/CourseContext';
 import { AppointmentProvider } from '@/context/AppointmentContext';
 import Header from '@/components/Header';
 import HomePage from '@/components/HomePage';
 import LoginPage from '@/pages/LoginPage';
-import AdminDashboard from '@/pages/AdminDashboard';
-import CreateBlogPage from '@/pages/CreateBlogPage';
-import EditBlogPage from '@/pages/EditBlogPage';
-import InsightsLandingPage from '@/pages/InsightsLandingPage';
-import BlogPostPage from '@/pages/BlogPostPage';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import RoleProtectedRoute from '@/components/RoleProtectedRoute';
+import SEOMeta, { SEOConfig } from '@/components/SEOMeta';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
-import ServicesLandingPage from '@/pages/ServicesLandingPage';
-import CarbonFootprintingPage from '@/pages/CarbonFootprintingPage';
-import GHGMappingPage from '@/pages/GHGMappingPage';
-import ESGStrategyPage from '@/pages/ESGStrategyPage';
-import BRSRReportingPage from '@/pages/BRSRReportingPage';
-import ISOVerificationPage from '@/pages/ISOVerificationPage';
-import TrainingCapacityPage from '@/pages/TrainingCapacityPage';
-import EnergyAuditsPage from '@/pages/EnergyAuditsPage';
-import WasteManagementPage from '@/pages/WasteManagementPage';
-import CircularEconomyPage from '@/pages/CircularEconomyPage';
-import EPRPage from '@/pages/EPRPage';
-import CleanerProductionPage from '@/pages/CleanerProductionPage';
-import ResourceEfficiencyPage from '@/pages/ResourceEfficiencyPage';
+// Lazy load heavy pages
+const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
+const CreateBlogPage = lazy(() => import('@/pages/CreateBlogPage'));
+const EditBlogPage = lazy(() => import('@/pages/EditBlogPage'));
+const InsightsLandingPage = lazy(() => import('@/pages/InsightsLandingPage'));
+const BlogPostPage = lazy(() => import('@/pages/BlogPostPage'));
 
-// Course pages
-import CoursesLandingPage from '@/pages/CoursesLandingPage';
-import CourseDetailPage from '@/pages/CourseDetailPage';
-import CourseContentPage from '@/pages/CourseContentPage';
-import MyCourses from '@/pages/MyCourses';
-import CreateCoursePage from '@/pages/CreateCoursePage';
-import EditCoursePage from '@/pages/EditCoursePage';
+const ServicesLandingPage = lazy(() => import('@/pages/ServicesLandingPage'));
+const CarbonFootprintingPage = lazy(() => import('@/pages/CarbonFootprintingPage'));
+const GHGMappingPage = lazy(() => import('@/pages/GHGMappingPage'));
+const ESGStrategyPage = lazy(() => import('@/pages/ESGStrategyPage'));
+const BRSRReportingPage = lazy(() => import('@/pages/BRSRReportingPage'));
+const ISOVerificationPage = lazy(() => import('@/pages/ISOVerificationPage'));
+const TrainingCapacityPage = lazy(() => import('@/pages/TrainingCapacityPage'));
+const EnergyAuditsPage = lazy(() => import('@/pages/EnergyAuditsPage'));
+const WasteManagementPage = lazy(() => import('@/pages/WasteManagementPage'));
+const CircularEconomyPage = lazy(() => import('@/pages/CircularEconomyPage'));
+const EPRPage = lazy(() => import('@/pages/EPRPage'));
+const CleanerProductionPage = lazy(() => import('@/pages/CleanerProductionPage'));
+const ResourceEfficiencyPage = lazy(() => import('@/pages/ResourceEfficiencyPage'));
 
-// Appointment pages
-import AppointmentBookingPage from '@/pages/AppointmentBookingPage';
+const CoursesLandingPage = lazy(() => import('@/pages/CoursesLandingPage'));
+const CourseDetailPage = lazy(() => import('@/pages/CourseDetailPage'));
+const CourseContentPage = lazy(() => import('@/pages/CourseContentPage'));
+const MyCourses = lazy(() => import('@/pages/MyCourses'));
+const CreateCoursePage = lazy(() => import('@/pages/CreateCoursePage'));
+const EditCoursePage = lazy(() => import('@/pages/EditCoursePage'));
 
-// User management pages
-import UserProfilePage from '@/pages/UserProfilePage';
-import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
-import ResetPasswordPage from '@/pages/ResetPasswordPage';
+const AppointmentBookingPage = lazy(() => import('@/pages/AppointmentBookingPage'));
 
-// Tools
-import CarbonCalculatorPage from '@/pages/CarbonCalculatorPage';
+const UserProfilePage = lazy(() => import('@/pages/UserProfilePage'));
+const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 
-// CCTS (Carbon Credit Trading Scheme) pages
-import CCTSDashboard from '@/pages/CCTSDashboard';
-import MonitoringDataForm from '@/pages/MonitoringDataForm';
-import MonitoringDataList from '@/pages/MonitoringDataList';
-import EntityRegistration from '@/pages/EntityRegistration';
-import VerificationQueue from '@/pages/VerificationQueue';
-import VerificationDetail from '@/pages/VerificationDetail';
-import EmissionFactorLibrary from '@/pages/EmissionFactorLibrary';
+const CarbonCalculatorPage = lazy(() => import('@/pages/CarbonCalculatorPage'));
 
-// Company pages
-import AboutPage from '@/pages/AboutPage';
-import OurApproachPage from '@/pages/OurApproachPage';
-import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
-import TermsOfServicePage from '@/pages/TermsOfServicePage';
-import CookiePolicyPage from '@/pages/CookiePolicyPage';
+const CCTSDashboard = lazy(() => import('@/pages/CCTSDashboard'));
+const MonitoringDataForm = lazy(() => import('@/pages/MonitoringDataForm'));
+const MonitoringDataList = lazy(() => import('@/pages/MonitoringDataList'));
+const EntityRegistration = lazy(() => import('@/pages/EntityRegistration'));
+const VerificationQueue = lazy(() => import('@/pages/VerificationQueue'));
+const VerificationDetail = lazy(() => import('@/pages/VerificationDetail'));
+const EmissionFactorLibrary = lazy(() => import('@/pages/EmissionFactorLibrary'));
 
-// Resources
-import ResourcesLandingPage from '@/pages/ResourcesLandingPage';
-import SustainabilityGlossaryPage from '@/pages/SustainabilityGlossaryPage';
-import DownloadableTemplatesPage from '@/pages/DownloadableTemplatesPage';
-import IndustryReportsPage from '@/pages/IndustryReportsPage';
-import RegulatoryUpdatesPage from '@/pages/RegulatoryUpdatesPage';
-import CaseStudiesPage from '@/pages/CaseStudiesPage';
-import CaseStudyDetailPage from '@/pages/CaseStudyDetailPage';
+const BRSRDashboard = lazy(() => import('@/pages/BRSRDashboard'));
+const BRSRReportWizard = lazy(() => import('@/pages/BRSRReportWizard'));
+const BRSRAnalysisDashboard = lazy(() => import('@/pages/BRSRAnalysisDashboard'));
+const BRSRAnalysisDashboardNew = lazy(() => import('@/pages/BRSRAnalysisDashboardNew'));
+
+const AboutPage = lazy(() => import('@/pages/AboutPage'));
+const OurApproachPage = lazy(() => import('@/pages/OurApproachPage'));
+const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('@/pages/TermsOfServicePage'));
+const CookiePolicyPage = lazy(() => import('@/pages/CookiePolicyPage'));
+
+const ResourcesLandingPage = lazy(() => import('@/pages/ResourcesLandingPage'));
+const SustainabilityGlossaryPage = lazy(() => import('@/pages/SustainabilityGlossaryPage'));
+const DownloadableTemplatesPage = lazy(() => import('@/pages/DownloadableTemplatesPage'));
+const IndustryReportsPage = lazy(() => import('@/pages/IndustryReportsPage'));
+const RegulatoryUpdatesPage = lazy(() => import('@/pages/RegulatoryUpdatesPage'));
+const CaseStudiesPage = lazy(() => import('@/pages/CaseStudiesPage'));
+const CaseStudyDetailPage = lazy(() => import('@/pages/CaseStudyDetailPage'));
+const ImpactShowcasePage = lazy(() => import('@/pages/ImpactShowcasePage'));
 
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
@@ -87,6 +89,13 @@ const ScrollToTopWrapper = () => {
     return null;
 };
 
+// Loading component for lazy loaded pages
+const PageLoader = () => (
+    <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+    </div>
+);
+
 function App() {
     const { toast } = useToast();
 
@@ -95,94 +104,102 @@ function App() {
             <CourseProvider>
                 <AppointmentProvider>
                     <ErrorBoundary>
-                        <Router>
+                        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                             <ScrollToTopWrapper />
-                            <Helmet>
-                                <title>SustainSutra - ESG Advisory & NetZero Strategy</title>
-                                <meta name="description" content="Leading ESG Advisory firm offering Carbon Footprint Analysis, ISO 14064 Verifier services, and BRSR Consultant India expertise." />
-                            </Helmet>
+                            <SEOMeta {...SEOConfig.home} />
 
                             <div className="min-h-screen bg-navy text-offwhite flex flex-col">
                                 <Header />
 
                                 <main className="flex-grow pt-20 lg:pt-28">
-                                    <Routes>
-                                        {/* Public Routes */}
-                                        <Route path="/" element={<HomePage />} />
-                                        <Route path="/login" element={<LoginPage />} />
-                                        <Route path="/insights" element={<InsightsLandingPage />} />
-                                        <Route path="/blog/:slug" element={<BlogPostPage />} />
+                                    <Suspense fallback={<PageLoader />}>
+                                        <Routes>
+                                            {/* Public Routes */}
+                                            <Route path="/" element={<HomePage />} />
+                                            <Route path="/login" element={<LoginPage />} />
+                                            <Route path="/insights" element={<InsightsLandingPage />} />
+                                            <Route path="/blog/:slug" element={<BlogPostPage />} />
 
-                                        {/* Services */}
-                                        <Route path="/services" element={<ServicesLandingPage />} />
-                                        <Route path="/services/carbon-footprinting" element={<CarbonFootprintingPage />} />
-                                        <Route path="/services/ghg-mapping" element={<GHGMappingPage />} />
-                                        <Route path="/services/esg-strategy" element={<ESGStrategyPage />} />
-                                        <Route path="/services/brsr-reporting" element={<BRSRReportingPage />} />
-                                        <Route path="/services/iso-verification" element={<ISOVerificationPage />} />
-                                        <Route path="/services/training-capacity" element={<TrainingCapacityPage />} />
-                                        <Route path="/services/energy-audits" element={<EnergyAuditsPage />} />
-                                        <Route path="/services/waste-management" element={<WasteManagementPage />} />
-                                        <Route path="/services/circular-economy" element={<CircularEconomyPage />} />
-                                        <Route path="/services/epr" element={<EPRPage />} />
-                                        <Route path="/services/cleaner-production" element={<CleanerProductionPage />} />
-                                        <Route path="/services/resource-efficiency" element={<ResourceEfficiencyPage />} />
+                                            {/* Services */}
+                                            <Route path="/services" element={<ServicesLandingPage />} />
+                                            <Route path="/services/carbon-footprinting" element={<CarbonFootprintingPage />} />
+                                            <Route path="/services/ghg-mapping" element={<GHGMappingPage />} />
+                                            <Route path="/services/esg-strategy" element={<ESGStrategyPage />} />
+                                            <Route path="/services/brsr-reporting" element={<BRSRReportingPage />} />
+                                            <Route path="/services/iso-verification" element={<ISOVerificationPage />} />
+                                            <Route path="/services/training-capacity" element={<TrainingCapacityPage />} />
+                                            <Route path="/services/energy-audits" element={<EnergyAuditsPage />} />
+                                            <Route path="/services/waste-management" element={<WasteManagementPage />} />
+                                            <Route path="/services/circular-economy" element={<CircularEconomyPage />} />
+                                            <Route path="/services/epr" element={<EPRPage />} />
+                                            <Route path="/services/cleaner-production" element={<CleanerProductionPage />} />
+                                            <Route path="/services/resource-efficiency" element={<ResourceEfficiencyPage />} />
 
-                                        {/* Courses */}
-                                        <Route path="/courses" element={<CoursesLandingPage />} />
-                                        <Route path="/courses/:slug" element={<CourseDetailPage />} />
-                                        <Route path="/courses/:slug/learn" element={<CourseContentPage />} />
-                                        <Route path="/my-courses" element={<MyCourses />} />
+                                            {/* Courses */}
+                                            <Route path="/courses" element={<CoursesLandingPage />} />
+                                            <Route path="/courses/:slug" element={<CourseDetailPage />} />
+                                            <Route path="/courses/:slug/learn" element={<CourseContentPage />} />
+                                            <Route path="/my-courses" element={<MyCourses />} />
+                                            <Route path="/admin/course/new" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><CreateCoursePage /></RoleProtectedRoute>} />
+                                            <Route path="/admin/course/:id/edit" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><EditCoursePage /></RoleProtectedRoute>} />
 
-                                        {/* Appointments */}
-                                        <Route path="/book-appointment" element={<AppointmentBookingPage />} />
+                                            {/* Appointments */}
+                                            <Route path="/book-appointment" element={<AppointmentBookingPage />} />
 
-                                        {/* Tools */}
-                                        <Route path="/carbon-calculator" element={<CarbonCalculatorPage />} />
+                                            {/* Tools */}
+                                            <Route path="/carbon-calculator" element={<CarbonCalculatorPage />} />
 
-                                        {/* Company */}
-                                        <Route path="/about" element={<AboutPage />} />
-                                        <Route path="/our-approach" element={<OurApproachPage />} />
-                                        <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                                        <Route path="/terms" element={<TermsOfServicePage />} />
-                                        <Route path="/cookies" element={<CookiePolicyPage />} />
+                                            {/* Company pages */}
+                                            <Route path="/about" element={<AboutPage />} />
+                                            <Route path="/our-approach" element={<OurApproachPage />} />
+                                            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                                            <Route path="/terms" element={<TermsOfServicePage />} />
+                                            <Route path="/cookies" element={<CookiePolicyPage />} />
 
-                                        {/* Resources */}
-                                        <Route path="/resources" element={<ResourcesLandingPage />} />
-                                        <Route path="/resources/glossary" element={<SustainabilityGlossaryPage />} />
-                                        <Route path="/resources/templates" element={<DownloadableTemplatesPage />} />
-                                        <Route path="/resources/reports" element={<IndustryReportsPage />} />
-                                        <Route path="/resources/regulatory-updates" element={<RegulatoryUpdatesPage />} />
-                                        <Route path="/resources/case-studies" element={<CaseStudiesPage />} />
-                                        <Route path="/resources/case-studies/:id" element={<CaseStudyDetailPage />} />
+                                            {/* Resources */}
+                                            <Route path="/resources" element={<ResourcesLandingPage />} />
+                                            <Route path="/resources/glossary" element={<SustainabilityGlossaryPage />} />
+                                            <Route path="/resources/templates" element={<DownloadableTemplatesPage />} />
+                                            <Route path="/resources/reports" element={<IndustryReportsPage />} />
+                                            <Route path="/resources/regulatory-updates" element={<RegulatoryUpdatesPage />} />
+                                            <Route path="/resources/case-studies" element={<CaseStudiesPage />} />
+                                            <Route path="/resources/case-studies/:id" element={<CaseStudyDetailPage />} />
+                                            <Route path="/showcase" element={<ImpactShowcasePage />} />
 
-                                        {/* User Profile & Auth */}
-                                        <Route path="/profile" element={<UserProfilePage />} />
-                                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                                        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                                            {/* User Profile & Auth */}
+                                            <Route path="/profile" element={<UserProfilePage />} />
+                                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                                            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-                                        {/* CCTS - Protected Routes */}
-                                        <Route path="/ccts/dashboard" element={<ProtectedRoute><CCTSDashboard /></ProtectedRoute>} />
-                                        <Route path="/ccts/monitoring-data" element={<ProtectedRoute><MonitoringDataList /></ProtectedRoute>} />
-                                        <Route path="/ccts/monitoring-data/new" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
-                                        <Route path="/ccts/monitoring-data/edit/:id" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
+                                            {/* CCTS - Protected Routes */}
+                                            <Route path="/ccts/dashboard" element={<ProtectedRoute><CCTSDashboard /></ProtectedRoute>} />
+                                            <Route path="/ccts/monitoring-data" element={<ProtectedRoute><MonitoringDataList /></ProtectedRoute>} />
+                                            <Route path="/ccts/monitoring-data/new" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
+                                            <Route path="/ccts/monitoring-data/edit/:id" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
+                                            <Route path="/ccts/verification-queue" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationQueue /></RoleProtectedRoute>} />
+                                            <Route path="/ccts/verification/:id" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationDetail /></RoleProtectedRoute>} />
 
-                                        {/* CCTS - Verifier Routes */}
-                                        <Route path="/ccts/verification-queue" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationQueue /></RoleProtectedRoute>} />
-                                        <Route path="/ccts/verification/:id" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationDetail /></RoleProtectedRoute>} />
+                                            {/* CCTS - Public Resources */}
+                                            <Route path="/resources/emission-factors" element={<EmissionFactorLibrary />} />
 
-                                        {/* CCTS - Public Resources */}
-                                        <Route path="/resources/emission-factors" element={<EmissionFactorLibrary />} />
+                                            {/* BRSR Reporting Routes */}
+                                            <Route path="/brsr/dashboard" element={<ProtectedRoute><BRSRDashboard /></ProtectedRoute>} />
+                                            <Route path="/brsr/wizard/:id" element={<ProtectedRoute><BRSRReportWizard /></ProtectedRoute>} />
+                                            <Route path="/brsr/analysis" element={<ProtectedRoute><BRSRAnalysisDashboardNew /></ProtectedRoute>} />
+                                            <Route path="/brsr/analysis/old" element={<ProtectedRoute><BRSRAnalysisDashboard /></ProtectedRoute>} />
 
-                                        {/* Admin - Protected Routes */}
-                                        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-                                        <Route path="/admin/ccts/register-entity" element={<RoleProtectedRoute allowedRoles={['admin']}><EntityRegistration /></RoleProtectedRoute>} />
-                                        <Route path="/admin/blog/new" element={<ProtectedRoute><CreateBlogPage /></ProtectedRoute>} />
-                                        <Route path="/admin/blog/:id/edit" element={<ProtectedRoute><EditBlogPage /></ProtectedRoute>} />
-                                        <Route path="/admin/course/new" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><CreateCoursePage /></RoleProtectedRoute>} />
-                                        <Route path="/admin/course/:id/edit" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><EditCoursePage /></RoleProtectedRoute>} />
-                                    </Routes>
+                                            {/* Admin - Protected Routes */}
+                                            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+                                            <Route path="/admin/ccts/register-entity" element={<RoleProtectedRoute allowedRoles={['admin']}><EntityRegistration /></RoleProtectedRoute>} />
+                                            <Route path="/admin/blog/new" element={<ProtectedRoute><CreateBlogPage /></ProtectedRoute>} />
+                                            <Route path="/admin/blog/:id/edit" element={<ProtectedRoute><EditBlogPage /></ProtectedRoute>} />
+                                            <Route path="/admin/course/new" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><CreateCoursePage /></RoleProtectedRoute>} />
+                                            <Route path="/admin/course/:id/edit" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><EditCoursePage /></RoleProtectedRoute>} />
+                                        </Routes>
+                                    </Suspense>
                                 </main>
+
+                                <PWAInstallPrompt />
 
                                 <footer className="bg-navy/95 border-t border-white/10 py-12 mt-auto">
                                     <div className="container mx-auto px-4">
@@ -217,6 +234,7 @@ function App() {
                                                     <li><a href="/courses" className="hover:text-gold transition-smooth">Academy</a></li>
                                                     <li><a href="/carbon-calculator" className="hover:text-gold transition-smooth">Carbon Calculator</a></li>
                                                     <li><a href="/insights" className="hover:text-gold transition-smooth">Insights</a></li>
+                                                    <li><a href="/showcase" className="hover:text-gold transition-smooth font-bold text-gold">Impact Gallery</a></li>
                                                     <li><a href="/book-appointment" className="hover:text-gold transition-smooth">Contact Us</a></li>
                                                 </ul>
                                             </div>

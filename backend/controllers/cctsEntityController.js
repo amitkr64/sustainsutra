@@ -1,8 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const CCTSEntity = require('../models/cctsEntityModel');
 const User = require('../models/userModel');
-// 🛡️ Mock Storage for Demo Mode
-let mockEntities = global.mockEntities;
 
 /**
  * @desc    Get all CCTS entities (Admin only)
@@ -10,13 +8,6 @@ let mockEntities = global.mockEntities;
  * @access  Private/Admin
  */
 const getAllEntities = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        return res.json({
-            success: true,
-            count: mockEntities.length,
-            data: mockEntities
-        });
-    }
     const { status, sector, search } = req.query;
 
     let query = {};
@@ -53,13 +44,6 @@ const getAllEntities = asyncHandler(async (req, res) => {
  * @access  Private/Entity
  */
 const getMyEntity = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        const entity = mockEntities.find(e => e.user === req.user._id) || mockEntities[0];
-        return res.json({
-            success: true,
-            data: entity || null
-        });
-    }
     const entity = await CCTSEntity.findOne({ user: req.user._id });
 
     if (!entity) {
@@ -79,13 +63,6 @@ const getMyEntity = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getEntityById = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        const entity = mockEntities.find(e => e._id === req.params.id) || mockEntities[0];
-        return res.json({
-            success: true,
-            data: entity
-        });
-    }
     const entity = await CCTSEntity.findById(req.params.id)
         .populate('user', 'name email phone');
 
@@ -112,20 +89,6 @@ const getEntityById = asyncHandler(async (req, res) => {
  * @access  Private/Admin
  */
 const createEntity = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        const entity = {
-            _id: 'mock-entity-' + Date.now(),
-            ...req.body,
-            status: 'active',
-            createdAt: new Date().toISOString()
-        };
-        mockEntities.push(entity);
-        return res.status(201).json({
-            success: true,
-            message: 'Entity registered successfully (Demo Mode)',
-            data: entity
-        });
-    }
     const {
         entityName,
         plantAddress,
@@ -163,6 +126,7 @@ const createEntity = asyncHandler(async (req, res) => {
         throw new Error('This user is already associated with another entity');
     }
 
+    // Create entity
     const entity = await CCTSEntity.create({
         entityName,
         plantAddress,
@@ -199,19 +163,21 @@ const createEntity = asyncHandler(async (req, res) => {
  * @access  Private/Entity Owner or Admin
  */
 const updateEntity = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        const index = mockEntities.findIndex(e => e._id === req.params.id);
-        if (index === -1) {
-            res.status(404);
-            throw new Error('Entity not found');
-        }
-        mockEntities[index] = { ...mockEntities[index], ...req.body };
-        return res.json({
-            success: true,
-            message: 'Entity updated successfully (Demo Mode)',
-            data: mockEntities[index]
-        });
-    }
+    const {
+        entityName,
+        plantAddress,
+        registrationNumber,
+        sector,
+        subSector,
+        baselineYear,
+        baselineProduction,
+        baselineProductionUnit,
+        baselineGHGIntensity,
+        targets,
+        complianceOfficer,
+        contactDetails
+    } = req.body;
+
     let entity = await CCTSEntity.findById(req.params.id);
 
     if (!entity) {
@@ -226,11 +192,23 @@ const updateEntity = asyncHandler(async (req, res) => {
     }
 
     // Don't allow changing registration number or user
-    const { registrationNumber, user, ...updateData } = req.body;
+    const { regNumber, userId } = req.body;
 
     entity = await CCTSEntity.findByIdAndUpdate(
         req.params.id,
-        updateData,
+        {
+            entityName,
+            plantAddress,
+            sector,
+            subSector,
+            baselineYear,
+            baselineProduction,
+            baselineProductionUnit,
+            baselineGHGIntensity,
+            targets,
+            complianceOfficer,
+            contactDetails
+        },
         { new: true, runValidators: true }
     );
 
@@ -249,18 +227,6 @@ const updateEntity = asyncHandler(async (req, res) => {
 const updateEntityStatus = asyncHandler(async (req, res) => {
     const { status } = req.body;
 
-    if (global.isDemoMode) {
-        const index = mockEntities.findIndex(e => e._id === req.params.id);
-        if (index !== -1) {
-            mockEntities[index].status = status;
-            return res.json({
-                success: true,
-                message: `Entity status updated to ${status} (Demo Mode)`,
-                data: mockEntities[index]
-            });
-        }
-    }
-
     if (!['active', 'suspended', 'pending-approval'].includes(status)) {
         res.status(400);
         throw new Error('Invalid status value');
@@ -271,11 +237,6 @@ const updateEntityStatus = asyncHandler(async (req, res) => {
         { status },
         { new: true, runValidators: true }
     );
-
-    if (!entity) {
-        res.status(404);
-        throw new Error('Entity not found');
-    }
 
     res.json({
         success: true,
@@ -317,12 +278,11 @@ const deleteEntity = asyncHandler(async (req, res) => {
  * @access  Private/Entity Owner or Admin
  */
 const getEntityDashboard = asyncHandler(async (req, res) => {
+    const MonitoringData = require('../models/monitoringDataModel');
+    const CarbonCreditBalance = require('../models/carbonCreditBalanceModel');
+
     let entity;
-    if (global.isDemoMode) {
-        entity = mockEntities.find(e => e._id === req.params.id) || mockEntities[0];
-    } else {
-        entity = await CCTSEntity.findById(req.params.id);
-    }
+    entity = await CCTSEntity.findById(req.params.id);
 
     if (!entity) {
         res.status(404);
@@ -330,51 +290,12 @@ const getEntityDashboard = asyncHandler(async (req, res) => {
     }
 
     // Check authorization
-    if (!global.isDemoMode && req.user.role !== 'ccts-admin' && req.user.role !== 'admin' && entity.user.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'ccts-admin' && req.user.role !== 'admin' && entity.user.toString() !== req.user._id.toString()) {
         res.status(403);
         throw new Error('Not authorized to view this dashboard');
     }
 
-    if (global.isDemoMode) {
-        return res.json({
-            success: true,
-            data: {
-                entity: {
-                    name: entity.entityName,
-                    registrationNumber: entity.registrationNumber,
-                    sector: entity.sector,
-                    subSector: entity.subSector,
-                    status: entity.status
-                },
-                baseline: {
-                    year: entity.baselineYear,
-                    production: entity.baselineProduction,
-                    ghgIntensity: entity.baselineGHGIntensity
-                },
-                reports: {
-                    total: 5,
-                    verified: 3,
-                    pending: 1,
-                    draft: 1
-                },
-                compliance: {
-                    complianceYear: 2024,
-                    targetGEI: 0.85,
-                    achievedGEI: 0.82,
-                    netPosition: 3500,
-                    status: 'compliant',
-                    creditIssuance: 3500,
-                    surrenderRequirement: 0
-                },
-                trajectory: []
-            }
-        });
-    }
-
     // Get monitoring data count
-    const MonitoringData = require('../models/monitoringDataModel');
-    const CarbonCreditBalance = require('../models/carbonCreditBalanceModel');
-
     const totalReports = await MonitoringData.countDocuments({ entity: entity._id });
     const verifiedReports = await MonitoringData.countDocuments({
         entity: entity._id,
@@ -433,21 +354,6 @@ const getEntityDashboard = asyncHandler(async (req, res) => {
  * @access  Private/Admin
  */
 const getEntityStats = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        return res.json({
-            success: true,
-            data: {
-                total: mockEntities.length,
-                active: mockEntities.filter(e => e.status === 'active').length,
-                suspended: 0,
-                pending: 0,
-                bySector: [
-                    { _id: 'Iron & Steel', count: 2 },
-                    { _id: 'Cement', count: 1 }
-                ]
-            }
-        });
-    }
     const totalEntities = await CCTSEntity.countDocuments();
     const activeEntities = await CCTSEntity.countDocuments({ status: 'active' });
     const suspendedEntities = await CCTSEntity.countDocuments({ status: 'suspended' });

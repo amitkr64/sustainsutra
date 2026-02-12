@@ -18,7 +18,8 @@ const ServicePageTemplate = ({
     benefits,
     secondaryCtaText,
     secondaryCtaLink,
-    executiveSummary // Optional: detailed summary
+    executiveSummary, // Optional: detailed summary
+    onCtaClick
 }) => {
     const navigate = useNavigate();
 
@@ -81,8 +82,12 @@ const ServicePageTemplate = ({
                                     size="lg"
                                     className="bg-gold hover:bg-white text-navy font-bold px-10 py-7 text-lg rounded-full shadow-2xl hover:scale-105 transition-all"
                                     onClick={() => {
-                                        const element = document.getElementById('contact-footer');
-                                        if (element) element.scrollIntoView({ behavior: 'smooth' });
+                                        if (onCtaClick) {
+                                            onCtaClick();
+                                        } else {
+                                            const element = document.getElementById('contact-footer');
+                                            if (element) element.scrollIntoView({ behavior: 'smooth' });
+                                        }
                                     }}
                                 >
                                     {ctaText} <ArrowRight className="ml-2 w-5 h-5" />
@@ -285,11 +290,15 @@ const ServicePageTemplate = ({
                         size="lg"
                         className="bg-gold hover:bg-white text-navy font-bold px-16 py-8 text-xl rounded-full shadow-2xl hover:scale-105 transition-all"
                         onClick={() => {
-                            const element = document.getElementById('contact-footer');
-                            if (element) element.scrollIntoView({ behavior: 'smooth' });
+                            if (onCtaClick) {
+                                onCtaClick();
+                            } else {
+                                const element = document.getElementById('contact-footer');
+                                if (element) element.scrollIntoView({ behavior: 'smooth' });
+                            }
                         }}
                     >
-                        Initiate Consultation <ArrowRight className="ml-3 w-6 h-6" />
+                        {ctaText || "Initiate Consultation"} <ArrowRight className="ml-3 w-6 h-6" />
                     </Button>
                 </div>
             </section>

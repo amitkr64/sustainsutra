@@ -18,10 +18,6 @@ const getBlogs = asyncHandler(async (req, res) => {
 // @route   GET /api/blogs/:id
 // @access  Public
 const getBlogById = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        const blog = global.mockBlogs.find(b => b._id === req.params.id);
-        return blog ? res.json(blog) : res.status(404).json({ message: 'Blog not found' });
-    }
     const blog = await Blog.findById(req.params.id);
 
     if (blog) {
@@ -57,6 +53,14 @@ const createBlog = asyncHandler(async (req, res) => {
 // @route   PUT /api/blogs/:id
 // @access  Private/Admin
 const updateBlog = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        const index = global.mockBlogs.findIndex(b => b._id === req.params.id);
+        if (index === -1) {
+            return res.status(404).json({ message: 'Blog not found' });
+        }
+        global.mockBlogs[index] = { ...global.mockBlogs[index], ...req.body };
+        return res.json(global.mockBlogs[index]);
+    }
     const { title, content, author, excerpt, tags, categories, image, status } = req.body;
 
     const blog = await Blog.findById(req.params.id);
@@ -83,6 +87,14 @@ const updateBlog = asyncHandler(async (req, res) => {
 // @route   DELETE /api/blogs/:id
 // @access  Private/Admin
 const deleteBlog = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        const index = global.mockBlogs.findIndex(b => b._id === req.params.id);
+        if (index === -1) {
+            return res.status(404).json({ message: 'Blog not found' });
+        }
+        global.mockBlogs.splice(index, 1);
+        return res.json({ message: 'Blog removed' });
+    }
     const blog = await Blog.findById(req.params.id);
 
     if (blog) {

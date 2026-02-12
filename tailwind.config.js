@@ -51,6 +51,7 @@ module.exports = {
                     foreground: 'hsl(var(--card-foreground))',
                 },
                 navy: '#0B0F0B',
+                'navy-light': '#121820',
                 sage: '#1B4332',
                 forest: '#161B16',
                 gold: '#D4AF37',

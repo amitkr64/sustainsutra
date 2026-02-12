@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
-import { emissionFactorService } from '@/services/emissionFactorService';
+import emissionFactorService from '@/services/emissionFactorService';
 import { carbonCalculationService } from '@/services/carbonCalculationService';
 import { paymentService } from '@/services/paymentService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import {
-    Calculator, Plus, Trash2, Download, Lock, ChevronDown,
+    Calculator, Plus, Trash2, Download, Lock, ChevronDown, X,
     Flame, Zap, Globe, TrendingUp, Shield, HelpCircle, ArrowRight,
-    LineChart, LayoutDashboard, Database, Info
+    LineChart, LayoutDashboard, Database, Info, Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import HierarchicalEmissionFactorSelector from '@/components/CarbonCalculator/HierarchicalEmissionFactorSelector';
 
 const CarbonCalculatorPage = () => {
     const { user, isAuthenticated } = useAuth();
@@ -30,11 +31,21 @@ const CarbonCalculatorPage = () => {
     const [reportingPeriod, setReportingPeriod] = useState('');
     const [isCalculating, setIsCalculating] = useState(false);
     const [paymentFee, setPaymentFee] = useState(999);
+    const [showFactorBrowser, setShowFactorBrowser] = useState(false);
+    const [activeActivityId, setActiveActivityId] = useState(null);
+    const [activeActivityScope, setActiveActivityScope] = useState(null);
 
     useEffect(() => {
         const loadFactors = async () => {
-            const factors = await emissionFactorService.getAll();
-            setEmissionFactors(factors);
+            try {
+                // Load curated factors for carbon calculator from API
+                const result = await emissionFactorService.getCurated('carbon_calculator');
+                setEmissionFactors(result.factors || []);
+            } catch (error) {
+                console.error('Failed to load emission factors:', error);
+                // Fallback to mock data if API unavailable
+                setEmissionFactors([]);
+            }
         };
 
         loadFactors();
@@ -74,10 +85,12 @@ const CarbonCalculatorPage = () => {
             if (a.id === id) {
                 const updated = { ...a, [field]: value };
                 if (field === 'emissionFactorId') {
-                    const factor = emissionFactors.find(f => f.id === value);
+                    const factor = emissionFactors.find(f => f._id === value || f.id === value);
                     if (factor) {
-                        updated.emissionFactor = factor.factor;
+                        updated.emissionFactor = factor.value || factor.factor;
                         updated.unit = factor.unit;
+                        updated.factorName = factor.name;
+                        updated.factorGas = factor.gas;
                     }
                 }
                 return updated;
@@ -88,6 +101,37 @@ const CarbonCalculatorPage = () => {
         if (scope === 1) setScope1Activities(updateFn(scope1Activities));
         else if (scope === 2) setScope2Activities(updateFn(scope2Activities));
         else if (scope === 3) setScope3Activities(updateFn(scope3Activities));
+    };
+
+    const openFactorBrowser = (scope, activityId) => {
+        setActiveActivityScope(scope);
+        setActiveActivityId(activityId);
+        setShowFactorBrowser(true);
+    };
+
+    const handleFactorSelect = (factor) => {
+        if (activeActivityScope && activeActivityId) {
+            const updateFn = (activities) => activities.map(a => {
+                if (a.id === activeActivityId) {
+                    return {
+                        ...a,
+                        emissionFactorId: factor._id || factor.efId,
+                        emissionFactor: factor.value,
+                        unit: factor.unit,
+                        factorName: factor.name,
+                        factorGas: factor.gas
+                    };
+                }
+                return a;
+            });
+
+            if (activeActivityScope === 1) setScope1Activities(updateFn(scope1Activities));
+            else if (activeActivityScope === 2) setScope2Activities(updateFn(scope2Activities));
+            else if (activeActivityScope === 3) setScope3Activities(updateFn(scope3Activities));
+        }
+        setShowFactorBrowser(false);
+        setActiveActivityId(null);
+        setActiveActivityScope(null);
     };
 
     const calculateFootprint = () => {
@@ -158,17 +202,21 @@ const CarbonCalculatorPage = () => {
                                     />
                                 </div>
                                 <div className="lg:col-span-4">
-                                    <label className="lg:hidden block text-xs font-bold text-gold/60 uppercase mb-2">Standard Factor</label>
-                                    <select
-                                        value={activity.emissionFactorId}
-                                        onChange={(e) => updateActivity(scope, activity.id, 'emissionFactorId', e.target.value)}
-                                        className="w-full h-12 px-4 bg-navy/50 border border-white/10 rounded-xl text-offwhite focus:border-gold outline-none transition-all appearance-none cursor-pointer"
+                                    <label className="lg:hidden block text-xs font-bold text-gold/60 uppercase mb-2">Emission Factor</label>
+                                    <button
+                                        onClick={() => openFactorBrowser(scope, activity.id)}
+                                        className="w-full h-12 px-4 bg-navy/50 border border-white/10 rounded-xl text-left hover:border-gold/50 outline-none transition-all flex items-center justify-between group"
                                     >
-                                        <option value="">Select standard factor...</option>
-                                        {factors.map(f => (
-                                            <option key={f.id} value={f.id}>{f.name} ({f.unit})</option>
-                                        ))}
-                                    </select>
+                                        {activity.factorName ? (
+                                            <div className="flex-1 min-w-0">
+                                                <div className="text-offwhite text-sm truncate">{activity.factorName}</div>
+                                                <div className="text-xs text-dimmed">{activity.emissionFactor} {activity.unit}</div>
+                                            </div>
+                                        ) : (
+                                            <span className="text-dimmed">Browse IPCC Database...</span>
+                                        )}
+                                        <Search size={16} className="text-dimmed group-hover:text-gold transition-colors ml-2 shrink-0" />
+                                    </button>
                                 </div>
                                 <div className="lg:col-span-4">
                                     <label className="lg:hidden block text-xs font-bold text-gold/60 uppercase mb-2">Activity Value</label>
@@ -492,6 +540,49 @@ const CarbonCalculatorPage = () => {
                                     Cancel & Return
                                 </Button>
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Emission Factor Browser Modal */}
+            <AnimatePresence>
+                {showFactorBrowser && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-navy/95 backdrop-blur-2xl flex items-center justify-center z-[100] p-4 md:p-6"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            className="bg-navy border-2 border-white/10 rounded-[32px] p-6 md:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
+                        >
+                            <button
+                                onClick={() => {
+                                    setShowFactorBrowser(false);
+                                    setActiveActivityId(null);
+                                    setActiveActivityScope(null);
+                                }}
+                                className="absolute top-6 right-6 text-dimmed hover:text-white z-10"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            <h3 className="text-2xl font-playfair text-white mb-6 pr-10">
+                                Select Emission Factor
+                            </h3>
+
+                            <HierarchicalEmissionFactorSelector
+                                onSelect={handleFactorSelect}
+                                onCancel={() => {
+                                    setShowFactorBrowser(false);
+                                    setActiveActivityId(null);
+                                    setActiveActivityScope(null);
+                                }}
+                                showCalculator={true}
+                            />
                         </motion.div>
                     </motion.div>
                 )}

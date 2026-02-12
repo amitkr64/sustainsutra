@@ -19,5 +19,12 @@ const appointmentSchema = mongoose.Schema({
     timestamps: true
 });
 
+// Database indexes for performance
+appointmentSchema.index({ user: 1, date: -1 });
+appointmentSchema.index({ status: 1, date: -1 });
+appointmentSchema.index({ email: 1 });
+appointmentSchema.index({ date: 1, timeSlot: 1 });
+appointmentSchema.index({ createdAt: -1 });
+
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 module.exports = Appointment;

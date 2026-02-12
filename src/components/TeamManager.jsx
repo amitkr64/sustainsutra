@@ -39,8 +39,8 @@ const TeamManager = () => {
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            if (currentMember.id) {
-                await teamService.update(currentMember.id, currentMember);
+            if (currentMember._id || currentMember.id) {
+                await teamService.update(currentMember._id || currentMember.id, currentMember);
                 toast({ title: "Team member updated" });
             } else {
                 await teamService.create(currentMember);
@@ -67,7 +67,7 @@ const TeamManager = () => {
             <div className="bg-white/5 border border-white/10 rounded-xl p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-playfair text-white">
-                        {currentMember.id ? 'Edit Team Member' : 'Add Team Member'}
+                        {(currentMember._id || currentMember.id) ? 'Edit Team Member' : 'Add Team Member'}
                     </h2>
                     <Button variant="ghost" onClick={() => setIsEditing(false)} className="text-offwhite hover:text-white">
                         <X size={24} />
@@ -159,8 +159,8 @@ const TeamManager = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {team.map(member => (
-                    <div key={member.id} className="bg-white/5 border border-white/10 rounded-xl overflow-hidden group">
+                {team.map((member, idx) => (
+                    <div key={member._id || member.id || idx} className="bg-white/5 border border-white/10 rounded-xl overflow-hidden group">
                         <div className="h-48 overflow-hidden relative">
                             <img
                                 src={member.image}
@@ -176,7 +176,7 @@ const TeamManager = () => {
                                     <Edit size={16} />
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(member.id)}
+                                    onClick={() => handleDelete(member._id || member.id)}
                                     className="p-2 bg-navy/80 text-white rounded-full hover:bg-red-500 hover:text-white transition-colors"
                                 >
                                     <Trash2 size={16} />

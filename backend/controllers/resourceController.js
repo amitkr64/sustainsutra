@@ -6,7 +6,10 @@ const Resource = require('../models/resourceModel');
 // @access  Public
 const getResources = asyncHandler(async (req, res) => {
     const { type } = req.query;
-    const filter = type ? { type } : {};
+
+    let filter = {};
+    if (type) filter = { type };
+
     const resources = await Resource.find(filter).sort({ createdAt: -1 });
     res.json(resources);
 });
@@ -15,7 +18,6 @@ const getResources = asyncHandler(async (req, res) => {
 // @route   POST /api/resources
 // @access  Private/Admin
 const createResource = asyncHandler(async (req, res) => {
-    // Validating required fields handled by Schema, but custom validation can go here
     const resource = await Resource.create(req.body);
     res.status(201).json(resource);
 });

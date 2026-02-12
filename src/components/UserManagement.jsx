@@ -233,8 +233,8 @@ const UserManagement = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/10">
-                            {filteredUsers.map((user) => (
-                                <tr key={user.id} className="hover:bg-white/5">
+                            {filteredUsers.map((user, idx) => (
+                                <tr key={user._id || user.id || idx} className="hover:bg-white/5">
                                     <td className="px-4 py-3 text-sm text-offwhite">{user.name}</td>
                                     <td className="px-4 py-3 text-sm text-dimmed">{user.email}</td>
                                     <td className="px-4 py-3 text-sm">
@@ -249,7 +249,7 @@ const UserManagement = () => {
                                     <td className="px-4 py-3 text-sm flex gap-2">
                                         <select
                                             value={user.role}
-                                            onChange={(e) => changeUserRole(user.id, e.target.value)}
+                                            onChange={(e) => changeUserRole(user._id || user.id, e.target.value)}
                                             className="px-3 py-1 bg-navy border border-white/10 rounded text-offwhite text-xs cursor-pointer focus:border-gold outline-none"
                                             disabled={user.role === 'admin' && user.email === 'admin@sustainsutra.com'}
                                         >
@@ -258,7 +258,7 @@ const UserManagement = () => {
                                             <option value="admin">Admin</option>
                                         </select>
                                         <button
-                                            onClick={() => handleDeleteUser(user.id)}
+                                            onClick={() => handleDeleteUser(user._id || user.id)}
                                             className="p-1.5 text-red-400 hover:bg-red-400/20 rounded transition-colors"
                                             title="Delete User"
                                             disabled={user.role === 'admin' && user.email === 'admin@sustainsutra.com'}

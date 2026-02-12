@@ -297,7 +297,6 @@ const offsetProjectSchema = new mongoose.Schema({
 });
 
 // Indexes
-offsetProjectSchema.index({ projectId: 1 }, { unique: true, sparse: true });
 offsetProjectSchema.index({ entity: 1 });
 offsetProjectSchema.index({ projectType: 1 });
 offsetProjectSchema.index({ registrationStatus: 1 });

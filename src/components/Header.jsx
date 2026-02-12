@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard, Database, Shield, BarChart3, Settings, Leaf, Globe, FileCheck, Landmark, GraduationCap, Zap, Recycle, Repeat, ClipboardCheck, Factory, Lightbulb, GraduationCap as TrainingIcon, Search, FileJson, FileType, Newspaper, Briefcase } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard, Database, Shield, BarChart3, Settings, Leaf, Globe, FileCheck, Landmark, GraduationCap, Zap, Recycle, Repeat, ClipboardCheck, Factory, Lightbulb, GraduationCap as TrainingIcon, Search, FileJson, FileType, Newspaper, Briefcase, Award } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -95,6 +95,7 @@ const Header = () => {
         { name: 'Industry Reports', path: '/resources/reports', icon: BarChart3 },
         { name: 'Regulatory Updates', path: '/resources/regulatory-updates', icon: Newspaper },
         { name: 'Case Studies', path: '/resources/case-studies', icon: Briefcase },
+        { name: 'Impact Gallery', path: '/showcase', icon: Award },
     ];
 
     return (
@@ -241,6 +242,14 @@ const Header = () => {
                                             <p className="text-sm font-bold text-gold">{user?.name || 'User'}</p>
                                             <p className="text-xs text-offwhite/50 truncate uppercase tracking-tighter">{user?.role}</p>
                                         </div>
+                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2.5 px-3" onClick={() => navigate('/brsr/dashboard')}>
+                                            <FileText className="mr-3 h-4 w-4 text-gold" />
+                                            <span className="font-bold text-gold">BRSR Portal</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2.5 px-3" onClick={() => navigate('/brsr/analysis')}>
+                                            <BarChart3 className="mr-3 h-4 w-4 text-gold" />
+                                            <span className="font-bold text-gold">BRSR Analysis</span>
+                                        </DropdownMenuItem>
                                         <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2.5 px-3" onClick={() => navigate('/profile')}>
                                             <LayoutDashboard className="mr-3 h-4 w-4" />
                                             <span>My Dashboard</span>

@@ -32,6 +32,14 @@ const courseSchema = mongoose.Schema({
     timestamps: true
 });
 
+// Database indexes for performance
+courseSchema.index({ slug: 1 }); // Unique index already defined
+courseSchema.index({ published: 1, createdAt: -1 }); // Common query: published courses
+courseSchema.index({ category: 1, level: 1 });
+courseSchema.index({ instructor: 1 });
+courseSchema.index({ price: 1 });
+courseSchema.index({ createdAt: -1 });
+
 const Course = mongoose.model('Course', courseSchema);
 
 module.exports = Course;

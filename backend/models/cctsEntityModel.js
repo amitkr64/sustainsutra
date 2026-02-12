@@ -107,7 +107,6 @@ const cctsEntitySchema = new mongoose.Schema({
 });
 
 // Indexes for faster queries
-cctsEntitySchema.index({ registrationNumber: 1 }, { unique: true });
 cctsEntitySchema.index({ user: 1 });
 cctsEntitySchema.index({ sector: 1, subSector: 1 });
 cctsEntitySchema.index({ status: 1 });

@@ -2,11 +2,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
-
-// 🛡️ Mock Storage for Demo Mode
-let mockUsers = global.mockUsers;
-
-// Note: For Demo Mode robustness, we will also allow a plain text 'admin123' check if the hash fails.
+const logger = require('../utils/logger');
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -19,41 +15,44 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Please add all fields (Name, Email, Password)');
     }
 
-    // 🛡️ [DEMO MODE HANDLER]
-    if (global.isDemoMode) {
-        const userExists = mockUsers.find(u => u.email === email);
-        if (userExists) {
-            res.status(400);
-            throw new Error('An account with this email already exists (Demo Mode)');
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const newUser = {
-            _id: 'mock-' + Date.now(),
-            name,
-            email,
-            phone,
-            password: hashedPassword,
-            role: role || 'user'
-        };
-
-        mockUsers.push(newUser);
-        return res.status(201).json({
-            _id: newUser._id,
-            name: newUser.name,
-            email: newUser.email,
-            phone: newUser.phone,
-            role: newUser.role,
-            token: generateToken(newUser._id)
-        });
-    }
-
     if (!process.env.JWT_SECRET) {
-        console.error('FATAL: JWT_SECRET is not defined in .env');
+        logger.error('FATAL: JWT_SECRET is not defined in .env');
         res.status(500);
         throw new Error('Server configuration error: JWT_SECRET missing');
+    }
+
+    // Demo Mode: Create user in memory
+    if (global.isDemoMode) {
+        // Check if user already exists in mock data
+        const userExists = global.mockUsers.find(u => u.email === email);
+        if (userExists) {
+            res.status(400);
+            throw new Error('An account with this email already exists');
+        }
+
+        // Create new mock user
+        const newUser = {
+            _id: 'mock-user-' + Date.now(),
+            name,
+            email,
+            phone: phone || '',
+            role: role || 'user'
+        };
+        global.mockUsers.push(newUser);
+
+        const token = generateToken(newUser._id);
+
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            path: '/'
+        });
+
+        logger.info(`Demo Mode: New user registered - ${email}`);
+
+        return res.status(201).json(newUser);
     }
 
     // Check if user exists
@@ -61,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
     try {
         userExists = await User.findOne({ email });
     } catch (err) {
-        console.error('Database query error on registration:', err);
+        logger.error('Database query error on registration:', err);
         res.status(500);
         throw new Error('Database connection issue');
     }
@@ -82,20 +81,29 @@ const registerUser = asyncHandler(async (req, res) => {
         });
 
         if (user) {
+            const token = generateToken(user._id);
+
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+                path: '/'
+            });
+
             res.status(201).json({
                 _id: user.id,
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
-                role: user.role,
-                token: generateToken(user._id)
+                role: user.role
             });
         } else {
             res.status(400);
             throw new Error('Invalid user data provided');
         }
-    } catch (err) {
-        console.error('User creation error:', err);
+        } catch (err) {
+        logger.error('User creation error:', err);
         res.status(err.name === 'ValidationError' ? 400 : 500);
         throw new Error(err.message || 'Error creating user account');
     }
@@ -112,34 +120,39 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error('Please provide both email and password');
     }
 
-    // 🛡️ [DEMO MODE HANDLER]
-    if (global.isDemoMode) {
-        const user = mockUsers.find(u => u.email === email);
-        if (user) {
-            const isPasswordMatch = await bcrypt.compare(password, user.password);
-            const isPlainMatch = (email === 'admin@sustainsutra.com' && password === 'admin123');
-
-            if (isPasswordMatch || isPlainMatch) {
-                console.log(`[AUTH DEBUG] Demo Mode: Successful login for ${email} (ID: ${user._id})`);
-                return res.json({
-                    _id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    phone: user.phone,
-                    role: user.role,
-                    token: generateToken(user._id)
-                });
-            }
-        }
-
-        res.status(401);
-        throw new Error('Invalid email or password (Demo Mode)');
-    }
-
     if (!process.env.JWT_SECRET) {
-        console.error('FATAL: JWT_SECRET is not defined in .env');
+        logger.error('FATAL: JWT_SECRET is not defined in .env');
         res.status(500);
         throw new Error('Server configuration error: JWT_SECRET missing');
+    }
+
+    // Demo Mode: Accept any password for mock users
+    if (global.isDemoMode) {
+        const user = global.mockUsers.find(u => u.email === email);
+
+        if (user) {
+            const token = generateToken(user._id);
+
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                path: '/'
+            });
+
+            logger.info(`Demo Mode: User logged in - ${email}`);
+
+            return res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            });
+        } else {
+            res.status(401);
+            throw new Error('Invalid email or password');
+        }
     }
 
     // Check for user email
@@ -147,19 +160,28 @@ const loginUser = asyncHandler(async (req, res) => {
     try {
         user = await User.findOne({ email });
     } catch (err) {
-        console.error('Database query error on login:', err);
+        logger.error('Database query error on login:', err);
         res.status(500);
         throw new Error('Database connection issue');
     }
 
     if (user && (await user.matchPassword(password))) {
+        const token = generateToken(user._id);
+
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+            path: '/'
+        });
+
         res.json({
             _id: user.id,
             name: user.name,
             email: user.email,
             phone: user.phone,
-            role: user.role,
-            token: generateToken(user._id)
+            role: user.role
         });
     } else {
         res.status(401);
@@ -174,6 +196,21 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(req.user);
 });
 
+// @desc    Logout user / clear cookie
+// @route   POST /api/users/logout
+// @access  Public
+const logoutUser = asyncHandler(async (req, res) => {
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        expires: new Date(0),
+        path: '/'
+    });
+
+    res.status(200).json({ message: 'Logged out successfully' });
+});
+
 // Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -184,5 +221,6 @@ const generateToken = (id) => {
 module.exports = {
     registerUser,
     loginUser,
+    logoutUser,
     getMe,
 };

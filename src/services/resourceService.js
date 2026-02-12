@@ -101,4 +101,22 @@ export const resourceService = {
     createCaseStudy: (study) => resourceService.create({ ...study, type: 'casestudy' }),
     updateCaseStudy: (id, study) => resourceService.update(id, study),
     deleteCaseStudy: (id) => resourceService.delete(id),
+
+    // Projects (Showcase)
+    getProjects: () => resourceService.getAll('project'),
+    addProject: (project) => resourceService.create({ ...project, type: 'project' }),
+    updateProject: (id, project) => resourceService.update(id, project),
+    deleteProject: (id) => resourceService.delete(id),
+
+    // Training (Showcase)
+    getTrainings: () => resourceService.getAll('training'),
+    addTraining: (training) => resourceService.create({ ...training, type: 'training' }),
+    updateTraining: (id, training) => resourceService.update(id, training),
+    deleteTraining: (id) => resourceService.delete(id),
+
+    // Activities (Showcase)
+    getActivities: () => resourceService.getAll('activity'),
+    addActivity: (activity) => resourceService.create({ ...activity, type: 'activity' }),
+    updateActivity: (id, activity) => resourceService.update(id, activity),
+    deleteActivity: (id) => resourceService.delete(id),
 };

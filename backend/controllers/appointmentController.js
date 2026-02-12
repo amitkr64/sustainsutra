@@ -8,9 +8,6 @@ let mockAppointments = global.mockAppointments;
 // @route   GET /api/appointments
 // @access  Private/Admin
 const getAppointments = asyncHandler(async (req, res) => {
-    if (global.isDemoMode) {
-        return res.json(mockAppointments);
-    }
     const appointments = await Appointment.find({}).sort({ createdAt: -1 });
     res.json(appointments);
 });

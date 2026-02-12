@@ -160,6 +160,7 @@ const AdminDashboard = () => {
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
                         <TabsTrigger value="team">Team</TabsTrigger>
+                        <TabsTrigger value="impact" className="text-gold font-bold">Impact Gallery</TabsTrigger>
                         <TabsTrigger value="payments" className="text-gold">Payments</TabsTrigger>
                     </TabsList>
 
@@ -185,7 +186,7 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody>
                                     {blogs.map(blog => (
-                                        <tr key={blog.id} className="border-b border-white/5">
+                                        <tr key={blog._id || blog.id} className="border-b border-white/5">
                                             <td className="p-4 text-white">{blog.title}</td>
                                             <td className="p-4 text-offwhite/80">{blog.author}</td>
                                             <td className="p-4">
@@ -266,8 +267,8 @@ const AdminDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {appointments.map(apt => (
-                                        <tr key={apt.id} className="border-b border-white/5">
+                                    {appointments.map((apt, idx) => (
+                                        <tr key={apt._id || apt.id || idx} className="border-b border-white/5">
                                             <td className="p-4 text-white">{apt.name}</td>
                                             <td className="p-4 text-offwhite/80">{apt.email}</td>
                                             <td className="p-4 text-offwhite/80">{apt.date} - {apt.timeSlot}</td>
@@ -382,8 +383,8 @@ const AdminDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {subscribers.map(sub => (
-                                        <tr key={sub.id} className="border-b border-white/5">
+                                    {subscribers.map((sub, idx) => (
+                                        <tr key={sub._id || sub.id || idx} className="border-b border-white/5">
                                             <td className="p-4 text-white">{sub.email}</td>
                                             <td className="p-4 text-offwhite/80">{sub.date}</td>
                                             <td className="p-4">
@@ -415,6 +416,18 @@ const AdminDashboard = () => {
                     {/* Team Tab */}
                     <TabsContent value="team" className="mt-6">
                         <TeamManager />
+                    </TabsContent>
+
+                    {/* Impact Gallery Tab */}
+                    <TabsContent value="impact" className="mt-6">
+                        <div className="mb-6 p-6 bg-gold/5 border border-gold/20 rounded-2xl">
+                            <h2 className="text-xl font-playfair text-white mb-2">Impact Gallery Management</h2>
+                            <p className="text-sm text-dimmed">
+                                The Impact Gallery on the website is populated by <strong className="text-gold">Projects</strong>, <strong className="text-gold">Trainings</strong>, and <strong className="text-gold">Operational Activities</strong>.
+                                Manage them below by switching categories.
+                            </p>
+                        </div>
+                        <ResourceManager initialTab="projects" />
                     </TabsContent>
 
                     {/* Payments Tab */}

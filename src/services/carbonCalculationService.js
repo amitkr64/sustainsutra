@@ -24,7 +24,12 @@ export const scope3Categories = [
 export const carbonCalculationService = {
     // Calculate emissions for a single activity
     calculateActivity: (quantity, emissionFactor) => {
-        return quantity * emissionFactor;
+        // If value is already in CO2e terms, use it directly
+        if (emissionFactor.unit?.includes('CO2e') || emissionFactor.gas === 'CO2e') {
+            return quantity * emissionFactor.value;
+        }
+        // Otherwise, convert to CO2e using GWP
+        return quantity * emissionFactor.value * (emissionFactor.gwp || 1) / 100;
     },
 
     // Calculate total for a scope
@@ -37,17 +42,27 @@ export const carbonCalculationService = {
         }, 0);
     },
 
-    // Calculate complete carbon footprint
+    // Calculate complete carbon footprint with gas breakdown
     calculateFootprint: (data) => {
         const scope1Total = data.scope1 ? carbonCalculationService.calculateScope(data.scope1) : 0;
         const scope2Total = data.scope2 ? carbonCalculationService.calculateScope(data.scope2) : 0;
         const scope3Total = data.scope3 ? carbonCalculationService.calculateScope(data.scope3) : 0;
+
+        // Calculate gas breakdown for each scope
+        const scope1GasBreakdown = carbonCalculationService.calculateGasBreakdown(data.scope1 || []);
+        const scope2GasBreakdown = carbonCalculationService.calculateGasBreakdown(data.scope2 || []);
+        const scope3GasBreakdown = carbonCalculationService.calculateGasBreakdown(data.scope3 || []);
 
         return {
             scope1: scope1Total,
             scope2: scope2Total,
             scope3: scope3Total,
             total: scope1Total + scope2Total + scope3Total,
+            gasBreakdown: {
+                scope1: scope1GasBreakdown,
+                scope2: scope2GasBreakdown,
+                scope3: scope3GasBreakdown
+            },
             breakdown: {
                 scope1Activities: data.scope1 || [],
                 scope2Activities: data.scope2 || [],

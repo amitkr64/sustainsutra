@@ -5,8 +5,8 @@ import { Plus, Edit, Trash2, ArrowLeft, Save, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-const ResourceManager = () => {
-    const [activeTab, setActiveTab] = useState('reports');
+const ResourceManager = ({ initialTab = 'reports' }) => {
+    const [activeTab, setActiveTab] = useState(initialTab);
     const [view, setView] = useState('list'); // 'list' or 'form'
     const [editingItem, setEditingItem] = useState(null);
     const [data, setData] = useState([]);
@@ -25,6 +25,9 @@ const ResourceManager = () => {
         else if (activeTab === 'updates') fetchedData = await resourceService.getRegulatoryUpdates();
         else if (activeTab === 'templates') fetchedData = await resourceService.getTemplates();
         else if (activeTab === 'casestudies') fetchedData = await resourceService.getCaseStudies();
+        else if (activeTab === 'projects') fetchedData = await resourceService.getProjects();
+        else if (activeTab === 'trainings') fetchedData = await resourceService.getTrainings();
+        else if (activeTab === 'activities') fetchedData = await resourceService.getActivities();
         setData(fetchedData || []);
     };
 
@@ -47,6 +50,9 @@ const ResourceManager = () => {
             else if (activeTab === 'updates') success = await resourceService.deleteRegulatoryUpdate(id);
             else if (activeTab === 'templates') success = await resourceService.deleteTemplate(id);
             else if (activeTab === 'casestudies') success = await resourceService.deleteCaseStudy(id);
+            else if (activeTab === 'projects') success = await resourceService.deleteProject(id);
+            else if (activeTab === 'trainings') success = await resourceService.deleteTraining(id);
+            else if (activeTab === 'activities') success = await resourceService.deleteActivity(id);
 
             if (success) {
                 toast({ title: "Item deleted successfully" });
@@ -61,17 +67,26 @@ const ResourceManager = () => {
 
         try {
             if (activeTab === 'reports') {
-                if (editingItem) result = await resourceService.updateIndustryReport(editingItem.id, formData);
+                if (editingItem) result = await resourceService.updateIndustryReport(editingItem._id || editingItem.id, formData);
                 else result = await resourceService.addIndustryReport(formData);
             } else if (activeTab === 'updates') {
-                if (editingItem) result = await resourceService.updateRegulatoryUpdate(editingItem.id, formData);
+                if (editingItem) result = await resourceService.updateRegulatoryUpdate(editingItem._id || editingItem.id, formData);
                 else result = await resourceService.addRegulatoryUpdate(formData);
             } else if (activeTab === 'templates') {
-                if (editingItem) result = await resourceService.updateTemplate(editingItem.id, formData);
+                if (editingItem) result = await resourceService.updateTemplate(editingItem._id || editingItem.id, formData);
                 else result = await resourceService.addTemplate(formData);
             } else if (activeTab === 'casestudies') {
-                if (editingItem) result = await resourceService.updateCaseStudy(editingItem.id, formData);
+                if (editingItem) result = await resourceService.updateCaseStudy(editingItem._id || editingItem.id, formData);
                 else result = await resourceService.createCaseStudy(formData);
+            } else if (activeTab === 'projects') {
+                if (editingItem) result = await resourceService.updateProject(editingItem._id || editingItem.id, formData);
+                else result = await resourceService.addProject(formData);
+            } else if (activeTab === 'trainings') {
+                if (editingItem) result = await resourceService.updateTraining(editingItem._id || editingItem.id, formData);
+                else result = await resourceService.addTraining(formData);
+            } else if (activeTab === 'activities') {
+                if (editingItem) result = await resourceService.updateActivity(editingItem._id || editingItem.id, formData);
+                else result = await resourceService.addActivity(formData);
             }
 
             if (result) {
@@ -334,6 +349,54 @@ const ResourceManager = () => {
                         </>
                     )}
 
+                    {/* Specific Fields: Projects, Trainings, Activities */}
+                    {(activeTab === 'projects' || activeTab === 'trainings' || activeTab === 'activities') && (
+                        <>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm text-offwhite/60 mb-1">
+                                        {activeTab === 'projects' ? 'Client/Partner' : activeTab === 'trainings' ? 'Category/Industry' : 'Category'}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-navy border border-white/20 rounded-md p-2 text-white focus:border-gold outline-none"
+                                        value={formData.client || formData.category || ''}
+                                        onChange={(e) => setFormData({ ...formData, client: e.target.value, category: e.target.value })}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-offwhite/60 mb-1">Date</label>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-navy border border-white/20 rounded-md p-2 text-white focus:border-gold outline-none"
+                                        value={formData.date || ''}
+                                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm text-offwhite/60 mb-1">Image URL</label>
+                                <input
+                                    type="text"
+                                    className="w-full bg-navy border border-white/20 rounded-md p-2 text-white focus:border-gold outline-none"
+                                    value={formData.image || ''}
+                                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                                />
+                            </div>
+                            {activeTab === 'projects' && (
+                                <div>
+                                    <label className="block text-sm text-offwhite/60 mb-1">Impact/Key Results</label>
+                                    <textarea
+                                        rows="3"
+                                        className="w-full bg-navy border border-white/20 rounded-md p-2 text-white focus:border-gold outline-none"
+                                        value={formData.impact || ''}
+                                        onChange={(e) => setFormData({ ...formData, impact: e.target.value })}
+                                    />
+                                </div>
+                            )}
+                        </>
+                    )}
+
                     <div className="flex justify-end gap-3 mt-6">
                         <Button type="button" variant="outline" onClick={() => setView('list')} className="text-navy hover:bg-offwhite">
                             Cancel
@@ -356,6 +419,9 @@ const ResourceManager = () => {
                         <TabsTrigger value="updates">Regulatory Updates</TabsTrigger>
                         <TabsTrigger value="templates">Templates</TabsTrigger>
                         <TabsTrigger value="casestudies">Case Studies</TabsTrigger>
+                        <TabsTrigger value="projects">Projects</TabsTrigger>
+                        <TabsTrigger value="trainings">Trainings</TabsTrigger>
+                        <TabsTrigger value="activities">Activities</TabsTrigger>
                     </TabsList>
                 </Tabs>
 
@@ -373,29 +439,39 @@ const ResourceManager = () => {
                             <tr className="border-b border-white/10">
                                 <th className="p-4 text-left text-offwhite/60">Title</th>
                                 <th className="p-4 text-left text-offwhite/60">
-                                    {activeTab === 'reports' ? 'Sector' : activeTab === 'updates' ? 'Source' : activeTab === 'templates' ? 'Category' : 'Industry'}
+                                    {activeTab === 'reports' ? 'Sector' :
+                                        activeTab === 'updates' ? 'Source' :
+                                            activeTab === 'templates' ? 'Category' :
+                                                activeTab === 'casestudies' ? 'Industry' :
+                                                    activeTab === 'projects' ? 'Client' :
+                                                        'Category'}
                                 </th>
                                 <th className="p-4 text-left text-offwhite/60">
-                                    {activeTab === 'reports' ? 'Date' : activeTab === 'updates' ? 'Date' : activeTab === 'templates' ? 'Premium' : 'Date'}
+                                    {activeTab === 'templates' ? 'Premium' : 'Date'}
                                 </th>
                                 <th className="p-4 text-right text-offwhite/60">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.map(item => (
-                                <tr key={item.id} className="border-b border-white/5 hover:bg-white/5">
+                                <tr key={item._id || item.id} className="border-b border-white/5 hover:bg-white/5">
                                     <td className="p-4 text-white font-medium">{item.title}</td>
                                     <td className="p-4 text-offwhite/80">
-                                        {activeTab === 'reports' ? item.sector : activeTab === 'updates' ? item.source : activeTab === 'templates' ? item.category : item.clientIndustry}
+                                        {activeTab === 'reports' ? item.sector :
+                                            activeTab === 'updates' ? item.source :
+                                                activeTab === 'templates' ? item.category :
+                                                    activeTab === 'casestudies' ? item.clientIndustry :
+                                                        activeTab === 'projects' ? item.client :
+                                                            (item.category || item.client)}
                                     </td>
                                     <td className="p-4 text-offwhite/80">
-                                        {activeTab === 'reports' ? item.date : activeTab === 'updates' ? item.date : activeTab === 'templates' ? (item.premium ? 'Yes' : 'No') : item.date}
+                                        {activeTab === 'templates' ? (item.premium ? 'Yes' : 'No') : item.date}
                                     </td>
                                     <td className="p-4 text-right space-x-2">
                                         <button onClick={() => handleEdit(item)} className="p-2 hover:text-gold transition-colors">
                                             <Edit size={16} />
                                         </button>
-                                        <button onClick={() => handleDelete(item.id)} className="p-2 hover:text-red-400 transition-colors">
+                                        <button onClick={() => handleDelete(item._id || item.id)} className="p-2 hover:text-red-400 transition-colors">
                                             <Trash2 size={16} />
                                         </button>
                                     </td>

@@ -5,6 +5,11 @@ const blogSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    },
     content: {
         type: String,
         required: true
@@ -36,6 +41,13 @@ const blogSchema = mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Database indexes for performance
+blogSchema.index({ slug: 1 }); // Unique index for URL routing
+blogSchema.index({ status: 1, createdAt: -1 }); // Common query: published blogs sorted by date
+blogSchema.index({ tags: 1 });
+blogSchema.index({ categories: 1 });
+blogSchema.index({ createdAt: -1 });
 
 const Blog = mongoose.model('Blog', blogSchema);
 module.exports = Blog;

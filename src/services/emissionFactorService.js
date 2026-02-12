@@ -1,148 +1,245 @@
-// Unified Emission Factor Service 
-// Points to the formal CCTS backend database with local fallback
+import axios from 'axios';
 
-import { getEmissionFactors, createEmissionFactor, updateEmissionFactor, deleteEmissionFactor } from './cctsEmissionFactorService';
+const API_BASE = '/api/emission-factors';
 
-const EMISSION_FACTORS_KEY = 'sustainsutra_emission_factors';
+// Cache for emission factors
+let factorsCache = null;
+let categoriesCache = null;
+let cacheTimestamp = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-// Default / Fallback factors (baseline data)
-const defaultEmissionFactors = [
-    { id: 'ef-1', name: 'Natural Gas', scope: 1, category: 'Stationary Combustion', unit: 'kgCO2e/m³', factor: 1.93, source: 'EPA 2023', year: 2023 },
-    { id: 'ef-2', name: 'Diesel (Stationary)', scope: 1, category: 'Stationary Combustion', unit: 'kgCO2e/liter', factor: 2.68, source: 'DEFRA 2023', year: 2023 },
-    { id: 'ef-3', name: 'Coal', scope: 1, category: 'Stationary Combustion', unit: 'kgCO2e/kg', factor: 2.42, source: 'IPCC', year: 2023 },
-    { id: 'ef-4', name: 'Petrol (Gasoline)', scope: 1, category: 'Mobile Combustion', unit: 'kgCO2e/liter', factor: 2.31, source: 'EPA 2023', year: 2023 },
-    { id: 'ef-5', name: 'Diesel (Mobile)', scope: 1, category: 'Mobile Combustion', unit: 'kgCO2e/liter', factor: 2.68, source: 'EPA 2023', year: 2023 },
-    { id: 'ef-6', name: 'R-134a (Refrigerant)', scope: 1, category: 'Fugitive Emissions', unit: 'kgCO2e/kg', factor: 1430, source: 'IPCC AR5', year: 2023 },
-    { id: 'ef-7', name: 'Grid Electricity (India)', scope: 2, category: 'Purchased Electricity', unit: 'kgCO2e/kWh', factor: 0.82, source: 'CEA India 2023', year: 2023 },
-    { id: 'ef-10', name: 'Paper Products', scope: 3, category: 'Cat 1: Purchased Goods', unit: 'kgCO2e/kg', factor: 1.06, source: 'DEFRA 2023', year: 2023 },
-    { id: 'ef-11', name: 'Steel', scope: 3, category: 'Cat 1: Purchased Goods', unit: 'kgCO2e/kg', factor: 2.1, source: 'World Steel 2023', year: 2023 },
-    { id: 'ef-15', name: 'Air Travel (Short-haul)', scope: 3, category: 'Cat 6: Business Travel', unit: 'kgCO2e/passenger-km', factor: 0.15, source: 'DEFRA 2023', year: 2023 }
-];
-
-// Helper to normalize scope between the two modules
-const normalizeScope = (scope) => {
-    if (typeof scope === 'number') return scope;
-    if (scope === 'Scope 1') return 1;
-    if (scope === 'Scope 2') return 2;
-    if (scope === 'Scope 3') return 3;
-    return parseInt(scope.toString().replace(/\D/g, '')) || 1;
-};
-
-const denormalizeScope = (scope) => {
-    return `Scope ${scope}`;
-};
-
-export const emissionFactorService = {
-    // Get all emission factors (from API with local fallback)
-    getAll: async () => {
+/**
+ * EmissionFactorService - API service for fetching emission factors dynamically
+ */
+const emissionFactorService = {
+    /**
+     * Get emission factors with pagination and filters
+     * @param {Object} params - Query parameters
+     * @param {string} params.category - Filter by category
+     * @param {string} params.subcategory - Filter by subcategory
+     * @param {string} params.gas - Filter by gas type
+     * @param {string} params.region - Filter by region
+     * @param {number} params.page - Page number
+     * @param {number} params.limit - Items per page
+     */
+    async getFactors(params = {}) {
         try {
-            // Attempt to fetch from official CCTS database
-            const res = await getEmissionFactors();
-            if (res && res.data && res.data.length > 0) {
-                // Return normalized API data
-                return res.data.map(f => ({
-                    ...f,
-                    id: f._id || f.id,
-                    scope: normalizeScope(f.scope)
-                }));
-            }
+            const response = await axios.get(API_BASE, { params });
+            return response.data;
         } catch (error) {
-            console.warn('CCTS API unreachable, falling back to local emission database');
+            console.error('Error fetching emission factors:', error);
+            throw error;
         }
-
-        // Fallback to local storage or defaults
-        const local = localStorage.getItem(EMISSION_FACTORS_KEY);
-        if (local) return JSON.parse(local).map(f => ({ ...f, scope: normalizeScope(f.scope) }));
-
-        return defaultEmissionFactors;
     },
 
-    // Sync local with API (called by admin or on app load)
-    sync: async () => {
-        const factors = await emissionFactorService.getAll();
-        localStorage.setItem(EMISSION_FACTORS_KEY, JSON.stringify(factors));
-        return factors;
+    /**
+     * Search emission factors with full-text search
+     * @param {string} query - Search query
+     * @param {Object} filters - Additional filters
+     */
+    async search(query, filters = {}) {
+        try {
+            const response = await axios.get(`${API_BASE}/search`, {
+                params: { q: query, ...filters }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error searching emission factors:', error);
+            throw error;
+        }
     },
 
-    // Add new emission factor (Updates both Backend and Local)
-    add: async (factorData, token) => {
-        try {
-            // 1. Try updating backend if token exists
-            if (token) {
-                const apiData = {
-                    ...factorData,
-                    scope: denormalizeScope(factorData.scope)
-                };
-                const res = await createEmissionFactor(token, apiData);
-                return { ...res.data, id: res.data._id, scope: normalizeScope(res.data.scope) };
-            }
-        } catch (error) {
-            console.error('Failed to create factor on backend:', error);
+    /**
+     * Get categories with subcategory breakdown
+     */
+    async getCategories() {
+        // Return cached if valid
+        if (categoriesCache && cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_DURATION)) {
+            return categoriesCache;
         }
 
-        // 2. Always update local storage as well
-        const factors = JSON.parse(localStorage.getItem(EMISSION_FACTORS_KEY) || '[]');
-        const newFactor = {
-            ...factorData,
-            id: `ef-${Date.now()}`,
-            createdAt: new Date().toISOString()
+        try {
+            const response = await axios.get(`${API_BASE}/categories`);
+            categoriesCache = response.data;
+            cacheTimestamp = Date.now();
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get single emission factor by MongoDB ID
+     * @param {string} id - MongoDB document ID
+     */
+    async getById(id) {
+        try {
+            const response = await axios.get(`${API_BASE}/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching emission factor:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get emission factor by EFDB ID
+     * @param {string} efId - EFDB ID (e.g., "IND-GRID-2024")
+     */
+    async getByEfId(efId) {
+        try {
+            const response = await axios.get(`${API_BASE}/ef/${efId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching emission factor:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get curated factors for specific use cases
+     * @param {string} type - Curated set type: 'brsr', 'carbon_calculator', 'transport', 'electricity_india'
+     */
+    async getCurated(type) {
+        try {
+            const response = await axios.get(`${API_BASE}/curated/${type}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching curated factors:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get database statistics
+     */
+    async getStats() {
+        try {
+            const response = await axios.get(`${API_BASE}/stats`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Get all emission factors (returns array for UI compatibility)
+     */
+    async getAll() {
+        const data = await this.getFactors();
+        return data.factors || data;
+    },
+
+    /**
+     * Add new emission factor (Admin)
+     */
+    async add(data, token) {
+        try {
+            const response = await axios.post(API_BASE, data, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error adding emission factor:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Update emission factor (Admin)
+     */
+    async update(id, data, token) {
+        try {
+            const response = await axios.put(`${API_BASE}/${id}`, data, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error updating emission factor:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Delete emission factor (Admin)
+     */
+    async delete(id, token) {
+        try {
+            const response = await axios.delete(`${API_BASE}/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting emission factor:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Bulk upload emission factors (Admin)
+     * Placeholder for now as backend doesn't have a dedicated bulk route yet
+     */
+    async bulkUpload(data, token) {
+        console.log('Bulk upload not yet fully implemented on backend, processing sequentially...');
+        let count = 0;
+        for (const item of data) {
+            try {
+                await this.add(item, token);
+                count++;
+            } catch (error) {
+                console.error('Error in sequential bulk upload:', error);
+            }
+        }
+        return { success: true, count };
+    },
+
+    /**
+     * Clear cache
+     */
+    clearCache() {
+        factorsCache = null;
+        categoriesCache = null;
+        cacheTimestamp = null;
+    },
+
+    /**
+     * Get India-specific grid electricity factor
+     * @param {string} region - 'national', 'northern', 'western', 'southern', 'eastern', 'northeastern'
+     */
+    async getIndiaGridFactor(region = 'national') {
+        const efIdMap = {
+            national: 'IND-GRID-2024',
+            northern: 'IND-GRID-NORTH-2024',
+            western: 'IND-GRID-WEST-2024',
+            southern: 'IND-GRID-SOUTH-2024',
+            eastern: 'IND-GRID-EAST-2024',
+            northeastern: 'IND-GRID-NE-2024'
         };
-        factors.push(newFactor);
-        localStorage.setItem(EMISSION_FACTORS_KEY, JSON.stringify(factors));
-        return newFactor;
+
+        const efId = efIdMap[region] || efIdMap.national;
+        return this.getByEfId(efId);
     },
 
-    // Update emission factor
-    update: async (id, updates, token) => {
-        try {
-            if (token && id.length > 10) { // Assume mongoID if long
-                const apiUpdates = {
-                    ...updates,
-                    scope: updates.scope ? denormalizeScope(updates.scope) : undefined
-                };
-                await updateEmissionFactor(token, id, apiUpdates);
-            }
-        } catch (error) {
-            console.error('Failed to update factor on backend:', error);
+    /**
+     * Calculate CO2e from activity data
+     * @param {number} activityValue - Activity value (e.g., kWh, liters)
+     * @param {Object} factor - Emission factor object
+     * @param {Object} gwp - GWP values (optional)
+     */
+    calculateEmissions(activityValue, factor, gwp = { CO2: 1, CH4: 27.9, N2O: 273 }) {
+        if (!factor || !activityValue) return 0;
+
+        let emissions = activityValue * factor.value;
+
+        // Apply GWP if not already CO2e
+        if (factor.gas !== 'CO2e' && gwp[factor.gas]) {
+            emissions *= gwp[factor.gas];
         }
 
-        const factors = JSON.parse(localStorage.getItem(EMISSION_FACTORS_KEY) || '[]');
-        const index = factors.findIndex(f => f.id === id);
-        if (index !== -1) {
-            factors[index] = { ...factors[index], ...updates };
-            localStorage.setItem(EMISSION_FACTORS_KEY, JSON.stringify(factors));
-            return factors[index];
-        }
-        return null;
-    },
-
-    // Delete emission factor
-    delete: async (id, token) => {
-        try {
-            if (token && id.length > 10) {
-                await deleteEmissionFactor(token, id);
-            }
-        } catch (error) {
-            console.error('Failed to delete factor on backend:', error);
-        }
-
-        const factors = JSON.parse(localStorage.getItem(EMISSION_FACTORS_KEY) || '[]');
-        const filtered = factors.filter(f => f.id !== id);
-        localStorage.setItem(EMISSION_FACTORS_KEY, JSON.stringify(filtered));
-        return true;
-    },
-
-    // Search and Filters (Legacy Wrapper)
-    getAllSync: () => {
-        const local = localStorage.getItem(EMISSION_FACTORS_KEY);
-        return local ? JSON.parse(local) : defaultEmissionFactors;
+        return emissions;
     }
 };
 
-// Initial sync
-if (typeof window !== 'undefined') {
-    // Non-blocking sync
-    emissionFactorService.getAll().then(factors => {
-        localStorage.setItem(EMISSION_FACTORS_KEY, JSON.stringify(factors));
-    });
-}
+export default emissionFactorService;

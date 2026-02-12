@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { emissionFactorService } from '@/services/emissionFactorService';
+import emissionFactorService from '@/services/emissionFactorService';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -118,12 +118,12 @@ const EmissionFactorManager = ({ onDataChange }) => {
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = async (event) => {
             try {
                 const data = JSON.parse(event.target.result);
 
                 if (Array.isArray(data)) {
-                    const result = emissionFactorService.bulkUpload(data);
+                    const result = await emissionFactorService.bulkUpload(data, token);
                     toast({
                         title: "Bulk Upload Successful!",
                         description: `${result.count} emission factors added.`

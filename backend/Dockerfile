@@ -1,3 +1,5 @@
+# SustainSutra Backend Dockerfile
+
 FROM node:18-alpine
 
 WORKDIR /app
@@ -8,7 +10,7 @@ RUN apk add --no-cache curl
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies with legacy peer deps support
+# Install dependencies
 RUN npm install --production --legacy-peer-deps
 
 # Copy application code

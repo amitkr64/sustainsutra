@@ -415,8 +415,8 @@ const VerificationDetail = () => {
                                         ))}
                                     </div>
                                 )}
-                            </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

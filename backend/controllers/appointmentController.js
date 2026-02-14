@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Appointment = require('../models/appointmentModel');
 
 // 🛡️ Mock Storage for Demo Mode
-let mockAppointments = global.mockAppointments;
+let mockAppointments = global.mockAppointments || [];
 
 // @desc    Get all appointments
 // @route   GET /api/appointments

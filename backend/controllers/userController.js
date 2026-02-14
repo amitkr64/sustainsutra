@@ -196,6 +196,48 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(req.user);
 });
 
+// @desc    Update user profile
+// @route   PUT /api/users/me
+// @access  Private
+const updateMe = asyncHandler(async (req, res) => {
+    const { name, email, phone, bio } = req.body;
+
+    // Get user
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+
+    // Update fields if provided
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone !== undefined) user.phone = phone;
+    if (bio !== undefined) user.bio = bio;
+
+    try {
+        const updatedUser = await user.save();
+
+        res.status(200).json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            phone: updatedUser.phone,
+            role: updatedUser.role,
+            bio: updatedUser.bio
+        });
+    } catch (err) {
+        logger.error('User update error:', err);
+        if (err.code === 11000) {
+            res.status(400);
+            throw new Error('Email already exists');
+        }
+        res.status(500);
+        throw new Error('Error updating user profile');
+    }
+});
+
 // @desc    Update user password
 // @route   PUT /api/users/update-password
 // @access  Private
@@ -274,5 +316,6 @@ module.exports = {
     loginUser,
     logoutUser,
     getMe,
+    updateMe,
     updatePassword,
 };

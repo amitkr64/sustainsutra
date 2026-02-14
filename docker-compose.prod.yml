@@ -22,6 +22,9 @@ services:
   # FRONTEND SERVICE
   # ============================================================================
   frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     image: amitkr64/sustainsutra-frontend:latest
     container_name: sustainsutra-frontend
     restart: unless-stopped
@@ -82,6 +85,9 @@ services:
   # BACKEND SERVICE
   # ============================================================================
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     image: amitkr64/sustainsutra-backend:latest
     container_name: sustainsutra-backend
     restart: unless-stopped

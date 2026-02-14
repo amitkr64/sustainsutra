@@ -202,21 +202,29 @@ const getMe = asyncHandler(async (req, res) => {
 const updateMe = asyncHandler(async (req, res) => {
     const { name, email, phone, bio } = req.body;
 
-    // Get user
-    const user = await User.findById(req.user.id);
-
-    if (!user) {
-        res.status(404);
-        throw new Error('User not found');
-    }
-
-    // Update fields if provided
-    if (name) user.name = name;
-    if (email) user.email = email;
-    if (phone !== undefined) user.phone = phone;
-    if (bio !== undefined) user.bio = bio;
-
     try {
+        // Get user
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            res.status(404);
+            throw new Error('User not found');
+        }
+
+        // Update fields if provided and different
+        if (name && name !== user.name) user.name = name;
+        if (email && email !== user.email) {
+            // Check if email already exists
+            const emailExists = await User.findOne({ email });
+            if (emailExists && emailExists._id.toString() !== user._id.toString()) {
+                res.status(400);
+                throw new Error('Email already in use');
+            }
+            user.email = email;
+        }
+        if (phone !== undefined) user.phone = phone;
+        if (bio !== undefined) user.bio = bio;
+
         const updatedUser = await user.save();
 
         res.status(200).json({
@@ -232,6 +240,10 @@ const updateMe = asyncHandler(async (req, res) => {
         if (err.code === 11000) {
             res.status(400);
             throw new Error('Email already exists');
+        }
+        if (err.name === 'ValidationError') {
+            res.status(400);
+            throw new Error(err.message);
         }
         res.status(500);
         throw new Error('Error updating user profile');

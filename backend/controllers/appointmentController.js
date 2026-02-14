@@ -12,6 +12,17 @@ const getAppointments = asyncHandler(async (req, res) => {
     res.json(appointments);
 });
 
+// @desc    Get user's own appointments
+// @route   GET /api/appointments/my
+// @access  Private
+const getMyAppointments = asyncHandler(async (req, res) => {
+    if (global.isDemoMode) {
+        return res.json(global.mockAppointments.filter(a => a.email === req.user.email));
+    }
+    const appointments = await Appointment.find({ email: req.user.email }).sort({ createdAt: -1 });
+    res.json(appointments);
+});
+
 // @desc    Create appointment request
 // @route   POST /api/appointments
 // @access  Public (or Private user)
@@ -69,6 +80,7 @@ const updateAppointment = asyncHandler(async (req, res) => {
 
 module.exports = {
     getAppointments,
+    getMyAppointments,
     createAppointment,
     updateAppointment
 };

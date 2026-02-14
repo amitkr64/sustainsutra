@@ -196,6 +196,57 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(req.user);
 });
 
+// @desc    Update user password
+// @route   PUT /api/users/update-password
+// @access  Private
+const updatePassword = asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    // Validation
+    if (!currentPassword || !newPassword) {
+        res.status(400);
+        throw new Error('Please provide both current and new password');
+    }
+
+    if (newPassword.length < 6) {
+        res.status(400);
+        throw new Error('New password must be at least 6 characters long');
+    }
+
+    // Get user with password
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+
+    // Verify current password
+    const isPasswordValid = await user.matchPassword(currentPassword);
+
+    if (!isPasswordValid) {
+        res.status(401);
+        throw new Error('Current password is incorrect');
+    }
+
+    // Update password
+    user.password = newPassword;
+
+    try {
+        await user.save();
+        logger.info(`Password updated for user: ${user.email}`);
+
+        res.status(200).json({
+            success: true,
+            message: 'Password updated successfully'
+        });
+    } catch (err) {
+        logger.error('Password update error:', err);
+        res.status(500);
+        throw new Error('Error updating password');
+    }
+});
+
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout
 // @access  Public
@@ -223,4 +274,5 @@ module.exports = {
     loginUser,
     logoutUser,
     getMe,
+    updatePassword,
 };

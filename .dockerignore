@@ -317,6 +317,18 @@ babel.config.js
 !src/main.jsx
 !src/main.tsx
 
+# Keep Vite configuration (needed for build)
+!vite.config.js
+!vite.config.ts
+
+# Keep PostCSS and Tailwind config
+!postcss.config.js
+!tailwind.config.js
+
+# Keep ESLint config
+!.eslintrc.cjs
+!.eslintrc.json
+
 # ============================================================================
 # END OF CONFIGURATION
 # ============================================================================

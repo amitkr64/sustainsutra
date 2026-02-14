@@ -136,3 +136,4 @@ export default {
     updateEmissionFactor,
     deleteEmissionFactor
 };
+const API_BASE = '/api/emission-factors';

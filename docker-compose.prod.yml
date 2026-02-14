@@ -1,16 +1,17 @@
 # ============================================================================
-# SustainSutra - Production Docker Compose (BUILD FROM GITHUB)
+# SustainSutra - Production Docker Compose (NO SECRETS VERSION)
 # ============================================================================
-# IMPORTANT: This configuration builds from GitHub source
-# This ensures you get the latest fixed code with corrected package.json
+# IMPORTANT: This version does NOT require Docker Secrets
+# All sensitive values are passed as environment variables
 #
-# DEPLOYMENT INSTRUCTIONS:
-# 1. In Portainer: Stacks → Add Stack
-# 2. Repository URL: https://github.com/amitkr64/sustainsutra.git
-# 3. Branch: main
-# 4. Compose Path: docker-compose.prod.yml
-# 5. Enable "Auto-build"
-# 6. Deploy!
+# ============================================================================
+# DEPLOYMENT INSTRUCTIONS
+# ============================================================================
+#
+# PRE-DEPLOYMENT CHECKLIST:
+# [ ] Update environment variables below with your values
+# [ ] In Portainer, deploy this stack
+# [ ] Verify all services start successfully
 #
 # ============================================================================
 
@@ -18,21 +19,19 @@ version: '3.8'
 
 services:
   # ============================================================================
-  # FRONTEND SERVICE (BUILD FROM GITHUB)
+  # FRONTEND SERVICE
   # ============================================================================
   frontend:
-    build:
-      context: https://github.com/amitkr64/sustainsutra.git#main
-      dockerfile: Dockerfile
+    image: amitkr64/sustainsutra-frontend:latest
     container_name: sustainsutra-frontend
     restart: unless-stopped
 
     ports:
-      - "${FRONTEND_PORT:-8085}:80"
+      - "8085:80"
 
     environment:
       # API Configuration
-      - VITE_API_URL=${API_URL:-http://backend:5000}
+      - VITE_API_URL=http://backend:5000
       - NODE_ENV=production
 
       # Feature Flags
@@ -44,7 +43,7 @@ services:
       - VITE_SENTRY_ENVIRONMENT=production
 
       # Payment Gateway
-      - VITE_RAZORPAY_KEY=${RAZORPAY_KEY_ID:-}
+      - VITE_RAZORPAY_KEY=${RAZORPAY_KEY:-}
 
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
@@ -80,17 +79,15 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # BACKEND SERVICE (BUILD FROM GITHUB)
+  # BACKEND SERVICE
   # ============================================================================
   backend:
-    build:
-      context: https://github.com/amitkr64/sustainsutra.git#main
-      dockerfile: backend/Dockerfile
+    image: amitkr64/sustainsutra-backend:latest
     container_name: sustainsutra-backend
     restart: unless-stopped
 
     ports:
-      - "${BACKEND_PORT:-5000}:5000"
+      - "5000:5000"
 
     environment:
       # Server Configuration
@@ -103,8 +100,8 @@ services:
       - REQUIRE_DB=false
       - DEMO_MODE=false
 
-      # Security (using Docker Secrets)
-      - JWT_SECRET_FILE=/run/secrets/jwt_secret
+      # Security (IMPORTANT: Change these in production!)
+      - JWT_SECRET=${JWT_SECRET:-your_super_secret_jwt_key_change_this_in_production}
       - JWT_EXPIRE=${JWT_EXPIRE:-7d}
 
       # CORS Configuration
@@ -119,27 +116,27 @@ services:
       - MAX_FILE_SIZE=${MAX_FILE_SIZE:-10485760}
       - UPLOAD_DIR=/app/uploads
 
-      # Email Configuration
+      # Email Configuration (Optional)
       - EMAIL_HOST=${EMAIL_HOST:-smtp.gmail.com}
       - EMAIL_PORT=${EMAIL_PORT:-587}
       - EMAIL_SECURE=false
-      - EMAIL_USER=${EMAIL_USER:-}
-      - EMAIL_PASS_FILE=/run/secrets/email_password
+      - EMAIL_USER=${EMAIL_USER:-your-email@gmail.com}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-your-app-password}
       - EMAIL_FROM=${EMAIL_FROM:-noreply@sustainsutra.in}
 
-      # Payment Gateway
+      # Payment Gateway (Optional)
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-}
-      - RAZORPAY_KEY_SECRET_FILE=/run/secrets/razorpay_secret
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
 
-      # Error Tracking
-      - SENTRY_DSN_FILE=/run/secrets/sentry_dsn
+      # Error Tracking (Optional)
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - SENTRY_ENVIRONMENT=production
 
-    secrets:
-      - jwt_secret
-      - email_password
-      - razorpay_secret
-      - sentry_dsn
+      # Demo Mode (should be false in production)
+      - DEMO_MODE=false
+
+      # AI API Keys (Optional)
+      - ZHIPU_API_KEY=${ZHIPU_API_KEY:-}
 
     volumes:
       - uploads-data:/app/uploads
@@ -160,6 +157,11 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
     labels:
       - "com.sustainsutra.service=backend"
@@ -186,23 +188,29 @@ services:
     container_name: sustainsutra-mongo
     restart: unless-stopped
 
-    environment:
-      # Enable authentication
-      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/mongo_root_username
-      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/mongo_root_password
-      - MONGO_INITDB_DATABASE=sustainsutra
-
-      # Enable journaling for data durability
-      - MONGO_JOURNAL=true
-
-    secrets:
-      - mongo_root_username
-      - mongo_root_password
-
     volumes:
       - mongo-data:/data/db
       - mongo-config:/data/configdb
       - mongo-backup:/data/backup
+
+    environment:
+      # Database Configuration
+      - MONGO_INITDB_DATABASE=sustainsutra
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-securePassword123}
+      - MONGO_INITDB_PWD_LENGTH=8
+
+      # Enable authentication
+      - MONGO_INITDB_PWD_AUTHENTICATION=yes
+
+      # Enable journaling for data durability
+      - MONGO_JOURNAL=true
+
+      # Disable telemetry (optional)
+      - MONGO_DISABLE_PREALLOC=0
+      - MONGO_DISABLE_JOURNAL=0
+      - MONGO_NOJOIN=0
+      - MONGO_NOPREALLOC=0
 
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
@@ -219,10 +227,16 @@ services:
         reservations:
           cpus: '0.5'
           memory: 1G
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
 
     labels:
       - "com.sustainsutra.service=database"
       - "com.sustainsutra.version=7.0"
+      - "com.sustainsutra.description=MongoDB Database"
 
     networks:
       - sustainsutra-network
@@ -233,17 +247,11 @@ services:
         max-size: "10m"
         max-file: "3"
 
-# ============================================================================
-# NETWORKS
-# ============================================================================
 networks:
   sustainsutra-network:
     name: sustainsutra-network
     driver: bridge
 
-# ============================================================================
-# VOLUMES
-# ============================================================================
 volumes:
   # Primary database storage
   mongo-data:
@@ -269,36 +277,6 @@ volumes:
   logs-data:
     name: sustainsutra-logs-data
     driver: local
-
-# ============================================================================
-# SECRETS (Create in Portainer before deploying)
-# ============================================================================
-# IMPORTANT: These secrets must exist in Portainer before deployment!
-
-secrets:
-  jwt_secret:
-    external: true
-    name: sustainsutra_jwt_secret
-
-  email_password:
-    external: true
-    name: sustainsutra_email_password
-
-  razorpay_secret:
-    external: true
-    name: sustainsutra_razorpay_secret
-
-  sentry_dsn:
-    external: true
-    name: sustainsutra_sentry_dsn
-
-  mongo_root_username:
-    external: true
-    name: sustainsutra_mongo_username
-
-  mongo_root_password:
-    external: true
-    name: sustainsutra_mongo_password
 
 # ============================================================================
 # END OF CONFIGURATION

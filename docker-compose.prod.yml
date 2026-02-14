@@ -23,7 +23,7 @@ services:
   # ============================================================================
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     image: amitkr64/sustainsutra-frontend:latest
     container_name: sustainsutra-frontend

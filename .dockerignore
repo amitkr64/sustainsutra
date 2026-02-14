@@ -1,0 +1,322 @@
+# ============================================================================
+# SustainSutra - Docker Build Ignore File
+# ============================================================================
+# Purpose: Exclude unnecessary files from Docker build context
+# Benefits: Faster builds, smaller images, reduced attack surface
+#
+# ============================================================================
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+.github
+
+# Documentation (not needed in container)
+*.md
+docs/
+README.*
+CHANGELOG.*
+LICENSE
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-*
+
+# Build Artifacts (will be generated in container)
+dist/
+build/
+out/
+target/
+
+# Dependencies (will be installed in container)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+.pnp
+.pnp.js
+
+# Environment Files (SECRET - DO NOT COPY TO IMAGE)
+.env
+.env.*
+!.env.example
+
+# Logs (don't copy logs to image)
+*.log
+logs/
+log/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing & Coverage (not needed in production)
+coverage/
+.nyc_output/
+test-results/
+*.test.js
+*.spec.js
+__tests__/
+tests/
+*.test.tsx
+*.spec.tsx
+
+# Development Tools (not needed in production)
+.eslintrc*
+.prettierrc*
+.prettierignore
+.editorconfig
+.stylelintrc*
+.babelrc*
+jest.config.*
+vitest.config.*
+cypress/
+.playwright/
+
+# CI/CD (not needed in image)
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+.github/
+appveyor.yml
+Jenkinsfile
+azure-pipelines.yml
+
+# Docker Files (recursive!)
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Deployment Files (not needed in image)
+*.sh
+deploy/
+scripts/
+k8s/
+kubernetes/
+helm/
+
+# Backup & Temporary Files
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.patch
+.tmp/
+temp/
+tmp/
+
+# OS Files (Windows/Mac/Linux)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Database & Data Files (not needed in image)
+*.sqlite
+*.db
+*.mdb
+*.sql
+*.sql.gz
+data/
+db/
+
+# Upload & User Generated Files (will be mounted as volume)
+uploads/
+user-files/
+public/uploads/
+static/uploads/
+
+# Cache & Temporary Directories
+.cache/
+.parcel-cache/
+.vite/
+.turbo/
+.next/
+.nuxt/
+.cache-loader/
+
+# Audio, Video & Images (source files, not optimized)
+*.psd
+*.ai
+*.sketch
+*.fla
+*.mp3
+*.wav
+*.ogg
+*.avi
+*.mp4
+*.mov
+*.wmv
+
+# Screenshots (development artifacts)
+screenshots/
+*.png
+*.jpg
+*.jpeg
+!public/assets/images/
+
+# Secrets & Certificates (NEVER COPY TO IMAGE)
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+secrets/
+.secrets/
+*.secrets
+
+# AI & Agent Tools
+.agent/
+.gemini/
+.cursor/
+.claude/
+
+# Package Manager Lock Files (allow only one)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Misc Development Files
+.editorconfig
+.eslintcache
+.prettiercache
+.stylelintcache
+
+# Python (if any Python tools used)
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.venv/
+venv/
+ENV/
+
+# Rust (if any Rust tools used)
+Cargo.lock
+target/
+
+# Java (if any Java tools used)
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Node (specific to node_modules and build artifacts)
+.node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Upload & Media Directories (will be mounted as volumes)
+uploads/
+media/
+static/media/
+public/uploads/
+
+# Logs & Monitoring (not needed in image)
+logs/
+*.log
+log.txt
+npm-debug.log
+
+# Backup & Archive Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# IDE - VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - JetBrains/WebStorm/IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# IDE - Vim
+*.swp
+*.swo
+*.swn
+*.un~
+
+# IDE - Emacs
+*~
+\#*\#
+.\#*
+
+# Development & Testing
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+*.test.tsx
+*.spec.tsx
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Build Tools Configuration (not needed in runtime)
+tsconfig.json
+rollup.config.js
+vite.config.js
+webpack.config.js
+babel.config.js
+.postcssrc*
+.prettierrc*
+.eslintrc*
+
+# ============================================================================
+# EXCEPTIONS - Files to Keep
+# ============================================================================
+
+# Keep production dependencies files
+!package.json
+!package-lock.json
+
+# Keep build configuration
+!Dockerfile
+!nginx.conf
+
+# Keep public assets
+!public/
+!public/assets/
+!public/favicon.ico
+
+# Keep index files
+!index.html
+
+# Keep entry point
+!src/main.jsx
+!src/main.tsx
+
+# ============================================================================
+# END OF CONFIGURATION
+# ============================================================================

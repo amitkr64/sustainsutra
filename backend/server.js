@@ -104,14 +104,15 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/blogs', require('./routes/blogRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
-app.use('/api/upload', require('./routes/uploadRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
+// TODO: Implement missing routes
+// app.use('/api/upload', require('./routes/uploadRoutes'));
+// app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/emission-factors', require('./routes/emissionFactorRoutes'));
-app.use('/api/payment', require('./routes/paymentRoutes'));
-app.use('/api/ccc', require('./routes/cctcRoutes'));
-app.use('/api/btec', require('./routes/btecRoutes'));
-app.use('/api/ccts', require('./routes/cctsEntityRoutes'));
-app.use('/api/ccts', require('./routes/cctsVerifierRoutes'));
+// app.use('/api/payment', require('./routes/paymentRoutes'));
+// app.use('/api/ccc', require('./routes/cctcRoutes'));
+// app.use('/api/btec', require('./routes/btecRoutes'));
+// app.use('/api/ccts/entity', require('./routes/cctsEntityRoutes'));
+// app.use('/api/ccts/verifier', require('./routes/cctsVerifierRoutes'));
 
 // Error handling middleware (must be last)
 app.use((err, req, res, next) => {

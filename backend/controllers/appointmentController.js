@@ -4,11 +4,27 @@ const Appointment = require('../models/appointmentModel');
 // 🛡️ Mock Storage for Demo Mode
 let mockAppointments = global.mockAppointments || [];
 
-// @desc    Get all appointments
+// @desc    Get all appointments (admin) or user's own appointments (user)
 // @route   GET /api/appointments
-// @access  Private/Admin
+// @access  Private
 const getAppointments = asyncHandler(async (req, res) => {
-    const appointments = await Appointment.find({}).sort({ createdAt: -1 });
+    // Demo Mode
+    if (global.isDemoMode) {
+        // Admin gets all, regular user gets their own
+        if (req.user.role === 'admin') {
+            return res.json(global.mockAppointments);
+        }
+        return res.json(global.mockAppointments.filter(a => a.email === req.user.email));
+    }
+
+    // Production
+    if (req.user.role === 'admin') {
+        const appointments = await Appointment.find({}).sort({ createdAt: -1 });
+        return res.json(appointments);
+    }
+
+    // Regular user gets their own appointments
+    const appointments = await Appointment.find({ email: req.user.email }).sort({ createdAt: -1 });
     res.json(appointments);
 });
 
@@ -16,9 +32,12 @@ const getAppointments = asyncHandler(async (req, res) => {
 // @route   GET /api/appointments/my
 // @access  Private
 const getMyAppointments = asyncHandler(async (req, res) => {
+    // Demo Mode: Return mock appointments for this user
     if (global.isDemoMode) {
         return res.json(global.mockAppointments.filter(a => a.email === req.user.email));
     }
+
+    // Production: Query MongoDB
     const appointments = await Appointment.find({ email: req.user.email }).sort({ createdAt: -1 });
     res.json(appointments);
 });

@@ -202,6 +202,33 @@ const getMe = asyncHandler(async (req, res) => {
 const updateMe = asyncHandler(async (req, res) => {
     const { name, email, phone, bio } = req.body;
 
+    // Demo Mode: Update mock user
+    if (global.isDemoMode) {
+        const userIndex = global.mockUsers.findIndex(u => String(u._id) === String(req.user._id));
+
+        if (userIndex === -1) {
+            res.status(404);
+            throw new Error('User not found');
+        }
+
+        // Update fields
+        if (name) global.mockUsers[userIndex].name = name;
+        if (email) {
+            // Check if email already exists
+            const emailExists = global.mockUsers.find(u => u.email === email && String(u._id) !== String(req.user._id));
+            if (emailExists) {
+                res.status(400);
+                throw new Error('Email already in use');
+            }
+            global.mockUsers[userIndex].email = email;
+        }
+        if (phone !== undefined) global.mockUsers[userIndex].phone = phone;
+        if (bio !== undefined) global.mockUsers[userIndex].bio = bio;
+
+        return res.status(200).json(global.mockUsers[userIndex]);
+    }
+
+    // Production: Update in MongoDB
     try {
         // Get user
         const user = await User.findById(req.user.id);

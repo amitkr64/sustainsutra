@@ -100,24 +100,28 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-const { notFound, errorHandler } = require('./middleware/errorMiddleware');
-
-// Routes
+// API Routes
 app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/team', require('./routes/teamRoutes'));
 app.use('/api/blogs', require('./routes/blogRoutes'));
-app.use('/api/resources', require('./routes/resourceRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
-app.use('/api/courses', require('./routes/courseRoutes'));
-app.use('/api/newsletter', require('./routes/newsletterRoutes'));
-app.use('/api/ccts', require('./routes/cctsRoutes'));
-app.use('/api/brsr-reports', require('./routes/brsrMasterReportRoutes'));
-app.use('/api/brsr-analysis', require('./routes/brsrAnalysisRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/emission-factors', require('./routes/emissionFactorRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
+app.use('/api/ccc', require('./routes/cctcRoutes'));
+app.use('/api/btec', require('./routes/btecRoutes'));
+app.use('/api/ccts', require('./routes/cctsEntityRoutes'));
+app.use('/api/ccts', require('./routes/cctsVerifierRoutes'));
 
-// Error Middleware
-app.use(notFound);
-app.use(errorHandler);
+// Error handling middleware (must be last)
+app.use((err, req, res, next) => {
+  logger.error(err.stack);
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({
+    success: false,
+    error: err.message || 'Internal Server Error',
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
+});
 
-
- 
+module.exports = app;

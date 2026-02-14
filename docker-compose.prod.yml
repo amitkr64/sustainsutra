@@ -1,23 +1,16 @@
 # ============================================================================
-# SustainSutra - Production Docker Compose Configuration
+# SustainSutra - Production Docker Compose (BUILD FROM GITHUB)
 # ============================================================================
-# Version: 1.0.0
-# Purpose: Production deployment for Portainer
-#
-# PRE-DEPLOYMENT CHECKLIST:
-# [ ] Create Docker Secrets for all sensitive values
-# [ ] Generate secure JWT_SECRET (openssl rand -base64 64)
-# [ ] Configure DOMAIN environment variable
-# [ ] Set up SSL/TLS certificates (or use Traefik)
-# [ ] Configure backup strategy for volumes
-# [ ] Test health checks locally first
+# IMPORTANT: This configuration builds from GitHub source
+# This ensures you get the latest fixed code with corrected package.json
 #
 # DEPLOYMENT INSTRUCTIONS:
-# 1. Copy this file to your Portainer server
-# 2. Create secrets in Portainer (see secrets section below)
-# 3. Set environment variables in Portainer stack configuration
-# 4. Deploy the stack
-# 5. Verify all health checks pass
+# 1. In Portainer: Stacks → Add Stack
+# 2. Repository URL: https://github.com/amitkr64/sustainsutra.git
+# 3. Branch: main
+# 4. Compose Path: docker-compose.prod.yml
+# 5. Enable "Auto-build"
+# 6. Deploy!
 #
 # ============================================================================
 
@@ -25,23 +18,21 @@ version: '3.8'
 
 services:
   # ============================================================================
-  # FRONTEND SERVICE
+  # FRONTEND SERVICE (BUILD FROM GITHUB)
   # ============================================================================
   frontend:
-    image: amitkr64/sustainsutra-frontend:latest
+    build:
+      context: https://github.com/amitkr64/sustainsutra.git#main
+      dockerfile: Dockerfile
     container_name: sustainsutra-frontend
     restart: unless-stopped
 
-    # Port mapping - adjust if using reverse proxy
     ports:
       - "${FRONTEND_PORT:-8085}:80"
 
-    # Environment Variables
     environment:
       # API Configuration
       - VITE_API_URL=${API_URL:-http://backend:5000}
-
-      # Application Environment
       - NODE_ENV=production
 
       # Feature Flags
@@ -52,10 +43,9 @@ services:
       - VITE_SENTRY_DSN=${SENTRY_DSN:-}
       - VITE_SENTRY_ENVIRONMENT=production
 
-      # Payment Gateway (optional - for client-side integration)
+      # Payment Gateway
       - VITE_RAZORPAY_KEY=${RAZORPAY_KEY_ID:-}
 
-    # Health Check
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
       interval: 30s
@@ -63,7 +53,6 @@ services:
       retries: 3
       start_period: 40s
 
-    # Resource Limits
     deploy:
       resources:
         limits:
@@ -72,28 +61,18 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
 
-    # Labels for Portainer organization
     labels:
       - "com.sustainsutra.service=frontend"
       - "com.sustainsutra.version=1.0.0"
-      - "com.sustainsutra.description=Frontend Web Application"
 
-    # Networks
     networks:
       - sustainsutra-network
 
-    # Dependencies
     depends_on:
       backend:
         condition: service_healthy
 
-    # Logging
     logging:
       driver: "json-file"
       options:
@@ -101,18 +80,18 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # BACKEND SERVICE
+  # BACKEND SERVICE (BUILD FROM GITHUB)
   # ============================================================================
   backend:
-    image: amitkr64/sustainsutra-backend:latest
+    build:
+      context: https://github.com/amitkr64/sustainsutra.git#main
+      dockerfile: backend/Dockerfile
     container_name: sustainsutra-backend
     restart: unless-stopped
 
-    # Port mapping - adjust if using reverse proxy
     ports:
       - "${BACKEND_PORT:-5000}:5000"
 
-    # Environment Variables
     environment:
       # Server Configuration
       - NODE_ENV=production
@@ -122,8 +101,9 @@ services:
       # Database Configuration
       - MONGO_URI=mongodb://mongo:27017/sustainsutra
       - REQUIRE_DB=false
+      - DEMO_MODE=false
 
-      # Security (CRITICAL - Use secrets)
+      # Security (using Docker Secrets)
       - JWT_SECRET_FILE=/run/secrets/jwt_secret
       - JWT_EXPIRE=${JWT_EXPIRE:-7d}
 
@@ -139,7 +119,7 @@ services:
       - MAX_FILE_SIZE=${MAX_FILE_SIZE:-10485760}
       - UPLOAD_DIR=/app/uploads
 
-      # Email Configuration (optional)
+      # Email Configuration
       - EMAIL_HOST=${EMAIL_HOST:-smtp.gmail.com}
       - EMAIL_PORT=${EMAIL_PORT:-587}
       - EMAIL_SECURE=false
@@ -147,34 +127,24 @@ services:
       - EMAIL_PASS_FILE=/run/secrets/email_password
       - EMAIL_FROM=${EMAIL_FROM:-noreply@sustainsutra.in}
 
-      # Payment Gateway (optional)
+      # Payment Gateway
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-}
       - RAZORPAY_KEY_SECRET_FILE=/run/secrets/razorpay_secret
 
-      # Error Tracking (optional)
+      # Error Tracking
       - SENTRY_DSN_FILE=/run/secrets/sentry_dsn
       - SENTRY_ENVIRONMENT=production
 
-      # Demo Mode (set to false in production)
-      - DEMO_MODE=false
-
-      # AI API Keys (optional)
-      - ZHIPU_API_KEY=${ZHIPU_API_KEY:-}
-      - ZHIPU_BASE_URL=${ZHIPU_BASE_URL:-https://api.z.ai/api/coding/paas/v4}
-
-    # Docker Secrets
     secrets:
       - jwt_secret
       - email_password
       - razorpay_secret
       - sentry_dsn
 
-    # Volume Mounts
     volumes:
       - uploads-data:/app/uploads
       - logs-data:/app/logs
 
-    # Health Check
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/health"]
       interval: 30s
@@ -182,7 +152,6 @@ services:
       retries: 3
       start_period: 40s
 
-    # Resource Limits
     deploy:
       resources:
         limits:
@@ -191,28 +160,18 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
 
-    # Labels for Portainer organization
     labels:
       - "com.sustainsutra.service=backend"
       - "com.sustainsutra.version=1.0.0"
-      - "com.sustainsutra.description=Backend API Server"
 
-    # Networks
     networks:
       - sustainsutra-network
 
-    # Dependencies
     depends_on:
       mongo:
         condition: service_healthy
 
-    # Logging
     logging:
       driver: "json-file"
       options:
@@ -227,7 +186,6 @@ services:
     container_name: sustainsutra-mongo
     restart: unless-stopped
 
-    # Environment Variables
     environment:
       # Enable authentication
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/mongo_root_username
@@ -237,24 +195,15 @@ services:
       # Enable journaling for data durability
       - MONGO_JOURNAL=true
 
-      # Disable telemetry (optional)
-      - MONGO_DISABLE_PREALLOC=0
-      - MONGO_DISABLE_JOURNAL=0
-      - MONGO_NOJOIN=0
-      - MONGO_NOPREALLOC=0
-
-    # Docker Secrets
     secrets:
       - mongo_root_username
       - mongo_root_password
 
-    # Volume Mounts
     volumes:
       - mongo-data:/data/db
       - mongo-config:/data/configdb
       - mongo-backup:/data/backup
 
-    # Health Check
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -262,7 +211,6 @@ services:
       retries: 5
       start_period: 30s
 
-    # Resource Limits
     deploy:
       resources:
         limits:
@@ -271,85 +219,19 @@ services:
         reservations:
           cpus: '0.5'
           memory: 1G
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
 
-    # Labels for Portainer organization
     labels:
       - "com.sustainsutra.service=database"
       - "com.sustainsutra.version=7.0"
-      - "com.sustainsutra.description=MongoDB Database"
 
-    # Networks
     networks:
       - sustainsutra-network
 
-    # Logging
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-
-  # ============================================================================
-  # MONGODB BACKUP SERVICE (Optional - Recommended for Production)
-  # ============================================================================
-  mongo-backup:
-    image: mongo:7
-    container_name: sustainsutra-mongo-backup
-    restart: "no"
-
-    # Environment Variables
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/sustainsutra
-      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/mongo_root_username
-      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/mongo_root_password
-      - BACKUP_SCHEDULE=${BACKUP_SCHEDULE:-0 2 * * *}
-
-    # Docker Secrets
-    secrets:
-      - mongo_root_username
-      - mongo_root_password
-
-    # Volume Mounts
-    volumes:
-      - mongo-backup:/backup
-      - ./scripts/backup.sh:/backup.sh:ro
-
-    # Backup Command
-    command: >
-      sh -c "
-        chmod +x /backup.sh &&
-        echo 'Installing cron...' &&
-        apk add --no-cache cron &&
-        echo '${BACKUP_SCHEDULE:-0 2 * * *} /backup.sh' | crontab - &&
-        echo 'Starting cron daemon...' &&
-        crond -f -l 2
-      "
-
-    # Labels for Portainer organization
-    labels:
-      - "com.sustainsutra.service=backup"
-      - "com.sustainsutra.description=Automated MongoDB Backup"
-
-    # Networks
-    networks:
-      - sustainsutra-network
-
-    # Dependencies
-    depends_on:
-      mongo:
-        condition: service_healthy
-
-    # Logging
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "5m"
-        max-file: "2"
 
 # ============================================================================
 # NETWORKS
@@ -358,12 +240,6 @@ networks:
   sustainsutra-network:
     name: sustainsutra-network
     driver: bridge
-    driver_opts:
-      com.docker.network.bridge.name: sustainsutra-br0
-      com.docker.network.bridge.enable_icc: "true"
-      com.docker.network.bridge.enable_ip_masquerade: "true"
-    labels:
-      - "com.sustainsutra.network=production"
 
 # ============================================================================
 # VOLUMES
@@ -373,75 +249,32 @@ volumes:
   mongo-data:
     name: sustainsutra-mongo-data
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${MONGO_DATA_PATH:-/var/lib/sustainsutra/mongo/data}
-    labels:
-      - "com.sustainsutra.volume=database"
-      - "com.sustainsutra.backup.required=true"
 
   # Database configuration
   mongo-config:
     name: sustainsutra-mongo-config
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${MONGO_CONFIG_PATH:-/var/lib/sustainsutra/mongo/config}
-    labels:
-      - "com.sustainsutra.volume=config"
 
   # Backup storage
   mongo-backup:
     name: sustainsutra-mongo-backup
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${MONGO_BACKUP_PATH:-/var/lib/sustainsutra/mongo/backup}
-    labels:
-      - "com.sustainsutra.volume=backup"
-      - "com.sustainsutra.backup.schedule=daily"
 
   # Uploaded files storage
   uploads-data:
     name: sustainsutra-uploads-data
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${UPLOADS_PATH:-/var/lib/sustainsutra/uploads}
-    labels:
-      - "com.sustainsutra.volume=uploads"
-      - "com.sustainsutra.backup.required=true"
 
   # Application logs
   logs-data:
     name: sustainsutra-logs-data
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${LOGS_PATH:-/var/lib/sustainsutra/logs}
-    labels:
-      - "com.sustainsutra.volume=logs"
 
 # ============================================================================
-# SECRETS
+# SECRETS (Create in Portainer before deploying)
 # ============================================================================
-# IMPORTANT: These secrets must be created in Portainer BEFORE deployment!
-# Use the Portainer UI: Secrets -> Add Secret
-# Or create them manually: echo "value" | docker secret create name -
-#
-# SECRET GENERATION COMMANDS:
-# jwt_secret:           openssl rand -base64 64
-# email_password:       (Get from Google App Passwords)
-# razorpay_secret:      (Get from Razorpay Dashboard)
-# sentry_dsn:           (Get from Sentry Dashboard)
-# mongo_root_username:  echo "admin" | docker secret create mongo_root_username -
-# mongo_root_password:  openssl rand -base64 32
-#
+# IMPORTANT: These secrets must exist in Portainer before deployment!
+
 secrets:
   jwt_secret:
     external: true

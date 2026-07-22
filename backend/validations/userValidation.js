@@ -20,10 +20,10 @@ const registerSchema = z.object({
         .optional()
         .refine((val) => !val || /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/.test(val), {
             message: 'Invalid phone number format'
-        }),
-    role: z.enum(['user', 'admin', 'instructor', 'ccts-entity', 'ccts-verifier', 'ccts-admin'])
-        .optional()
-        .default('user')
+        })
+    // NOTE: `role` is deliberately omitted. Public registration must never
+    // set a role; the controller forces 'user'. Privileged accounts are
+    // created via the admin endpoints with their own validation.
 });
 
 const loginSchema = z.object({
@@ -32,6 +32,68 @@ const loginSchema = z.object({
         .toLowerCase(),
     password: z.string()
         .min(1, 'Password is required')
+});
+
+const changePasswordSchema = z.object({
+    currentPassword: z.string()
+        .min(1, 'Current password is required'),
+    newPassword: z.string()
+        .min(8, 'Password must be at least 8 characters')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .regex(/[0-9]/, 'Password must contain at least one number')
+});
+
+// Password-reset flow
+const forgotPasswordSchema = z.object({
+    email: z.string()
+        .email('Invalid email address')
+        .toLowerCase()
+});
+
+const resetPasswordSchema = z.object({
+    token: z.string()
+        .min(1, 'Reset token is required'),
+    password: z.string()
+        .min(8, 'Password must be at least 8 characters')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .regex(/[0-9]/, 'Password must contain at least one number')
+});
+
+// Admin-only user creation. Unlike public registration, this CAN set a role,
+// because the route is protected by the admin middleware.
+const adminCreateUserSchema = z.object({
+    name: z.string()
+        .min(2, 'Name must be at least 2 characters')
+        .max(100, 'Name must be less than 100 characters'),
+    email: z.string()
+        .email('Invalid email address')
+        .toLowerCase(),
+    password: z.string()
+        .min(8, 'Password must be at least 8 characters')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .regex(/[0-9]/, 'Password must contain at least one number'),
+    phone: z.string()
+        .optional()
+        .refine((val) => !val || /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/.test(val), {
+            message: 'Invalid phone number format'
+        }),
+    role: z.enum(['user', 'admin', 'instructor', 'ccts-entity', 'ccts-verifier', 'ccts-admin'])
+        .optional()
+});
+
+const adminUpdateUserSchema = z.object({
+    name: z.string().min(2).max(100).optional(),
+    email: z.string().email('Invalid email address').toLowerCase().optional(),
+    phone: z.string().optional(),
+    bio: z.string().max(500).optional(),
+    role: z.enum(['user', 'admin', 'instructor', 'ccts-entity', 'ccts-verifier', 'ccts-admin']).optional()
+});
+
+const adminChangeRoleSchema = z.object({
+    role: z.enum(['user', 'admin', 'instructor', 'ccts-entity', 'ccts-verifier', 'ccts-admin'])
 });
 
 const updateProfileSchema = z.object({
@@ -167,7 +229,9 @@ const monitoringDataSchema = z.object({
         ncv: z.number().nonnegative().optional(),
         emissionFactor: z.number().nonnegative(),
         emissionFactorType: z.enum(['Type I - Default', 'Type II - Site-Specific']).optional(),
-        isBiomass: z.boolean().default(false)
+        isBiomass: z.boolean().default(false),
+        efSnapshotRef: z.string().optional(),
+        efVersion: z.number().optional()
     })).optional(),
     fuels: z.array(z.object({
         fuelType: z.enum([
@@ -178,7 +242,9 @@ const monitoringDataSchema = z.object({
         unit: z.enum(['tonnes', 'kg', 'm³', 'litres', 'GJ']),
         ncv: z.number().nonnegative(),
         emissionFactor: z.number().nonnegative(),
-        isBiomass: z.boolean().default(false)
+        isBiomass: z.boolean().default(false),
+        efSnapshotRef: z.string().optional(),
+        efVersion: z.number().optional()
     })).optional(),
     purchasedElectricity: z.object({
         grid: z.number().nonnegative().default(0),
@@ -237,6 +303,12 @@ const validate = (schema) => {
 module.exports = {
     registerSchema,
     loginSchema,
+    changePasswordSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
+    adminCreateUserSchema,
+    adminUpdateUserSchema,
+    adminChangeRoleSchema,
     updateProfileSchema,
     blogSchema,
     appointmentSchema,

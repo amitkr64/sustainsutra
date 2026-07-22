@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard, Database, Shield, BarChart3, Settings, Leaf, Globe, FileCheck, Landmark, GraduationCap, Zap, Recycle, Repeat, ClipboardCheck, Factory, Lightbulb, GraduationCap as TrainingIcon, Search, FileJson, FileType, Newspaper, Briefcase, Award } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -226,6 +227,10 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
+                        <li className="flex items-center">
+                            <LanguageSwitcher />
+                        </li>
+
                         {isAuthenticated ? (
                             <li className="flex items-center gap-4">
                                 <Link to="/book-appointment" className="bg-gold text-navy px-6 py-2.5 rounded-lg font-bold hover:bg-gold/90 transition-all shadow-lg shadow-gold/20">
@@ -281,6 +286,8 @@ const Header = () => {
                         className="lg:hidden text-offwhite p-2 hover:bg-white/10 rounded-lg transition-colors relative z-[1000]"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         aria-label="Toggle Menu"
+                        aria-expanded={isMenuOpen}
+                        aria-controls="mobile-menu"
                     >
                         {isMenuOpen ? <X size={32} className="text-gold" /> : <Menu size={32} />}
                     </button>
@@ -290,6 +297,7 @@ const Header = () => {
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div
+                    id="mobile-menu"
                     className="lg:hidden fixed inset-0 w-full h-full z-[2000] overflow-y-auto bg-[#121820]"
                     style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2000 }}
                 >

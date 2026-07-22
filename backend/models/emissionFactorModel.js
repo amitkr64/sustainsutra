@@ -68,6 +68,23 @@ const emissionFactorSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    // Versioning: a factor is applicable to calculations whose reporting date
+    // falls within [validFrom, validTo]. Bumping `version` on edits lets us
+    // keep prior versions so historical reports don't silently recalculate.
+    version: {
+        type: Number,
+        default: 1,
+        min: 1
+    },
+    validFrom: {
+        type: Date,
+        default: Date.now,
+        index: true
+    },
+    validTo: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true
@@ -84,6 +101,22 @@ emissionFactorSchema.index({
 // Compound index for common queries
 emissionFactorSchema.index({ category: 1, gas: 1 });
 emissionFactorSchema.index({ category: 1, subcategory: 1 });
+// Index to resolve the applicable factor for a given reporting date.
+emissionFactorSchema.index({ category: 1, region: 1, validFrom: 1 });
+
+// Bump the version counter whenever an existing factor's value/unit changes,
+// so edits create a new logical version rather than silently mutating history.
+emissionFactorSchema.pre('findOneAndUpdate', function () {
+    const update = this.getUpdate();
+    const touchesValue = update && (
+        update.value !== undefined ||
+        update.unit !== undefined ||
+        (update.$set && (update.$set.value !== undefined || update.$set.unit !== undefined))
+    );
+    if (touchesValue) {
+        this.updateOne({}, { $inc: { version: 1 } });
+    }
+});
 
 // Static method to get category summary
 emissionFactorSchema.statics.getCategorySummary = async function () {

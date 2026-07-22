@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
 import { blogService } from '@/services/blogService';
 import { courseService } from '@/services/courseService';
 import { appointmentService } from '@/services/appointmentService';
@@ -16,6 +15,8 @@ import UserManagement from '@/components/UserManagement';
 import ResourceManager from '@/components/ResourceManager';
 import TeamManager from '@/components/TeamManager';
 import PaymentSettings from '@/components/PaymentSettings';
+import PaymentRevenue from '@/components/PaymentRevenue';
+import AdminActivityFeed from '@/components/AdminActivityFeed';
 
 const AdminDashboard = () => {
     const [blogs, setBlogs] = useState([]);
@@ -27,7 +28,6 @@ const AdminDashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { toast } = useToast();
     const navigate = useNavigate();
-    const { token } = useAuth();
 
     useEffect(() => {
         loadData();
@@ -40,7 +40,7 @@ const AdminDashboard = () => {
                 appointmentService.getAllAppointments(),
                 newsletterService.getAll(),
                 courseService.getAllCourses(),
-                getAllEntities(token)
+                getAllEntities()
             ]);
 
             setBlogs(blogsData || []);
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
 
     const handleDeleteCourse = async (id) => {
         if (window.confirm('Are you sure?')) {
-            await courseService.deleteCourse(id, token);
+            await courseService.deleteCourse(id);
             await loadData();
             toast({ title: "Course Deleted", variant: "destructive" });
         }
@@ -162,6 +162,7 @@ const AdminDashboard = () => {
                         <TabsTrigger value="team">Team</TabsTrigger>
                         <TabsTrigger value="impact" className="text-gold font-bold">Impact Gallery</TabsTrigger>
                         <TabsTrigger value="payments" className="text-gold">Payments</TabsTrigger>
+                        <TabsTrigger value="activity">Activity</TabsTrigger>
                     </TabsList>
 
                     {/* Blogs Tab */}
@@ -432,7 +433,15 @@ const AdminDashboard = () => {
 
                     {/* Payments Tab */}
                     <TabsContent value="payments" className="mt-6">
-                        <PaymentSettings />
+                        <div className="space-y-8">
+                            <PaymentRevenue />
+                            <PaymentSettings />
+                        </div>
+                    </TabsContent>
+
+                    {/* Activity Tab */}
+                    <TabsContent value="activity" className="mt-6">
+                        <AdminActivityFeed />
                     </TabsContent>
                 </Tabs>
             </div>

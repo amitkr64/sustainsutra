@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 const CCTSDashboard = () => {
-    const { user, token } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -22,26 +22,27 @@ const CCTSDashboard = () => {
 
     useEffect(() => {
         loadDashboardData();
-    }, [token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const loadDashboardData = async () => {
         try {
             setLoading(true);
 
             // Get entity profile
-            const entityRes = await getMyEntity(token);
+            const entityRes = await getMyEntity();
 
             if (entityRes && entityRes.data) {
                 setEntity(entityRes.data);
 
                 // Get dashboard data
-                const dashboardRes = await getEntityDashboard(token, entityRes.data._id);
+                const dashboardRes = await getEntityDashboard(entityRes.data._id);
                 setDashboard(dashboardRes.data);
             }
 
             // Try to get current year's balance
             try {
-                const balanceRes = await getMyCCCBalance(token, currentYear);
+                const balanceRes = await getMyCCCBalance(currentYear);
                 setCCCBalance(balanceRes.data);
             } catch (err) {
                 // Balance might not exist yet

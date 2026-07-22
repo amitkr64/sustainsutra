@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
 import { getMyEntity, getEntityDashboard } from '@/services/cctsEntityService';
-import { getMyCCCBalance } from '@/services/cctsCCCBalanceService';
 import ComplianceTrajectoryChart from '@/components/ComplianceTrajectoryChart';
 import { FileText, TrendingUp, TrendingDown, Minus, CheckCircle, AlertCircle, Plus, BarChart3, Leaf, Users, Shield, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 const BRSDashboard = () => {
-    const { token } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -22,16 +19,14 @@ const BRSDashboard = () => {
     // Tabs for environmental BRSR data
     const [activeTab, setActiveTab] = useState('environmental');
 
-    // Load entity and dashboard data
+    // Load entity and dashboard data. Auth is via the httpOnly JWT cookie.
     useEffect(() => {
         const loadData = async () => {
             try {
                 setLoading(true);
-                const [entityRes, dashboardRes] = await Promise.all([
-                    getMyEntity(token),
-                    getEntityDashboard(token, entityRes.data._id || entityRes.data.id)
-                ]);
+                const entityRes = await getMyEntity();
                 setEntity(entityRes.data);
+                const dashboardRes = await getEntityDashboard(entityRes.data._id || entityRes.data.id);
                 setDashboard(dashboardRes.data);
             } catch (error) {
                 toast({
@@ -44,7 +39,8 @@ const BRSDashboard = () => {
             }
         };
         loadData();
-    }, [token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Calculate overall metrics from dashboard data
     const metrics = useMemo(() => {

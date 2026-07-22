@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
+const logActivity = require('../utils/logActivity');
 const logger = require('../utils/logger');
 
 const protect = asyncHandler(async (req, res, next) => {
@@ -37,6 +38,10 @@ const protect = asyncHandler(async (req, res, next) => {
                 throw new Error('Not authorized, user not found');
             }
 
+            // Attach a fire-and-forget logger so controllers can record
+            // significant actions without importing the helper everywhere.
+            req.logActivity = (args) => logActivity({ ...args, actor: req.user, req });
+
             next();
         } catch (error) {
             logger.debug(error);
@@ -54,8 +59,8 @@ const admin = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
     } else {
-        res.status(401);
-        throw new Error('Not authorized as an admin');
+        res.status(403);
+        throw new Error('Forbidden: admin access required');
     }
 };
 

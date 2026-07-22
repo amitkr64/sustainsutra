@@ -67,6 +67,18 @@ const monitoringDataSchema = new mongoose.Schema({
         isBiomass: {
             type: Boolean,
             default: false
+        },
+        // Provenance: which EF version produced this row's number. The numeric
+        // emissionFactor above is a frozen snapshot, so recalculating is stable;
+        // these fields record WHICH factor was applied for traceability.
+        efSnapshotRef: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'EmissionFactor',
+            default: null
+        },
+        efVersion: {
+            type: Number,
+            default: null
         }
     }],
 
@@ -122,6 +134,16 @@ const monitoringDataSchema = new mongoose.Schema({
         totalEmissions: {
             type: Number,
             default: 0
+        },
+        // Provenance for the fuel's emission factor (see rawMaterials note above).
+        efSnapshotRef: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'EmissionFactor',
+            default: null
+        },
+        efVersion: {
+            type: Number,
+            default: null
         }
     }],
 

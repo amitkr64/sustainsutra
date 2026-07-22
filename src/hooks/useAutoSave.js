@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
-import { userService } from '@/services/userService';
 
 /**
  * Auto-save hook for BRSR forms
- * Automatically saves form data with debouncing
+ * Automatically saves form data with debouncing. Auth is via the httpOnly
+ * JWT cookie (withCredentials).
  */
 const useAutoSave = (reportId, formData, options = {}) => {
     const {
@@ -38,11 +38,7 @@ const useAutoSave = (reportId, formData, options = {}) => {
             const response = await axios.put(
                 `/api/brsr/${reportId}`,
                 data,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${userService.getToken()}`
-                    }
-                }
+                { withCredentials: true }
             );
 
             setSaveStatus('saved');

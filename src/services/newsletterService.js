@@ -1,13 +1,13 @@
+// Newsletter service. Auth is via the httpOnly JWT cookie (credentials:
+// 'include'). Subscribe is public; getAll/unsubscribe are admin-only.
 const API_URL = '/api/newsletter';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
 export const newsletterService = {
     getAll: async () => {
         try {
-            const response = await fetch(API_URL, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
-            });
+            const response = await fetch(API_URL, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch subscribers');
             return await response.json();
         } catch (error) {
@@ -20,12 +20,12 @@ export const newsletterService = {
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ email })
             });
             const data = await response.json();
             if (!response.ok) {
-                // If it's just "already subscribed", treat as success or specific message
                 if (data.message === 'Email already subscribed') {
                     throw new Error('You are already subscribed!');
                 }
@@ -42,9 +42,7 @@ export const newsletterService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) throw new Error('Unsubscribe failed');
             return true;

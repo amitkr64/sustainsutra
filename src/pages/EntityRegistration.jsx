@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
 import { createEntity } from '@/services/cctsEntityService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { Building2, Save, ArrowLeft, Plus, Trash2, MapPin, User, Phone, Mail, Factory } from 'lucide-react';
 
 const EntityRegistration = () => {
-    const { token } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -118,7 +116,7 @@ const EntityRegistration = () => {
 
         try {
             setLoading(true);
-            await createEntity(token, formData);
+            await createEntity(formData);
             toast({
                 title: 'Success',
                 description: 'Entity registered successfully',

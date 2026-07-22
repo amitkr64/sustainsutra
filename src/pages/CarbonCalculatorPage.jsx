@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import emissionFactorService from '@/services/emissionFactorService';
 import { carbonCalculationService } from '@/services/carbonCalculationService';
 import { paymentService } from '@/services/paymentService';
+import { ExportService } from '@/services/exportService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,6 +32,8 @@ const CarbonCalculatorPage = () => {
     const [reportingPeriod, setReportingPeriod] = useState('');
     const [isCalculating, setIsCalculating] = useState(false);
     const [paymentFee, setPaymentFee] = useState(999);
+    const [paying, setPaying] = useState(false);
+    const [alreadyPurchased, setAlreadyPurchased] = useState(false);
     const [showFactorBrowser, setShowFactorBrowser] = useState(false);
     const [activeActivityId, setActiveActivityId] = useState(null);
     const [activeActivityScope, setActiveActivityScope] = useState(null);
@@ -55,9 +58,13 @@ const CarbonCalculatorPage = () => {
         if (scope2Activities.length === 0) addActivity(2);
         if (scope3Activities.length === 0) addActivity(3);
 
-        const settings = paymentService.getSettings();
-        setPaymentFee(settings.reportFee);
-    }, []);
+        // Load the report fee from the backend and check existing entitlement.
+        paymentService.getSettings().then((s) => setPaymentFee(s.reportFee)).catch(() => {});
+        if (isAuthenticated) {
+            paymentService.hasPurchased('carbon_report').then(setAlreadyPurchased).catch(() => {});
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthenticated]);
 
     const addActivity = (scope) => {
         const newActivity = {
@@ -166,7 +173,56 @@ const CarbonCalculatorPage = () => {
             });
             return;
         }
-        setShowPaymentModal(true);
+        // If already purchased, export immediately; otherwise show the paywall.
+        if (alreadyPurchased) {
+            exportReport();
+        } else {
+            setShowPaymentModal(true);
+        }
+    };
+
+    // Build the report payload from the current result and trigger a CSV export.
+    const exportReport = () => {
+        try {
+            const rows = [
+                { section: 'Organization', value: organizationName || 'N/A' },
+                { section: 'Reporting Period', value: reportingPeriod || 'N/A' },
+                { section: 'Scope 1 (tCO2e)', value: result?.scope1 ?? 0 },
+                { section: 'Scope 2 (tCO2e)', value: result?.scope2 ?? 0 },
+                { section: 'Scope 3 (tCO2e)', value: result?.scope3 ?? 0 },
+                { section: 'Total (tCO2e)', value: result?.total ?? 0 }
+            ];
+            ExportService.exportToCSV(rows, `SustainSutra_Carbon_Report_${Date.now()}.csv`);
+            toast({ title: "Report Downloaded", description: "Your carbon analysis report has been exported." });
+        } catch (err) {
+            toast({ title: "Export Failed", description: err.message, variant: "destructive" });
+        }
+    };
+
+    // Real Razorpay checkout: create order -> open modal -> server-side verify.
+    const handlePurchase = async () => {
+        setPaying(true);
+        try {
+            await paymentService.checkout({
+                productType: 'carbon_report',
+                description: 'Certified Carbon Analysis Report',
+                name: 'SustainSutra',
+                email: user?.email
+            });
+            setAlreadyPurchased(true);
+            setShowPaymentModal(false);
+            toast({ title: "Payment Successful", description: "Generating your report..." });
+            exportReport();
+        } catch (err) {
+            const cancelled = /cancelled/i.test(err.message);
+            toast({
+                title: cancelled ? "Payment Cancelled" : "Payment Failed",
+                description: err.message,
+                variant: cancelled ? undefined : "destructive"
+            });
+        } finally {
+            setPaying(false);
+        }
     };
 
     const renderActivityForm = (scope, activities) => {
@@ -500,6 +556,7 @@ const CarbonCalculatorPage = () => {
                             <button
                                 onClick={() => setShowPaymentModal(false)}
                                 className="absolute top-8 right-8 text-dimmed hover:text-white"
+                                aria-label="Close payment dialog"
                             >
                                 <Plus className="rotate-45" size={24} />
                             </button>
@@ -524,17 +581,15 @@ const CarbonCalculatorPage = () => {
                             <div className="flex flex-col gap-4">
                                 <Button
                                     className="w-full h-16 text-lg rounded-2xl shadow-xl shadow-gold/20"
-                                    onClick={() => {
-                                        toast({ title: "Redirecting...", description: "Connecting to secure payment gateway." });
-                                        // Mocking the success flow here as per parent
-                                        setTimeout(() => setShowPaymentModal(false), 2000);
-                                    }}
+                                    disabled={paying}
+                                    onClick={handlePurchase}
                                 >
-                                    Purchase Authorized PDF Report
+                                    {paying ? "Processing..." : "Purchase Authorized PDF Report"}
                                 </Button>
                                 <Button
                                     variant="ghost"
                                     onClick={() => setShowPaymentModal(false)}
+                                    disabled={paying}
                                     className="h-14 rounded-2xl"
                                 >
                                     Cancel & Return

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
 import { getMonitoringData, deleteMonitoringData } from '@/services/cctsMonitoringService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { Plus, Eye, Edit, Trash2, Filter, FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
 
 const MonitoringDataList = () => {
-    const { token, user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -18,13 +16,14 @@ const MonitoringDataList = () => {
 
     useEffect(() => {
         loadMonitoringData();
-    }, [token, filter]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filter]);
 
     const loadMonitoringData = async () => {
         try {
             setLoading(true);
             const filters = filter !== 'all' ? { status: filter } : {};
-            const res = await getMonitoringData(token, filters);
+            const res = await getMonitoringData(filters);
             setMonitoringData(res.data);
         } catch (error) {
             toast({
@@ -41,7 +40,7 @@ const MonitoringDataList = () => {
         if (!confirm('Are you sure you want to delete this monitoring report?')) return;
 
         try {
-            await deleteMonitoringData(token, id);
+            await deleteMonitoringData(id);
             toast({
                 title: 'Success',
                 description: 'Monitoring report deleted'

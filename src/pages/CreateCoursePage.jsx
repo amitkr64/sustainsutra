@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet';
 import { courseService } from '@/services/courseService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/context/AuthContext';
 import { ArrowLeft, Save } from 'lucide-react';
 
 const CreateCoursePage = () => {
@@ -52,11 +51,9 @@ const CreateCoursePage = () => {
         setFormData({ ...formData, modules: [...formData.modules, { title: '', duration: '' }] });
     };
 
-    const { token } = useAuth();
-
     const handleSubmit = async () => {
         try {
-            await courseService.createCourse(formData, token);
+            await courseService.createCourse(formData);
             toast({ title: "Course Created!" });
             navigate('/admin');
         } catch (error) {

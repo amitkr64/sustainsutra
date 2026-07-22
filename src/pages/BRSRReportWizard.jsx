@@ -16,7 +16,6 @@ import {
     Edit3
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/context/AuthContext';
 import { BRSR_FIELDS } from '@/constants/brsrFields';
 import { BRSR_UI_METADATA } from '@/constants/brsrUIMetadata';
 import { applyBRSRCalculations } from '@/utils/brsrCalculations';
@@ -29,112 +28,15 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import NICSelector from '@/components/BRSRShared/NICSelector';
+import { HIERARCHY, WIZARD_STEPS } from '@/components/BRSRForm/wizardConfig';
+import TextEntryModal from '@/components/BRSRForm/TextEntryModal';
+import ActivityFeed from '@/components/ActivityFeed';
 
-
-const HIERARCHY = [
-    {
-        id: 'section_a',
-        title: 'Section A: General Disclosures',
-        steps: [
-            { id: 'a1', label: 'General Disclosures', key: 'Section A: General Disclosures' }
-        ]
-    },
-    {
-        id: 'section_b',
-        title: 'Section B: Management and Process Disclosures',
-        steps: [
-            { id: 'b1', label: 'Management and Process', key: 'Section B: Management and Process Disclosures' }
-        ]
-    },
-    {
-        id: 'section_c',
-        title: 'Section C: Principle-wise Performance',
-        steps: [
-            {
-                id: 'p1',
-                label: 'Principle 1',
-                substeps: [
-                    { id: 'p1_essential', label: 'Essential Indicators', key: 'Section C: Principle 1 Essential Indicators' },
-                    { id: 'p1_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 1 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p2',
-                label: 'Principle 2',
-                substeps: [
-                    { id: 'p2_essential', label: 'Essential Indicators', key: 'Section C: Principle 2 Essential Indicators' },
-                    { id: 'p2_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 2 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p3',
-                label: 'Principle 3',
-                substeps: [
-                    { id: 'p3_essential', label: 'Essential Indicators', key: 'Section C: Principle 3 Essential Indicators' },
-                    { id: 'p3_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 3 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p4',
-                label: 'Principle 4',
-                substeps: [
-                    { id: 'p4_essential', label: 'Essential Indicators', key: 'Section C: Principle 4 Essential Indicators' },
-                    { id: 'p4_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 4 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p5', label: 'Principle 5', substeps: [
-                    { id: 'p5_essential', label: 'Essential Indicators', key: 'Section C: Principle 5 Essential Indicators' },
-                    { id: 'p5_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 5 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p6', label: 'Principle 6', substeps: [
-                    { id: 'p6_essential', label: 'Essential Indicators', key: 'Section C: Principle 6 Essential Indicators' },
-                    { id: 'p6_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 6 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p7', label: 'Principle 7', substeps: [
-                    { id: 'p7_essential', label: 'Essential Indicators', key: 'Section C: Principle 7 Essential Indicators' },
-                    { id: 'p7_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 7 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p8', label: 'Principle 8', substeps: [
-                    { id: 'p8_essential', label: 'Essential Indicators', key: 'Section C: Principle 8 Essential Indicators' },
-                    { id: 'p8_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 8 Leadership Indicators' }
-                ]
-            },
-            {
-                id: 'p9', label: 'Principle 9', substeps: [
-                    { id: 'p9_essential', label: 'Essential Indicators', key: 'Section C: Principle 9 Essential Indicators' },
-                    { id: 'p9_leadership', label: 'Leadership Indicators', key: 'Section C: Principle 9 Leadership Indicators' }
-                ]
-            }
-        ]
-    }
-];
-
-// Flatten hierarchy for easier navigation/mapping
-const WIZARD_STEPS = [];
-HIERARCHY.forEach(section => {
-    section.steps.forEach(step => {
-        if (step.substeps) {
-            step.substeps.forEach(sub => {
-                WIZARD_STEPS.push({ ...sub, parentId: section.id, subParentId: step.id });
-            });
-        } else {
-            WIZARD_STEPS.push({ ...step, parentId: section.id });
-        }
-    });
-});
 
 const BRSRReportWizard = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
-    const { token } = useAuth();
     const [report, setReport] = useState({});
     const [currentStepIdx, setCurrentStepIdx] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -162,11 +64,7 @@ const BRSRReportWizard = () => {
 
     const fetchReport = async () => {
         try {
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            };
+            const config = { withCredentials: true };
             const { data } = await axios.get(`/api/brsr-reports/${id}`, config);
             const calculatedData = applyBRSRCalculations(data);
             setReport(calculatedData);
@@ -223,11 +121,7 @@ const BRSRReportWizard = () => {
     const saveReport = async (showToast = true, currentReport = report) => {
         try {
             setSaving(true);
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            };
+            const config = { withCredentials: true };
             await axios.put(`/api/brsr-reports/${id}`, currentReport, config);
             if (showToast) {
                 toast({
@@ -1545,6 +1439,20 @@ const BRSRReportWizard = () => {
                 </div>
             </div>
 
+            {/* Activity history for this report */}
+            {!loading && report?._id && (
+                <div className="container mx-auto px-4 mt-8 mb-8">
+                    <details className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+                        <summary className="cursor-pointer px-6 py-4 text-sm font-medium text-offwhite hover:bg-white/5 transition-smooth select-none">
+                            Report activity history
+                        </summary>
+                        <div className="px-6 py-4">
+                            <ActivityFeed entityType="report" entityId={String(report._id)} limit={15} />
+                        </div>
+                    </details>
+                </div>
+            )}
+
             <TextEntryModal
                 isOpen={textModal.open}
                 onClose={() => setTextModal(prev => ({ ...prev, open: false }))}
@@ -1616,50 +1524,6 @@ const BRSRReportWizard = () => {
                 </DialogContent>
             </Dialog>
         </div>
-    );
-};
-
-const TextEntryModal = ({ isOpen, onClose, value, title, onSave }) => {
-    const [localValue, setLocalValue] = useState(value);
-
-    useEffect(() => {
-        setLocalValue(value);
-    }, [value, isOpen]);
-
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-2xl bg-navy border border-white/10 text-offwhite">
-                <DialogHeader>
-                    <DialogTitle className="text-xl font-playfair text-gold">{title || "Enter Details"}</DialogTitle>
-                </DialogHeader>
-                <div className="py-4">
-                    <textarea
-                        autoFocus
-                        value={localValue || ""}
-                        onChange={(e) => setLocalValue(e.target.value)}
-                        className="w-full min-h-[300px] bg-white/5 border border-white/10 rounded-lg p-4 outline-none focus:border-gold/50 text-offwhite resize-y"
-                        placeholder={`Enter details for ${title}...`}
-                    />
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2 text-dimmed hover:text-white transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={() => {
-                            onSave(localValue);
-                            onClose();
-                        }}
-                        className="px-6 py-2 bg-gold text-navy font-bold rounded hover:bg-gold/90 transition-smooth"
-                    >
-                        Save & Apply
-                    </button>
-                </div>
-            </DialogContent>
-        </Dialog>
     );
 };
 

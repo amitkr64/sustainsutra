@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import emissionFactorService from '@/services/emissionFactorService';
-import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2, Edit2, Upload, Search, Filter } from 'lucide-react';
 
 const EmissionFactorManager = ({ onDataChange }) => {
     const { toast } = useToast();
-    const { token } = useAuth();
     const [factors, setFactors] = useState([]);
     const [filteredFactors, setFilteredFactors] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -64,10 +62,10 @@ const EmissionFactorManager = ({ onDataChange }) => {
         e.preventDefault();
 
         if (editingFactor) {
-            await emissionFactorService.update(editingFactor.id, formData, token);
+            await emissionFactorService.update(editingFactor.id, formData);
             toast({ title: "Emission Factor Updated!" });
         } else {
-            await emissionFactorService.add(formData, token);
+            await emissionFactorService.add(formData);
             toast({ title: "Emission Factor Added!" });
         }
 
@@ -92,7 +90,7 @@ const EmissionFactorManager = ({ onDataChange }) => {
 
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this emission factor?')) {
-            await emissionFactorService.delete(id, token);
+            await emissionFactorService.delete(id);
             toast({ title: "Emission Factor Deleted" });
             loadFactors();
             if (onDataChange) onDataChange();
@@ -123,7 +121,7 @@ const EmissionFactorManager = ({ onDataChange }) => {
                 const data = JSON.parse(event.target.result);
 
                 if (Array.isArray(data)) {
-                    const result = await emissionFactorService.bulkUpload(data, token);
+                    const result = await emissionFactorService.bulkUpload(data);
                     toast({
                         title: "Bulk Upload Successful!",
                         description: `${result.count} emission factors added.`

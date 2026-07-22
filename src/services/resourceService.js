@@ -1,16 +1,15 @@
+// Resource service. Auth is via the httpOnly JWT cookie (credentials:
+// 'include'). Reads are public; writes/deletes are admin-only.
 const API_URL = '/api/resources';
 
-const getAuthHeader = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`,
-    'Content-Type': 'application/json'
-});
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
 export const resourceService = {
     // --- Generic Methods ---
     getAll: async (type) => {
         try {
             const url = type ? `${API_URL}?type=${type}` : API_URL;
-            const response = await fetch(url);
+            const response = await fetch(url, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch resources');
             return await response.json();
         } catch (error) {
@@ -23,7 +22,8 @@ export const resourceService = {
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: getAuthHeader(),
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(data)
             });
             if (!response.ok) throw new Error('Failed to create resource');
@@ -38,7 +38,8 @@ export const resourceService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: getAuthHeader(),
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(data)
             });
             if (!response.ok) throw new Error('Failed to update resource');
@@ -53,9 +54,7 @@ export const resourceService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) throw new Error('Failed to delete resource');
             return true;
@@ -93,7 +92,7 @@ export const resourceService = {
         // Let's implement proper getById via fetching specific ID if API supports it (it does: GET /:id)
         try {
             // Reusing generic getById pattern
-            const response = await fetch(`${API_URL}/${id}`); // Assumes API returns item causing no check of type
+            const response = await fetch(`${API_URL}/${id}`, { credentials: 'include' }); // Assumes API returns item causing no check of type
             if (!response.ok) throw new Error('Not found');
             return await response.json();
         } catch (e) { return null; }

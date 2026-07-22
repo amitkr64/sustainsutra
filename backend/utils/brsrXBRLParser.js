@@ -290,7 +290,7 @@ class BRSRXBRLParser {
             const path = require('path');
 
             try {
-                const nicDbPath = path.join(__dirname, '../../nic_database_full.json');
+                const nicDbPath = path.join(__dirname, '..', 'data', 'nic_database.json');
                 if (fs.existsSync(nicDbPath)) {
                     const nicDb = JSON.parse(fs.readFileSync(nicDbPath, 'utf8'));
 

@@ -134,12 +134,11 @@ const emissionFactorService = {
 
     /**
      * Add new emission factor (Admin)
+     * Auth via httpOnly cookie (withCredentials).
      */
-    async add(data, token) {
+    async add(data) {
         try {
-            const response = await axios.post(API_BASE, data, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.post(API_BASE, data, { withCredentials: true });
             return response.data;
         } catch (error) {
             console.error('Error adding emission factor:', error);
@@ -149,12 +148,11 @@ const emissionFactorService = {
 
     /**
      * Update emission factor (Admin)
+     * Auth via httpOnly cookie (withCredentials).
      */
-    async update(id, data, token) {
+    async update(id, data) {
         try {
-            const response = await axios.put(`${API_BASE}/${id}`, data, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.put(`${API_BASE}/${id}`, data, { withCredentials: true });
             return response.data;
         } catch (error) {
             console.error('Error updating emission factor:', error);
@@ -164,12 +162,11 @@ const emissionFactorService = {
 
     /**
      * Delete emission factor (Admin)
+     * Auth via httpOnly cookie (withCredentials).
      */
-    async delete(id, token) {
+    async delete(id) {
         try {
-            const response = await axios.delete(`${API_BASE}/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await axios.delete(`${API_BASE}/${id}`, { withCredentials: true });
             return response.data;
         } catch (error) {
             console.error('Error deleting emission factor:', error);
@@ -181,12 +178,12 @@ const emissionFactorService = {
      * Bulk upload emission factors (Admin)
      * Placeholder for now as backend doesn't have a dedicated bulk route yet
      */
-    async bulkUpload(data, token) {
+    async bulkUpload(data) {
         console.log('Bulk upload not yet fully implemented on backend, processing sequentially...');
         let count = 0;
         for (const item of data) {
             try {
-                await this.add(item, token);
+                await this.add(item);
                 count++;
             } catch (error) {
                 console.error('Error in sequential bulk upload:', error);

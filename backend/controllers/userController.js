@@ -1,14 +1,19 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const logger = require('../utils/logger');
+const emailService = require('../services/emailService');
 
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, phone, password, role } = req.body;
+    // SECURITY: `role` is intentionally NOT read from req.body.
+    // Public self-registration always creates a plain 'user'.
+    // Privileged accounts must be created by an admin via /api/admin/users.
+    const { name, email, phone, password } = req.body;
 
     if (!name || !email || !password) {
         res.status(400);
@@ -36,7 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
             name,
             email,
             phone: phone || '',
-            role: role || 'user'
+            role: 'user'
         };
         global.mockUsers.push(newUser);
 
@@ -77,7 +82,7 @@ const registerUser = asyncHandler(async (req, res) => {
             email,
             phone,
             password,
-            role: role || 'user'
+            role: 'user'
         });
 
         if (user) {
@@ -289,9 +294,15 @@ const updatePassword = asyncHandler(async (req, res) => {
         throw new Error('Please provide both current and new password');
     }
 
-    if (newPassword.length < 6) {
+    if (newPassword.length < 8) {
         res.status(400);
-        throw new Error('New password must be at least 6 characters long');
+        throw new Error('New password must be at least 8 characters long');
+    }
+
+    // Demo Mode: passwords are not persisted, so changes cannot be saved.
+    if (global.isDemoMode) {
+        res.status(400);
+        throw new Error('Password change is not available in demo mode');
     }
 
     // Get user with password
@@ -346,9 +357,126 @@ const logoutUser = asyncHandler(async (req, res) => {
 // Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
+        expiresIn: process.env.JWT_EXPIRE || '7d',
     });
 };
+
+// Hash a reset token for storage. We never store the raw token — only its
+// SHA-256 hash — so a DB leak cannot be used to reset passwords.
+const hashResetToken = (token) =>
+    crypto.createHash('sha256').update(token).digest('hex');
+
+// @desc    Send a password-reset email
+// @route   POST /api/users/forgot-password
+// @access  Public
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    // Demo mode: return the reset token directly so the dev can click through.
+    // (In demo mode there is no persisted DB, so we cannot store a token hash.)
+    if (global.isDemoMode) {
+        const user = global.mockUsers.find(u => u.email === email);
+        if (user) {
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            user._resetToken = resetToken;
+            user._resetExpires = Date.now() + 60 * 60 * 1000;
+            logger.info(`[DEMO] Password reset requested for ${email}. Token: ${resetToken}`);
+            return res.status(200).json({
+                success: true,
+                message: 'Password reset email sent (demo mode).',
+                resetToken // only exposed in demo mode for the dev "Demo Mode" link
+            });
+        }
+        // Always return generic success to avoid user-enumeration.
+        return res.status(200).json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        // Avoid user-enumeration: respond identically whether or not the email exists.
+        return res.status(200).json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+    }
+
+    // Generate a raw token (sent to the user) and store only its hash.
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.resetPasswordToken = hashResetToken(resetToken);
+    user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+    await user.save({ validateBeforeSave: false });
+
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
+
+    try {
+        const result = await emailService.sendPasswordReset(user.email, resetUrl);
+        if (result && result.demo) {
+            // No SMTP configured — return the token so the flow is testable in dev
+            // without email. In production SMTP must be configured.
+            logger.warn('[DEMO SMTP] Password reset email not sent (EMAIL_* env not set). Returning token for dev.');
+            if (process.env.NODE_ENV !== 'production') {
+                return res.status(200).json({
+                    success: true,
+                    message: 'SMTP not configured — reset token returned for development.',
+                    resetToken
+                });
+            }
+        }
+        res.status(200).json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+    } catch (err) {
+        // Reset the token so the user can retry; never reveal the email error.
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        logger.error('Failed to send password reset email:', err);
+        res.status(500);
+        throw new Error('There was a problem sending the reset email. Please try again.');
+    }
+});
+
+// @desc    Reset password using a token
+// @route   POST /api/users/reset-password
+// @access  Public
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token, password } = req.body;
+
+    // Demo mode: validate against the in-memory token we issued.
+    if (global.isDemoMode) {
+        const user = global.mockUsers.find(
+            u => u._resetToken === token && u._resetExpires && u._resetExpires > Date.now()
+        );
+        if (!user) {
+            res.status(400);
+            throw new Error('Invalid or expired reset token');
+        }
+        user._resetToken = undefined;
+        user._resetExpires = undefined;
+        user.passwordChangedAt = new Date();
+        logger.info(`[DEMO] Password reset completed for ${user.email}`);
+        return res.status(200).json({ success: true, message: 'Password has been reset.' });
+    }
+
+    const hashedToken = hashResetToken(token);
+
+    const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        res.status(400);
+        throw new Error('Invalid or expired reset token');
+    }
+
+    // The pre('save') hook re-hashes the new plaintext password.
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    user.passwordChangedAt = new Date();
+    await user.save();
+
+    logger.info(`Password reset completed for user ${user.email}`);
+    res.status(200).json({ success: true, message: 'Password has been reset.' });
+});
 
 module.exports = {
     registerUser,
@@ -357,4 +485,6 @@ module.exports = {
     getMe,
     updateMe,
     updatePassword,
+    forgotPassword,
+    resetPassword,
 };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { userService } from '@/services/userService';
 import { ExportService } from '@/services/exportService';
 
 /**
@@ -68,9 +67,7 @@ const BRSRExportButtons = ({ reportData, onExportComplete }) => {
                 {},
                 {
                     responseType: 'blob',
-                    headers: {
-                        'Authorization': `Bearer ${userService.getToken()}`
-                    }
+                    withCredentials: true
                 }
             );
 

@@ -75,10 +75,27 @@ export const AuthProvider = ({ children }) => {
     };
 
     const changePassword = async (currentPassword, newPassword) => {
-        // API should handle this validation
         try {
-            // Placeholder: Assume API update handles it or create specific endpoint
-            await userService.update(user.id || user._id, { password: newPassword });
+            await userService.changePassword(currentPassword, newPassword);
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    };
+
+    const requestPasswordReset = async (email) => {
+        try {
+            const data = await userService.forgotPassword(email);
+            // Demo/dev mode returns resetToken so the page can show a click-through link.
+            return { success: true, token: data?.resetToken };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    };
+
+    const resetPassword = async (token, password) => {
+        try {
+            await userService.resetPassword(token, password);
             return { success: true };
         } catch (error) {
             return { success: false, message: error.message };
@@ -101,6 +118,8 @@ export const AuthProvider = ({ children }) => {
             logout,
             updateProfile,
             changePassword,
+            requestPasswordReset,
+            resetPassword,
             // Role helpers
             isAdmin,
             isInstructor,

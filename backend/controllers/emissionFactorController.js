@@ -84,6 +84,15 @@ const getEmissionFactorByEfId = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const createEmissionFactor = asyncHandler(async (req, res) => {
     const factor = await EmissionFactor.create(req.body);
+    if (req.logActivity) {
+        req.logActivity({
+            action: 'emission_factor.create',
+            entityType: 'emission_factor',
+            entityId: String(factor._id),
+            summary: `Created emission factor ${factor.efId || factor.name}`,
+            metadata: { efId: factor.efId, category: factor.category, value: factor.value }
+        });
+    }
     res.status(201).json(factor);
 });
 
@@ -102,6 +111,15 @@ const updateEmissionFactor = asyncHandler(async (req, res) => {
         throw new Error('Emission factor not found');
     }
 
+    if (req.logActivity) {
+        req.logActivity({
+            action: 'emission_factor.update',
+            entityType: 'emission_factor',
+            entityId: String(factor._id),
+            summary: `Updated emission factor ${factor.efId || factor.name}`,
+            metadata: { efId: factor.efId, changedFields: Object.keys(req.body) }
+        });
+    }
     res.json(factor);
 });
 
@@ -116,6 +134,15 @@ const deleteEmissionFactor = asyncHandler(async (req, res) => {
         throw new Error('Emission factor not found');
     }
 
+    if (req.logActivity) {
+        req.logActivity({
+            action: 'emission_factor.delete',
+            entityType: 'emission_factor',
+            entityId: req.params.id,
+            summary: `Deleted emission factor ${factor.efId || factor.name}`,
+            metadata: { efId: factor.efId }
+        });
+    }
     res.json({ message: 'Emission factor removed' });
 });
 
@@ -186,7 +213,7 @@ const getStats = asyncHandler(async (req, res) => {
 // @route   POST /api/ccts/emission-factors/find
 // @access  Public
 const findApplicableFactor = asyncHandler(async (req, res) => {
-    const { category, subcategory, gas, region } = req.body;
+    const { category, subcategory, gas, region, asOfDate, year } = req.body;
 
     const query = { isActive: true };
     if (category) query.category = category;
@@ -194,7 +221,20 @@ const findApplicableFactor = asyncHandler(async (req, res) => {
     if (gas) query.gas = gas;
     if (region) query.region = region;
 
-    const factor = await EmissionFactor.findOne(query).sort({ updatedAt: -1 });
+    // If a reporting date/year is given, constrain to the version that was
+    // applicable at that time (validFrom <= asOf < validTo, where a null
+    // validTo means "still current"). This keeps historical calculations
+    // stable when factors are later revised.
+    if (asOfDate || year) {
+        const asOf = asOfDate ? new Date(asOfDate) : new Date(`${year}-07-01T00:00:00Z`);
+        if (!isNaN(asOf.getTime())) {
+            query.validFrom = { $lte: asOf };
+            query.$or = [{ validTo: null }, { validTo: { $gte: asOf } }];
+        }
+    }
+
+    // Prefer the latest validFrom within the window (most recent applicable version).
+    const factor = await EmissionFactor.findOne(query).sort({ validFrom: -1, version: -1 });
 
     if (!factor) {
         res.status(404);

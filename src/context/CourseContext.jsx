@@ -16,7 +16,7 @@ export const CourseProvider = ({ children }) => {
     const [courses, setCourses] = useState([]);
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { user, token } = useAuth();
+    const { user } = useAuth();
 
     useEffect(() => {
         loadCourses();
@@ -42,7 +42,7 @@ export const CourseProvider = ({ children }) => {
             try {
                 // Note: getUserRegistrations need to be implemented in courseService
                 if (courseService.getUserRegistrations) {
-                    const userRegs = await courseService.getUserRegistrations(user.email, token);
+                    const userRegs = await courseService.getUserRegistrations(user.email);
                     setRegistrations(userRegs || []);
                 }
             } catch (error) {
@@ -59,8 +59,7 @@ export const CourseProvider = ({ children }) => {
         try {
             const result = await courseService.registerForCourse(
                 courseId,
-                user._id || user.id,
-                token
+                user._id || user.id
             );
 
             if (result.success) {
@@ -81,7 +80,7 @@ export const CourseProvider = ({ children }) => {
 
     const createCourse = async (courseData) => {
         try {
-            const newCourse = await courseService.createCourse(courseData, token);
+            const newCourse = await courseService.createCourse(courseData);
             await loadCourses();
             return newCourse;
         } catch (error) {
@@ -92,7 +91,7 @@ export const CourseProvider = ({ children }) => {
 
     const updateCourse = async (id, courseData) => {
         try {
-            const updated = await courseService.updateCourse(id, courseData, token);
+            const updated = await courseService.updateCourse(id, courseData);
             await loadCourses();
             return updated;
         } catch (error) {
@@ -103,7 +102,7 @@ export const CourseProvider = ({ children }) => {
 
     const deleteCourse = async (id) => {
         try {
-            await courseService.deleteCourse(id, token);
+            await courseService.deleteCourse(id);
             await loadCourses();
         } catch (error) {
             console.error('Error deleting course:', error);

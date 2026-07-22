@@ -1,9 +1,24 @@
 /**
  * CCTS Emission Factor Service
- * Handles API calls for emission factor library
+ * Handles API calls for emission factor library.
+ *
+ * Auth is via the httpOnly JWT cookie (credentials: 'include'). GET/find
+ * endpoints are public on the backend; create/update/delete require auth,
+ * which is satisfied by the cookie.
  */
 
 const API_URL = '/api/ccts/emission-factors';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
+
+async function parseError(response) {
+    try {
+        const error = await response.json();
+        return new Error(error.message || 'Request failed');
+    } catch {
+        return new Error(`Request failed (${response.status})`);
+    }
+}
 
 /**
  * Get all emission factors
@@ -14,16 +29,11 @@ export const getEmissionFactors = async (filters = {}) => {
 
     const response = await fetch(url, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch emission factors');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
@@ -33,16 +43,11 @@ export const getEmissionFactors = async (filters = {}) => {
 export const getEmissionFactorById = async (id) => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch emission factor');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
@@ -52,79 +57,56 @@ export const getEmissionFactorById = async (id) => {
 export const findApplicableFactor = async (criteria) => {
     const response = await fetch(`${API_URL}/find`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: JSON_HEADERS,
+        credentials: 'include',
         body: JSON.stringify(criteria)
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'No applicable emission factor found');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Create emission factor
  */
-export const createEmissionFactor = async (token, data) => {
+export const createEmissionFactor = async (data) => {
     const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: JSON_HEADERS,
+        credentials: 'include',
         body: JSON.stringify(data)
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create emission factor');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Update emission factor
  */
-export const updateEmissionFactor = async (token, id, data) => {
+export const updateEmissionFactor = async (id, data) => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: JSON_HEADERS,
+        credentials: 'include',
         body: JSON.stringify(data)
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update emission factor');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Delete emission factor
  */
-export const deleteEmissionFactor = async (token, id) => {
+export const deleteEmissionFactor = async (id) => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to delete emission factor');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
@@ -136,4 +118,3 @@ export default {
     updateEmissionFactor,
     deleteEmissionFactor
 };
-const API_BASE = '/api/emission-factors';

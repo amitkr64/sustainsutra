@@ -8,7 +8,7 @@ services:
     ports:
       - "8085:80"
     environment:
-      - VITE_API_URL: http://backend:5000
+      - VITE_API_URL=http://backend:5000
     volumes:
       - ./frontend-data:/app/data
     command: sh -c "npm install --legacy-peer-deps && npx serve -s build -l 80"
@@ -22,10 +22,12 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV: production
-      - PORT: 5000
-      - MONGO_URI: mongodb://mongo:27017/sustainsutra
-      - JWT_SECRET: your_super_secret_jwt_key_change_this_in_production
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/sustainsutra
+      - REQUIRE_DB=true
+      # JWT_SECRET must be provided — no insecure default.
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required. Generate with: openssl rand -base64 64}
     volumes:
       - ./backend-data:/app/data
     command: sh -c "npm install --legacy-peer-deps && npm start"

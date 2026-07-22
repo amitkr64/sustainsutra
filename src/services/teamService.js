@@ -1,9 +1,13 @@
+// Team service. Auth is via the httpOnly JWT cookie (credentials: 'include').
+// Reads are public; writes/deletes are admin-only.
 const API_URL = '/api/team';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
 export const teamService = {
     getAll: async () => {
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(API_URL, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch team');
             return await response.json();
         } catch (error) {
@@ -16,10 +20,8 @@ export const teamService = {
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(memberData)
             });
             if (!response.ok) throw new Error('Failed to create member');
@@ -34,10 +36,8 @@ export const teamService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(updateData)
             });
             if (!response.ok) throw new Error('Failed to update member');
@@ -52,9 +52,7 @@ export const teamService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) throw new Error('Failed to delete member');
             return true;

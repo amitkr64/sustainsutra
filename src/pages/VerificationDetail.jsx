@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
 import { getMonitoringDataById } from '@/services/cctsMonitoringService';
 import { createVerificationReport } from '@/services/cctsVerificationService';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import { CheckCircle, XCircle, FileText, Download, Save, AlertTriangle, Upload, 
 
 const VerificationDetail = () => {
     const { id } = useParams();
-    const { token } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -51,7 +49,7 @@ const VerificationDetail = () => {
         const loadReport = async () => {
             try {
                 setLoading(true);
-                const res = await getMonitoringDataById(token, id);
+                const res = await getMonitoringDataById(id);
                 setReport(res.data);
                 if (res.data.calculatedData) {
                     setVerifiedEmissions(res.data.calculatedData.totalGHG);
@@ -67,7 +65,8 @@ const VerificationDetail = () => {
             }
         };
         loadReport();
-    }, [id, token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
     const handleSubmitVerification = async (outcome) => {
         try {
@@ -86,7 +85,7 @@ const VerificationDetail = () => {
                 siteVisitDate: new Date()
             };
 
-            await createVerificationReport(token, payload);
+            await createVerificationReport(payload);
             toast({
                 title: 'Success',
                 description: `Verification Report Submitted: ${outcome}`,

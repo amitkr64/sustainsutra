@@ -1,173 +1,138 @@
 /**
  * CCTS CCC Balance Service
- * Handles API calls for Carbon Credit Certificate balance and trading
+ * Handles API calls for Carbon Credit Certificate balance and trading.
+ *
+ * Auth is via the httpOnly JWT cookie (credentials: 'include').
  */
 
 const API_URL = '/api/ccts/ccc-balance';
 
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
+
+async function parseError(response) {
+    try {
+        const error = await response.json();
+        return new Error(error.message || 'Request failed');
+    } catch {
+        return new Error(`Request failed (${response.status})`);
+    }
+}
+
 /**
  * Get all CCC balances
  */
-export const getCCCBalances = async (token, filters = {}) => {
+export const getCCCBalances = async (filters = {}) => {
     const queryParams = new URLSearchParams(filters).toString();
     const url = queryParams ? `${API_URL}?${queryParams}` : API_URL;
 
     const response = await fetch(url, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch CCC balances');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Get CCC balance by ID
  */
-export const getCCCBalanceById = async (token, id) => {
+export const getCCCBalanceById = async (id) => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch CCC balance');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Get my CCC balance for specific compliance year
  */
-export const getMyCCCBalance = async (token, complianceYear) => {
+export const getMyCCCBalance = async (complianceYear) => {
     const response = await fetch(`${API_URL}/my-balance/${complianceYear}`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch balance');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Get entity compliance history
  */
-export const getEntityComplianceHistory = async (token, entityId) => {
+export const getEntityComplianceHistory = async (entityId) => {
     const response = await fetch(`${API_URL}/entity/${entityId}/history`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch compliance history');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Apply offset credits to balance
  */
-export const applyOffsetCredits = async (token, balanceId, data) => {
+export const applyOffsetCredits = async (balanceId, data) => {
     const response = await fetch(`${API_URL}/${balanceId}/apply-offset`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: JSON_HEADERS,
+        credentials: 'include',
         body: JSON.stringify(data)
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to apply offset credits');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Purchase credits
  */
-export const purchaseCredits = async (token, balanceId, data) => {
+export const purchaseCredits = async (balanceId, data) => {
     const response = await fetch(`${API_URL}/${balanceId}/purchase-credits`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: JSON_HEADERS,
+        credentials: 'include',
         body: JSON.stringify(data)
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to purchase credits');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Sell credits
  */
-export const sellCredits = async (token, balanceId, data) => {
+export const sellCredits = async (balanceId, data) => {
     const response = await fetch(`${API_URL}/${balanceId}/sell-credits`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: JSON_HEADERS,
+        credentials: 'include',
         body: JSON.stringify(data)
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to sell credits');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 
 /**
  * Get CCC balance statistics (Admin only)
  */
-export const getCCCBalanceStats = async (token) => {
+export const getCCCBalanceStats = async () => {
     const response = await fetch(`${API_URL}/stats/overview`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+        headers: JSON_HEADERS,
+        credentials: 'include'
     });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch statistics');
-    }
-
+    if (!response.ok) throw await parseError(response);
     return response.json();
 };
 

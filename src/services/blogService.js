@@ -1,9 +1,14 @@
+// Blog service. Auth is via the httpOnly JWT cookie (credentials: 'include').
+// Previously this read a token from localStorage, which is never populated
+// under the cookie-based auth scheme — so admin blog writes were broken.
 const API_URL = '/api/blogs';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
 export const blogService = {
     getAll: async () => {
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(API_URL, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch blogs');
             return await response.json();
         } catch (error) {
@@ -26,8 +31,6 @@ export const blogService = {
     // Get blog by slug
     getBySlug: async (slug) => {
         try {
-            // Ideally backend should have a getBySlug endpoint
-            // For now, we fetch all and filter, or keep using ID if possible
             const blogs = await blogService.getAll();
             return blogs.find(blog => blog.slug === slug);
         } catch (error) {
@@ -39,8 +42,6 @@ export const blogService = {
     // Increment view count
     incrementView: async (id) => {
         try {
-            // This could be a specialized endpoint in the backend
-            // For now, we can just log it or implement a PATCH endpoint later
             console.log(`Incrementing view for blog ${id}`);
         } catch (error) {
             console.error('Error incrementing view:', error);
@@ -49,7 +50,7 @@ export const blogService = {
 
     getBlogById: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/${id}`);
+            const response = await fetch(`${API_URL}/${id}`, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch blog');
             return await response.json();
         } catch (error) {
@@ -62,10 +63,8 @@ export const blogService = {
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(blogData)
             });
             if (!response.ok) throw new Error('Failed to create blog');
@@ -80,10 +79,8 @@ export const blogService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(blogData)
             });
             if (!response.ok) throw new Error('Failed to update blog');
@@ -98,9 +95,7 @@ export const blogService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) throw new Error('Failed to delete blog');
             return true;

@@ -9,7 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Eye, CheckCircle, Clock, AlertCircle, Search, Filter, Briefcase } from 'lucide-react';
 
 const VerificationQueue = () => {
-    const { token, user } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -19,7 +19,8 @@ const VerificationQueue = () => {
 
     useEffect(() => {
         loadData();
-    }, [token, filter]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filter]);
 
     const loadData = async () => {
         try {
@@ -28,12 +29,12 @@ const VerificationQueue = () => {
 
             if (filter === 'pending') {
                 // Get monitoring data with status 'Submitted' or 'Under Verification'
-                const res = await getMonitoringData(token, { status: 'Submitted' }); // For now, fetch submitted
+                const res = await getMonitoringData({ status: 'Submitted' }); // For now, fetch submitted
                 // Filter for those not yet assigned or assigned to me
                 data = res.data;
             } else {
                 // Get completed verification reports by me
-                const res = await getVerificationReports(token, { verifierId: user?._id || user?.id });
+                const res = await getVerificationReports({ verifierId: user?._id || user?.id });
                 data = res.data;
             }
 

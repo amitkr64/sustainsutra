@@ -1,13 +1,13 @@
+// Appointment service. Auth is via the httpOnly JWT cookie (credentials:
+// 'include'). Appointments are a hybrid endpoint (public create, admin manage).
 const API_URL = '/api/appointments';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
 export const appointmentService = {
     getAllAppointments: async () => {
         try {
-            const response = await fetch(API_URL, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
-            });
+            const response = await fetch(API_URL, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch appointments');
             return await response.json();
         } catch (error) {
@@ -20,11 +20,8 @@ export const appointmentService = {
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Optional auth if user is logged in, but defined as public/hybrid
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(appointmentData)
             });
             if (!response.ok) throw new Error('Booking failed');
@@ -39,10 +36,8 @@ export const appointmentService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ status })
             });
             if (!response.ok) throw new Error('Update failed');
@@ -55,7 +50,6 @@ export const appointmentService = {
 
     getUserAppointments: async (email) => {
         try {
-            // In a real MERN app, we'd have a specific endpoint or use query params
             const all = await appointmentService.getAllAppointments();
             return all.filter(apt => apt.email === email);
         } catch (error) {
@@ -68,9 +62,7 @@ export const appointmentService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) throw new Error('Delete failed');
             return true;
@@ -82,7 +74,6 @@ export const appointmentService = {
 
     checkAvailability: async (date, timeSlot) => {
         try {
-            // Simple check: fetch all and see if any matches
             const all = await appointmentService.getAllAppointments();
             const isTaken = all.some(apt => apt.date === date && apt.timeSlot === timeSlot && apt.status !== 'cancelled');
             return !isTaken;

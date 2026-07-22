@@ -27,8 +27,8 @@ const UserManagement = () => {
 
     const loadUsers = async () => {
         try {
-            const data = await userService.getAll();
-            setUsers(data || []);
+            const data = await userService.adminListUsers();
+            setUsers(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error loading users:', error);
             setUsers([]);
@@ -55,7 +55,7 @@ const UserManagement = () => {
         }
 
         try {
-            await userService.update(userId, { role: newRole });
+            await userService.adminChangeRole(userId, newRole);
             await loadUsers();
             toast({
                 title: "Role Updated!",
@@ -76,7 +76,7 @@ const UserManagement = () => {
         }
 
         try {
-            await userService.delete(userId);
+            await userService.adminDeleteUser(userId);
             await loadUsers();
             toast({
                 title: "User Deleted",
@@ -94,7 +94,7 @@ const UserManagement = () => {
     const handleAddUser = async (e) => {
         e.preventDefault();
         try {
-            await userService.create(newUser);
+            await userService.adminCreateUser(newUser);
             setNewUser({ name: '', email: '', password: '', role: 'user' });
             setShowAddForm(false);
             await loadUsers();

@@ -5,14 +5,12 @@ import { Helmet } from 'react-helmet';
 import { courseService } from '@/services/courseService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/context/AuthContext';
 import { ArrowLeft, Save } from 'lucide-react';
 
 const EditCoursePage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
-    const { token } = useAuth();
     const [formData, setFormData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -46,7 +44,7 @@ const EditCoursePage = () => {
 
     const handleSubmit = async () => {
         try {
-            await courseService.updateCourse(id, formData, token);
+            await courseService.updateCourse(id, formData);
             toast({ title: "Course Updated!" });
             navigate('/admin');
         } catch (error) {

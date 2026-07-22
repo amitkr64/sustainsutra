@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
 import { Lock, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 
 const ResetPasswordPage = () => {
+    const { t } = useTranslation();
     const { token } = useParams();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,28 +23,26 @@ const ResetPasswordPage = () => {
         setError('');
 
         if (password !== confirmPassword) {
-            setError("Passwords don't match");
+            setError(t('auth.passwordsMismatch'));
             return;
         }
 
-        if (password.length < 6) {
-            setError("Password must be at least 6 characters");
+        if (password.length < 8) {
+            setError(t('auth.passwordTooShort'));
             return;
         }
 
         setIsLoading(true);
 
-        setTimeout(() => {
-            const result = resetPassword(token, password);
+        const result = await resetPassword(token, password);
 
-            if (result.success) {
-                setSuccess(true);
-                setTimeout(() => navigate('/login'), 2000);
-            } else {
-                setError(result.message);
-            }
-            setIsLoading(false);
-        }, 800);
+        if (result.success) {
+            setSuccess(true);
+            setTimeout(() => navigate('/login'), 2000);
+        } else {
+            setError(result.message);
+        }
+        setIsLoading(false);
     };
 
     if (success) {
@@ -57,13 +57,13 @@ const ResetPasswordPage = () => {
                         <CheckCircle className="text-green-400" size={32} />
                     </div>
 
-                    <h2 className="text-2xl font-playfair text-offwhite mb-4">Password Reset Successful!</h2>
+                    <h2 className="text-2xl font-playfair text-offwhite mb-4">{t('auth.resetSuccess')}</h2>
                     <p className="text-dimmed mb-6">
-                        Your password has been changed. Redirecting to login...
+                        {t('auth.resetSuccessDesc')}
                     </p>
 
                     <Link to="/login" className="text-gold hover:underline">
-                        Go to Login →
+                        {t('auth.goToLogin')} →
                     </Link>
                 </div>
             </div>
@@ -77,9 +77,9 @@ const ResetPasswordPage = () => {
             </Helmet>
 
             <div className="max-w-md w-full bg-white/5 border border-white/10 p-8 rounded-2xl">
-                <h1 className="text-3xl font-playfair text-gold mb-2">Reset Password</h1>
+                <h1 className="text-3xl font-playfair text-gold mb-2">{t('auth.resetTitle')}</h1>
                 <p className="text-offwhite/60 mb-8">
-                    Enter your new password below.
+                    {t('auth.resetDesc')}
                 </p>
 
                 {error && (
@@ -90,7 +90,7 @@ const ResetPasswordPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-offwhite mb-2">New Password</label>
+                        <label className="block text-sm font-medium text-offwhite mb-2">{t('auth.newPassword')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Lock className="h-5 w-5 text-gray-400" />
@@ -104,11 +104,11 @@ const ResetPasswordPage = () => {
                                 required
                             />
                         </div>
-                        <p className="text-xs text-offwhite/40 mt-1">Minimum 6 characters</p>
+                        <p className="text-xs text-offwhite/40 mt-1">{t('auth.passwordHint')}</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-offwhite mb-2">Confirm Password</label>
+                        <label className="block text-sm font-medium text-offwhite mb-2">{t('auth.confirmPassword')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Lock className="h-5 w-5 text-gray-400" />
@@ -129,13 +129,13 @@ const ResetPasswordPage = () => {
                         disabled={isLoading}
                         className="w-full py-3 bg-gold text-navy hover:bg-gold/90 rounded-lg font-medium"
                     >
-                        {isLoading ? 'Resetting...' : 'Reset Password'}
+                        {isLoading ? t('auth.resetting') : t('auth.resetButton')}
                     </Button>
                 </form>
 
                 <div className="mt-6 text-center">
                     <Link to="/login" className="text-gold hover:underline text-sm">
-                        Back to Login
+                        {t('auth.backToLogin')}
                     </Link>
                 </div>
             </div>

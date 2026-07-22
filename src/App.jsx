@@ -56,6 +56,7 @@ const VerificationDetail = lazy(() => import('@/pages/VerificationDetail'));
 const EmissionFactorLibrary = lazy(() => import('@/pages/EmissionFactorLibrary'));
 
 const BRSRDashboard = lazy(() => import('@/pages/BRSRDashboard'));
+const BRSRDiffPage = lazy(() => import('@/pages/BRSRDiffPage'));
 const BRSRReportWizard = lazy(() => import('@/pages/BRSRReportWizard'));
 const BRSRAnalysisDashboard = lazy(() => import('@/pages/BRSRAnalysisDashboard'));
 const BRSRAnalysisDashboardNew = lazy(() => import('@/pages/BRSRAnalysisDashboardNew'));
@@ -109,9 +110,10 @@ function App() {
                             <SEOMeta {...SEOConfig.home} />
 
                             <div className="min-h-screen bg-navy text-offwhite flex flex-col">
+                                <a href="#main-content" className="skip-link">Skip to content</a>
                                 <Header />
 
-                                <main className="flex-grow pt-20 lg:pt-28">
+                                <main id="main-content" className="flex-grow pt-20 lg:pt-28">
                                     <Suspense fallback={<PageLoader />}>
                                         <Routes>
                                             {/* Public Routes */}
@@ -184,6 +186,7 @@ function App() {
 
                                             {/* BRSR Reporting Routes */}
                                             <Route path="/brsr/dashboard" element={<ProtectedRoute><BRSRDashboard /></ProtectedRoute>} />
+                                            <Route path="/brsr/diff" element={<ProtectedRoute><BRSRDiffPage /></ProtectedRoute>} />
                                             <Route path="/brsr/wizard/:id" element={<ProtectedRoute><BRSRReportWizard /></ProtectedRoute>} />
                                             <Route path="/brsr/analysis" element={<ProtectedRoute><BRSRAnalysisDashboardNew /></ProtectedRoute>} />
                                             <Route path="/brsr/analysis/old" element={<ProtectedRoute><BRSRAnalysisDashboard /></ProtectedRoute>} />

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const dotenv = require('dotenv');
 const User = require('./models/userModel');
 const Course = require('./models/courseModel');
@@ -6,11 +7,17 @@ const connectDB = require('./config/db');
 
 dotenv.config();
 
+// Admin credentials come from the environment. If ADMIN_PASSWORD is not set we
+// generate a strong random one and print it once so the operator can log in —
+// we never seed a known-weak default like 'admin123'.
+const adminEmail = process.env.ADMIN_EMAIL || 'admin@sustainsutra.com';
+const adminPassword = process.env.ADMIN_PASSWORD || crypto.randomBytes(12).toString('base64').slice(0, 16);
+
 const initialUsers = [
     {
         name: 'Admin User',
-        email: 'admin@sustainsutra.com',
-        password: 'admin123',
+        email: adminEmail,
+        password: adminPassword,
         role: 'admin',
         phone: '1234567890'
     }
@@ -171,6 +178,13 @@ const seedData = async () => {
         await Course.insertMany(initialCourses);
 
         console.log('Data Imported Successfully!');
+        if (!process.env.ADMIN_PASSWORD) {
+            console.log('---------------------------------------------------------');
+            console.log(' Generated admin credentials (set ADMIN_PASSWORD in env to override):');
+            console.log(`   Email   : ${adminEmail}`);
+            console.log(`   Password: ${adminPassword}`);
+            console.log('---------------------------------------------------------');
+        }
         process.exit();
     } catch (error) {
         console.error(`Error: ${error.message}`);

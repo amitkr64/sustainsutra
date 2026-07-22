@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const connectDatabase = require('./config/db');
 const logger = require('./utils/logger');
+const { apiLimiter } = require('./middleware/rateLimitMiddleware');
 
 // Load env vars
 dotenv.config();
@@ -14,36 +15,50 @@ dotenv.config();
 const app = express();
 
 // Demo mode configuration
+// Demo mode accepts ANY password for known emails (no persistence). It is a
+// development convenience ONLY and must never be reachable in production.
 global.isDemoMode = false;
+const isProduction = process.env.NODE_ENV === 'production';
 const { initializeMockData } = require('./utils/mockData');
 
 // Connect to database and then start server
 const startServer = async () => {
-  try {
-    await connectDatabase();
-    logger.info('✓ MongoDB Connected Successfully');
-  } catch (err) {
-    logger.warn('⚠️ Standard MongoDB connection failed. Attempting to start embedded database...');
+  const forceDemo = String(process.env.DEMO_MODE || '').toLowerCase() === 'true';
 
+  // Honor an explicit DEMO_MODE=true request, but only outside production.
+  if (forceDemo && !isProduction) {
+    logger.warn('⚠️ DEMO_MODE=true requested — starting in Demo Mode (development only).');
+    global.isDemoMode = true;
+    initializeMockData();
+  } else {
     try {
-      const { startEmbeddedMongo } = require('./utils/embeddedDb');
-      const uri = await startEmbeddedMongo();
-
-      // Update process.env with new URI
-      process.env.MONGO_URI = uri;
-
-      // Retry connection
       await connectDatabase();
-      logger.info('✓ Embedded MongoDB Connected Successfully');
-    } catch (embeddedErr) {
-      if (process.env.REQUIRE_DB === 'true') {
-        logger.error('FATAL: Could not connect to standard OR embedded MongoDB. Exiting.');
-        logger.error(embeddedErr);
-        process.exit(1);
+      logger.info('✓ MongoDB Connected Successfully');
+    } catch (err) {
+      logger.warn('⚠️ Standard MongoDB connection failed. Attempting to start embedded database...');
+
+      try {
+        const { startEmbeddedMongo } = require('./utils/embeddedDb');
+        const uri = await startEmbeddedMongo();
+
+        // Update process.env with new URI
+        process.env.MONGO_URI = uri;
+
+        // Retry connection
+        await connectDatabase();
+        logger.info('✓ Embedded MongoDB Connected Successfully');
+      } catch (embeddedErr) {
+        // In production we ALWAYS fail closed: a DB outage must never silently
+        // enable the demo-mode password bypass, regardless of REQUIRE_DB.
+        if (isProduction || process.env.REQUIRE_DB === 'true') {
+          logger.error('FATAL: Could not connect to MongoDB and demo mode is disabled in this environment. Exiting.');
+          logger.error(embeddedErr);
+          process.exit(1);
+        }
+        logger.warn('⚠️ Embedded MongoDB failed. Falling back to Demo Mode (development only).');
+        global.isDemoMode = true;
+        initializeMockData();
       }
-      logger.warn('⚠️ Embedded MongoDB failed. Falling back to Demo Mode.');
-      global.isDemoMode = true;
-      initializeMockData();
     }
   }
 
@@ -84,18 +99,23 @@ app.use(helmet({
 }));
 app.use(morgan('dev'));
 
+// Global rate limiter for all /api routes (auth endpoints apply a stricter
+// limiter on top of this via authLimiter in their route definitions).
+app.use('/api', apiLimiter);
+
 // Basic route
 app.get('/', (req, res) => {
   res.send('SustainSutra API is running...');
 });
 
 // Health check route
+// NOTE: intentionally does NOT expose demoMode — advertising that the
+// password bypass is active is itself a security leak.
 app.get('/api/health', async (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    demoMode: global.isDemoMode,
     database: dbStatus
   });
 });
@@ -109,16 +129,25 @@ app.use('/api/courses', require('./routes/courseRoutes'));
 // app.use('/api/upload', require('./routes/uploadRoutes'));
 // app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/emission-factors', require('./routes/emissionFactorRoutes'));
-// app.use('/api/payment', require('./routes/paymentRoutes'));
-// app.use('/api/ccc', require('./routes/cctcRoutes'));
-// app.use('/api/btec', require('./routes/btecRoutes'));
-// app.use('/api/ccts/entity', require('./routes/cctsEntityRoutes'));
-// app.use('/api/ccts/verifier', require('./routes/cctsVerifierRoutes'));
+app.use('/api/nic', require('./routes/nicRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
+app.use('/api/activity', require('./routes/activityRoutes'));
+// BRSR master reports (the wizard + dashboard + diff consume these).
+app.use('/api/brsr-reports', require('./routes/brsrMasterReportRoutes'));
+// Carbon Credit Trading Scheme (CCTS). Requires a real database — fail closed
+// in demo mode rather than letting the controllers hit an absent DB.
+app.use('/api/ccts', require('./middleware/requireRealDb'), require('./routes/cctsRoutes'));
 
 // Error handling middleware (must be last)
 app.use((err, req, res, next) => {
   logger.error(err.stack);
-  const statusCode = err.statusCode || 500;
+  // Respect a status code already set on the response by middleware that uses
+  // the `res.status(N); throw new Error(...)` pattern (e.g. authMiddleware),
+  // then fall back to err.statusCode, then 500.
+  const statusCode = (res.statusCode && res.statusCode >= 400)
+    ? res.statusCode
+    : (err.statusCode || 500);
   res.status(statusCode).json({
     success: false,
     error: err.message || 'Internal Server Error',

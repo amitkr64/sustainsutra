@@ -100,12 +100,19 @@ services:
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:8085}
 
       # Database Configuration
-      - MONGO_URI=mongodb://mongo:27017/sustainsutra
-      - REQUIRE_DB=false
-      - DEMO_MODE=false
+      # NOTE: mongo below is started with auth (MONGO_INITDB_ROOT_USERNAME/PASSWORD).
+      # The URI must include those credentials. Override via .env — there is no
+      # insecure default password.
+      - MONGO_URI=mongodb://${MONGO_ROOT_USERNAME:?set MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD:?set MONGO_ROOT_PASSWORD}@mongo:27017/sustainsutra?authSource=admin
+      # REQUIRE_DB=true: fail closed on DB outage instead of falling back to the
+      # (dev-only, password-bypassing) demo mode. Demo mode is unreachable in
+      # production regardless, but this makes the failure explicit.
+      - REQUIRE_DB=true
 
       # Security (IMPORTANT: Change these in production!)
-      - JWT_SECRET=${JWT_SECRET:-your_super_secret_jwt_key_change_this_in_production}
+      # JWT_SECRET is REQUIRED — no insecure default. Generate with:
+      #   openssl rand -base64 64
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required. Generate with: openssl rand -base64 64}
       - JWT_EXPIRE=${JWT_EXPIRE:-7d}
 
       # CORS Configuration
@@ -135,9 +142,6 @@ services:
       # Error Tracking (Optional)
       - SENTRY_DSN=${SENTRY_DSN:-}
       - SENTRY_ENVIRONMENT=production
-
-      # Demo Mode (should be false in production)
-      - DEMO_MODE=false
 
       # AI API Keys (Optional)
       - ZHIPU_API_KEY=${ZHIPU_API_KEY:-}
@@ -200,8 +204,8 @@ services:
     environment:
       # Database Configuration
       - MONGO_INITDB_DATABASE=sustainsutra
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-admin}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-securePassword123}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:?set MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:?set MONGO_ROOT_PASSWORD (generate a strong one)}
       - MONGO_INITDB_PWD_LENGTH=8
 
       # Enable authentication

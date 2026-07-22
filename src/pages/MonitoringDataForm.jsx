@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
 import { createMonitoringData, updateMonitoringData, getMonitoringDataById, calculateEmissions } from '@/services/cctsMonitoringService';
 import { getMyEntity } from '@/services/cctsEntityService';
 import { getEmissionFactors } from '@/services/cctsEmissionFactorService';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { ChevronLeft, ChevronRight, Save, Send, Plus, Trash2, Calculator, Info, CheckCircle, AlertTriangle } from 'lucide-react';
+import MonitoringBulkImport from '@/components/CCTS/MonitoringBulkImport';
 
 const MonitoringDataForm = () => {
     const { id } = useParams();
-    const { token } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -55,14 +54,15 @@ const MonitoringDataForm = () => {
 
     useEffect(() => {
         loadInitialData();
-    }, [token, id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
     const loadInitialData = async () => {
         try {
             setLoading(true);
 
             // Get entity
-            const entityRes = await getMyEntity(token);
+            const entityRes = await getMyEntity();
             setEntity(entityRes.data);
 
             // Get emission factors
@@ -71,7 +71,7 @@ const MonitoringDataForm = () => {
 
             // If editing, load existing data
             if (id) {
-                const dataRes = await getMonitoringDataById(token, id);
+                const dataRes = await getMonitoringDataById(id);
                 setFormData(dataRes.data);
             }
 
@@ -164,6 +164,18 @@ const MonitoringDataForm = () => {
         }));
     };
 
+    // Bulk import: append parsed rows from an uploaded spreadsheet.
+    const handleBulkImport = (rows, kind) => {
+        setFormData(prev => ({
+            ...prev,
+            [kind]: [...(prev[kind] || []), ...rows]
+        }));
+        toast({
+            title: 'Import complete',
+            description: `${rows.length} rows added to ${kind === 'rawMaterials' ? 'raw materials' : 'fuels'}.`
+        });
+    };
+
     // Real-time calculation preview
     const previewCalculations = useMemo(() => {
         const scope1 = formData.fuelInputs.reduce((sum, fuel) => {
@@ -245,7 +257,7 @@ const MonitoringDataForm = () => {
     const handleCalculate = async () => {
         try {
             setCalculating(true);
-            const result = await calculateEmissions(token, formData);
+            const result = await calculateEmissions(formData);
             setCalculationResult(result.data);
             toast({
                 title: 'Success',
@@ -271,10 +283,10 @@ const MonitoringDataForm = () => {
             };
 
             if (id) {
-                await updateMonitoringData(token, id, payload);
+                await updateMonitoringData(id, payload);
                 toast({ title: 'Success', description: 'Draft saved' });
             } else {
-                const res = await createMonitoringData(token, payload);
+                const res = await createMonitoringData(payload);
                 navigate(`/ccts/monitoring-data/edit/${res.data._id}`);
                 toast({ title: 'Success', description: 'Draft created' });
             }
@@ -296,9 +308,9 @@ const MonitoringDataForm = () => {
             };
 
             if (id) {
-                await updateMonitoringData(token, id, payload);
+                await updateMonitoringData(id, payload);
             } else {
-                await createMonitoringData(token, payload);
+                await createMonitoringData(payload);
             }
 
             toast({
@@ -419,6 +431,7 @@ const MonitoringDataForm = () => {
                         {/* Step 2: Raw Materials */}
                         {currentStep === 2 && (
                             <div className="space-y-6">
+                                <MonitoringBulkImport onImport={handleBulkImport} />
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-2xl font-bold text-gold">Raw Materials (Scope 3)</h2>
                                     <Button onClick={addRawMaterial} className="bg-gold text-darkgray">
@@ -529,6 +542,7 @@ const MonitoringDataForm = () => {
                         {/* Step 3: Fuel & Energy */}
                         {currentStep === 3 && (
                             <div className="space-y-6">
+                                <MonitoringBulkImport onImport={handleBulkImport} />
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-2xl font-bold text-gold">Fuel & Energy Inputs</h2>
                                     <Button onClick={addFuelInput} className="bg-gold text-darkgray">

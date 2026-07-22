@@ -44,6 +44,19 @@ const userSchema = mongoose.Schema({
         // Sectors authorized to verify: ['Cement', 'Steel', 'Textile', etc.]
         certificate: String
         // URL to accreditation certificate
+    },
+    // Password-reset fields. The token is stored hashed (SHA-256) and never
+    // selected by default to avoid accidental leakage.
+    resetPasswordToken: {
+        type: String,
+        select: false
+    },
+    resetPasswordExpires: {
+        type: Date,
+        select: false
+    },
+    passwordChangedAt: {
+        type: Date
     }
 }, {
     timestamps: true

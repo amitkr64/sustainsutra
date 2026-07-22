@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 
 const ForgotPasswordPage = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -20,17 +22,15 @@ const ForgotPasswordPage = () => {
         setError('');
         setIsLoading(true);
 
-        setTimeout(() => {
-            const result = requestPasswordReset(email);
+        const result = await requestPasswordReset(email);
 
-            if (result.success) {
-                setResetToken(result.token);
-                setSubmitted(true);
-            } else {
-                setError(result.message);
-            }
-            setIsLoading(false);
-        }, 800);
+        if (result.success) {
+            setResetToken(result.token);
+            setSubmitted(true);
+        } else {
+            setError(result.message);
+        }
+        setIsLoading(false);
     };
 
     if (submitted) {
@@ -45,24 +45,24 @@ const ForgotPasswordPage = () => {
                         <Mail className="text-green-400" size={32} />
                     </div>
 
-                    <h2 className="text-2xl font-playfair text-offwhite mb-4">Check Your Email</h2>
+                    <h2 className="text-2xl font-playfair text-offwhite mb-4">{t('auth.checkEmail')}</h2>
                     <p className="text-dimmed mb-6">
-                        We've sent password reset instructions to <strong className="text-offwhite">{email}</strong>
+                        {t('auth.forgotDesc')} <strong className="text-offwhite">{email}</strong>
                     </p>
 
                     {/* Demo mode - show token */}
                     <div className="bg-gold/10 border border-gold/30 p-4 rounded-lg mb-6">
-                        <p className="text-xs text-offwhite/60 mb-2">Demo Mode - Use this link:</p>
+                        <p className="text-xs text-offwhite/60 mb-2">{t('auth.demoModeLink')}</p>
                         <button
                             onClick={() => navigate(`/reset-password/${resetToken}`)}
                             className="text-gold hover:underline text-sm break-all"
                         >
-                            Click here to reset password
+                            {t('auth.clickToReset')}
                         </button>
                     </div>
 
                     <Link to="/login" className="text-gold hover:underline">
-                        ← Back to Login
+                        ← {t('auth.backToLogin')}
                     </Link>
                 </div>
             </div>
@@ -78,12 +78,12 @@ const ForgotPasswordPage = () => {
             <div className="max-w-md w-full bg-white/5 border border-white/10 p-8 rounded-2xl">
                 <Link to="/login" className="inline-flex items-center gap-2 text-gold hover:underline mb-6">
                     <ArrowLeft size={20} />
-                    Back to Login
+                    {t('auth.backToLogin')}
                 </Link>
 
-                <h1 className="text-3xl font-playfair text-gold mb-2">Forgot Password?</h1>
+                <h1 className="text-3xl font-playfair text-gold mb-2">{t('auth.forgotTitle')}</h1>
                 <p className="text-offwhite/60 mb-8">
-                    Enter your email address and we'll send you instructions to reset your password.
+                    {t('auth.forgotDesc')}
                 </p>
 
                 {error && (
@@ -94,7 +94,7 @@ const ForgotPasswordPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-offwhite mb-2">Email Address</label>
+                        <label className="block text-sm font-medium text-offwhite mb-2">{t('auth.emailLabel')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Mail className="h-5 w-5 text-gray-400" />
@@ -115,7 +115,7 @@ const ForgotPasswordPage = () => {
                         disabled={isLoading}
                         className="w-full py-3 bg-gold text-navy hover:bg-gold/90 rounded-lg font-medium"
                     >
-                        {isLoading ? 'Sending...' : 'Send Reset Instructions'}
+                        {isLoading ? t('auth.sending') : t('auth.sendReset')}
                     </Button>
                 </form>
             </div>

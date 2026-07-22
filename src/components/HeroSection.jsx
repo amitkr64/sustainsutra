@@ -15,14 +15,18 @@ const HeroSection = () => {
 
     return (
         <section className="relative min-h-[85vh] flex items-start pt-12 overflow-hidden" id="hero">
-            {/* Background Layer with Parallax-like fixed positioning */}
-            <div className="absolute inset-0 z-0">
+            {/* Background Layer with Parallax-like fixed positioning.
+                The gradient base renders even if the remote image fails to load,
+                so the hero degrades gracefully instead of showing a broken bg. */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-br from-sage via-navy to-black">
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
                     style={{
                         backgroundImage: `url('https://images.unsplash.com/photo-1697869162556-ab57db502c09?q=80&w=2070&auto=format&fit=crop')`,
                         transform: 'scale(1.1)' // Slight zoom to allow for smooth edges if needed
                     }}
+                    role="img"
+                    aria-label="Aerial view of a sustainable industrial landscape"
                 />
                 {/* Deep Gradient Overlays for Text Readability & Mood */}
                 <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-navy/40"></div>

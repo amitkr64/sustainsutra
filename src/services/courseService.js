@@ -1,11 +1,15 @@
-// Course service for managing course data via API
+// Course service for managing course data via API.
+// Auth is via the httpOnly JWT cookie (credentials: 'include'). There is no
+// Bearer token on the client.
 const API_URL = '/api/courses';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
 export const courseService = {
     // Get all courses
     getAllCourses: async () => {
         try {
-            const response = await fetch(`${API_URL}`);
+            const response = await fetch(`${API_URL}`, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch courses');
             return await response.json();
         } catch (error) {
@@ -17,7 +21,7 @@ export const courseService = {
     // Get published courses
     getPublishedCourses: async () => {
         try {
-            const response = await fetch(`${API_URL}/published`);
+            const response = await fetch(`${API_URL}/published`, { credentials: 'include' });
             if (!response.ok) throw new Error('Failed to fetch published courses');
             return await response.json();
         } catch (error) {
@@ -29,7 +33,7 @@ export const courseService = {
     // Get course by slug
     getCourseBySlug: async (slug) => {
         try {
-            const response = await fetch(`${API_URL}/slug/${slug}`);
+            const response = await fetch(`${API_URL}/slug/${slug}`, { credentials: 'include' });
             if (!response.ok) throw new Error('Course not found');
             return await response.json();
         } catch (error) {
@@ -41,7 +45,7 @@ export const courseService = {
     // Get course by ID
     getCourseById: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/${id}`);
+            const response = await fetch(`${API_URL}/${id}`, { credentials: 'include' });
             if (!response.ok) throw new Error('Course not found');
             return await response.json();
         } catch (error) {
@@ -51,14 +55,12 @@ export const courseService = {
     },
 
     // Create course (Admin only)
-    createCourse: async (courseData, token) => {
+    createCourse: async (courseData) => {
         try {
             const response = await fetch(`${API_URL}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(courseData)
             });
             if (!response.ok) {
@@ -73,14 +75,12 @@ export const courseService = {
     },
 
     // Update course (Admin only)
-    updateCourse: async (id, courseData, token) => {
+    updateCourse: async (id, courseData) => {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(courseData)
             });
             if (!response.ok) {
@@ -95,13 +95,11 @@ export const courseService = {
     },
 
     // Delete course (Admin only)
-    deleteCourse: async (id, token) => {
+    deleteCourse: async (id) => {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -115,14 +113,12 @@ export const courseService = {
     },
 
     // Registration Methods
-    registerForCourse: async (courseId, userId, token) => {
+    registerForCourse: async (courseId, userId) => {
         try {
             const response = await fetch(`${API_URL}/register`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ courseId })
             });
             const data = await response.json();
@@ -134,12 +130,10 @@ export const courseService = {
         }
     },
 
-    getUserRegistrations: async (email, token) => {
+    getUserRegistrations: async (email) => {
         try {
             const response = await fetch(`${API_URL}/my-registrations`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include'
             });
             if (!response.ok) throw new Error('Failed to fetch registrations');
             return await response.json();
@@ -149,12 +143,10 @@ export const courseService = {
         }
     },
 
-    isUserRegistered: async (courseId, email, token) => {
+    isUserRegistered: async (courseId, email) => {
         try {
             const response = await fetch(`${API_URL}/check-registration/${courseId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include'
             });
             const data = await response.json();
             return data.registered;
@@ -164,14 +156,12 @@ export const courseService = {
         }
     },
 
-    updateProgress: async (courseId, progressData, token) => {
+    updateProgress: async (courseId, progressData) => {
         try {
             const response = await fetch(`${API_URL}/progress`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: JSON_HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ courseId, ...progressData })
             });
             if (!response.ok) throw new Error('Failed to update progress');

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { userService } from '@/services/userService';
 
 const BRSRAnalysisContext = createContext(null);
 
@@ -92,8 +91,7 @@ export const BRSRAnalysisProvider = ({ children }) => {
   const fetchReports = useCallback(async () => {
     dispatch({ type: 'FETCH_START' });
     try {
-      const token = userService.getToken();
-      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      const config = { withCredentials: true };
       const { data } = await axios.get('/api/brsr-analysis', config);
       dispatch({ type: 'FETCH_SUCCESS', payload: data });
     } catch (error) {
@@ -146,10 +144,7 @@ export const BRSRAnalysisProvider = ({ children }) => {
     const formData = new FormData();
     formData.append('xbrl', file);
 
-    const token = userService.getToken();
-    const config = token
-      ? { headers: { Authorization: `Bearer ${token}` } }
-      : {};
+    const config = { withCredentials: true };
 
     try {
       const { data } = await axios.post('/api/brsr-analysis', formData, config);

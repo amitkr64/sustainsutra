@@ -3,20 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, FileText, Trash2, Edit3, ChevronRight, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/context/AuthContext';
 
 const BRSRDashboard = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const { toast } = useToast();
     const navigate = useNavigate();
-    const { token } = useAuth();
 
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    };
+    // Auth is via the httpOnly JWT cookie (withCredentials).
+    const config = { withCredentials: true };
 
     useEffect(() => {
         fetchReports();
@@ -92,6 +87,13 @@ const BRSRDashboard = () => {
                     >
                         <BarChart3 size={20} />
                         Analysis Dashboard
+                    </button>
+                    <button
+                        onClick={() => navigate('/brsr/diff')}
+                        className="flex items-center gap-2 border border-gold/30 text-gold px-6 py-3 rounded-lg font-bold hover:bg-gold/10 transition-smooth"
+                    >
+                        <Plus size={20} />
+                        Compare Reports
                     </button>
                     <button
                         onClick={createNewReport}

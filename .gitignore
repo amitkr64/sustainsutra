@@ -28,4 +28,10 @@ yarn-error.log*
 # AI
 .gemini/
 .agent/
+
+# Embedded Mongo / runtime data (keep nic_database.json for the seeder)
+backend/data/db/
+backend/uploads/
+uploads/
+*.log
 .cursor/

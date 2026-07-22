@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {
     getReports,
+    getReportYears,
+    diffReports,
     getReportById,
     createReport,
     updateReport,
@@ -13,6 +15,11 @@ const { protect } = require('../middleware/authMiddleware');
 router.route('/')
     .get(protect, getReports)
     .post(protect, createReport);
+
+// These specific routes must be declared before the /:id route to avoid
+// being captured by the :id parameter.
+router.get('/years', protect, getReportYears);
+router.get('/diff', protect, diffReports);
 
 router.route('/:id')
     .get(protect, getReportById)

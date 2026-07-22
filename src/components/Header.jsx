@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
+import Logo from '@/components/Logo';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -114,8 +115,8 @@ const Header = () => {
                 </div>
 
                 <nav className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-xl font-extrabold tracking-tight text-foreground">
-                        Sustain<span className="text-primary">Sutra</span>
+                    <Link to="/" onClick={() => setIsMenuOpen(false)}>
+                        <Logo size={30} />
                     </Link>
 
                     {/* Desktop Navigation */}

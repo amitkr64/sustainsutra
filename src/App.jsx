@@ -84,6 +84,7 @@ import { Linkedin, Twitter } from 'lucide-react';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { newsletterService } from '@/services/newsletterService';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import Logo from '@/components/Logo';
 
 // Wraps <Routes> in a keyed motion.div for a fade+rise on each navigation.
 // Must be rendered inside <Router> (it calls useLocation).
@@ -229,7 +230,7 @@ function App() {
                                     <div className="container mx-auto px-4">
                                         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
                                             <div className="md:col-span-2">
-                                                <h3 className="text-xl font-extrabold tracking-tight text-foreground mb-4">Sustain<span className="text-primary">Sutra</span></h3>
+                                                <div className="mb-4"><Logo size={28} /></div>
                                                 <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                                                     Engineering NetZero pathways through holistic ESG strategy and compliance excellence.
                                                 </p>

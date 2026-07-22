@@ -7,31 +7,14 @@ import {
     useMotionValue,
     useReducedMotion,
 } from 'framer-motion';
-import { ArrowRight, Calculator, Sparkles, TrendingUp, Leaf, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Calculator, Sparkles, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { staggerContainer, fadeUp, scaleIn } from '@/lib/motion';
+import { staggerContainer, fadeUp } from '@/lib/motion';
+import HeroCalculatorWidget from '@/components/HeroCalculatorWidget';
 
 // Staggered entrance variant for the hero text block.
 const item = fadeUp;
-
-// A small metric "card" used in the floating product preview.
-const MetricCard = ({ icon: Icon, label, value, accent, style }) => (
-    <motion.div
-        style={style}
-        className="rounded-xl border border-border bg-card/90 p-3 shadow-md backdrop-blur-sm"
-    >
-        <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: `${accent}1a`, color: accent }}>
-                <Icon size={16} />
-            </div>
-            <div>
-                <div className="text-base font-bold leading-none text-foreground">{value}</div>
-                <div className="mt-0.5 text-[10px] text-muted-foreground">{label}</div>
-            </div>
-        </div>
-    </motion.div>
-);
 
 const HeroSection = () => {
     const sectionRef = useRef(null);
@@ -157,70 +140,10 @@ const HeroSection = () => {
                         </motion.div>
                     </motion.div>
 
-                    {/* --- Right: floating product preview (parallax + idle bob) --- */}
-                    {!reduceMotion && (
-                        <motion.div
-                            style={{ y: yPreview, opacity }}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                            className="relative mx-auto hidden w-full max-w-md lg:block"
-                        >
-                            <motion.div
-                                animate={{ y: [0, -12, 0] }}
-                                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                                className="relative"
-                            >
-                                {/* Main preview card */}
-                                <div className="overflow-hidden rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-md">
-                                    <div className="mb-4 flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                                <Leaf size={18} />
-                                            </div>
-                                            <div>
-                                                <div className="text-sm font-semibold text-foreground">Carbon Footprint</div>
-                                                <div className="text-[10px] text-muted-foreground">FY 2024-25</div>
-                                            </div>
-                                        </div>
-                                        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">-18% YoY</span>
-                                    </div>
-
-                                    {/* Animated bar chart */}
-                                    <div className="flex h-28 items-end gap-2">
-                                        {[40, 65, 50, 80, 60, 95, 72].map((h, i) => (
-                                            <motion.div
-                                                key={i}
-                                                initial={{ height: 0 }}
-                                                animate={{ height: `${h}%` }}
-                                                transition={{ duration: 0.6, delay: 0.6 + i * 0.08, ease: 'easeOut' }}
-                                                className="flex-1 rounded-t bg-gradient-to-t from-primary/40 to-primary"
-                                            />
-                                        ))}
-                                    </div>
-                                    <div className="mt-3 flex justify-between text-[10px] text-muted-foreground">
-                                        <span>Scope 1</span><span>Scope 2</span><span>Scope 3</span>
-                                    </div>
-                                </div>
-
-                                {/* Floating metric cards */}
-                                <MetricCard
-                                    icon={TrendingUp}
-                                    label="tCO₂e Reduced"
-                                    value="2.5M+"
-                                    accent="hsl(160 84% 39%)"
-                                    style={{ position: 'absolute', top: '-20px', right: '-24px' }}
-                                />
-                                <MetricCard
-                                    icon={ShieldCheck}
-                                    label="Compliance"
-                                    value="98%"
-                                    accent="hsl(210 80% 50%)"
-                                    style={{ position: 'absolute', bottom: '-24px', left: '-20px' }}
-                                />
-                            </motion.div>
-                        </motion.div>
-                    )}
+                    {/* --- Right: interactive live calculator widget --- */}
+                    <div className="hidden lg:block">
+                        <HeroCalculatorWidget style={{ y: yPreview, opacity }} />
+                    </div>
                 </div>
             </div>
 

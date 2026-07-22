@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HeroSection from '@/components/HeroSection';
-import TheSutraProcess from '@/components/TheSutraProcess';
+import LogoMarquee from '@/components/LogoMarquee';
+import HowItWorks from '@/components/HowItWorks';
 import ServiceMatrix from '@/components/ServiceMatrix';
 import ESGScoreChart from '@/components/ESGScoreChart';
 import CarbonAbatementChart from '@/components/CarbonAbatementChart';
@@ -28,7 +29,8 @@ const HomePage = () => {
     return (
         <>
             <HeroSection />
-            <TheSutraProcess />
+            <LogoMarquee />
+            <HowItWorks />
             <ServiceMatrix />
 
             {/* Statistics Section */}

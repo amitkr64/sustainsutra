@@ -13,78 +13,81 @@
 
 @layer base {
     :root {
-        /* Light theme — clean, high-contrast, modern SaaS */
-        --background: 0 0% 98%;            /* #FAFAFA */
-        --foreground: 240 10% 9%;          /* #18181B */
-        --card: 0 0% 100%;                 /* #FFFFFF */
-        --card-foreground: 240 10% 9%;
+        /* Light theme — teal/emerald climate-tech, warm-cool neutral balance */
+        --background: 210 40% 98%;            /* #F8FAFC slate-50 */
+        --foreground: 222 47% 11%;            /* #0F172A slate-900 */
+        --card: 0 0% 100%;                    /* #FFFFFF */
+        --card-foreground: 222 47% 11%;
         --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 9%;
-        --primary: 160 84% 39%;            /* #059669 emerald-600 (accent) */
+        --popover-foreground: 222 47% 11%;
+        --primary: 173 80% 40%;               /* #0D9488 teal-600 */
         --primary-foreground: 0 0% 100%;
-        --secondary: 240 5% 96%;           /* #F4F4F5 */
-        --secondary-foreground: 240 10% 9%;
-        --muted: 240 5% 96%;
-        --muted-foreground: 240 4% 46%;    /* #71717A */
-        --accent: 160 84% 39%;             /* mirror of primary */
+        --secondary: 210 40% 96%;             /* #F1F5F9 slate-100 */
+        --secondary-foreground: 222 47% 11%;
+        --muted: 210 40% 96%;
+        --muted-foreground: 215 16% 47%;      /* #64748B slate-500 */
+        --accent: 160 84% 39%;                /* #059669 emerald-600 (secondary) */
         --accent-foreground: 0 0% 100%;
-        --destructive: 0 72% 51%;          /* #DC2626 */
+        --destructive: 0 72% 51%;
         --destructive-foreground: 0 0% 100%;
-        --border: 240 6% 90%;              /* #E4E4E7 */
-        --input: 240 6% 90%;
-        --ring: 160 84% 39%;
+        --border: 214 32% 91%;                /* #E2E8F0 slate-200 */
+        --input: 214 32% 91%;
+        --ring: 173 80% 40%;
         --radius: 0.75rem;
 
-        /* Named-token aliases (kept for backwards compat with existing markup).
-           These mirror the semantic vars so bg-navy/text-gold/etc. work. */
-        --navy: 0 0% 98%;
+        /* Named-token aliases (legacy compat) */
+        --navy: 210 40% 98%;
         --navy-light: 0 0% 100%;
-        --gold: 160 84% 39%;
-        --offwhite: 240 10% 9%;
-        --dimmed: 240 4% 46%;
-        --sage: 152 50% 96%;
-        --forest: 150 30% 92%;
+        --gold: 173 80% 40%;                  /* primary alias = teal */
+        --offwhite: 222 47% 11%;
+        --dimmed: 215 16% 47%;
+        --sage: 160 84% 39%;                  /* emerald accent */
+        --forest: 173 80% 40%;
         --growth: 160 84% 39%;
 
         /* Soft shadow tokens */
-        --shadow-color: 240 10% 9%;
-        --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.05);
-        --shadow-md: 0 4px 12px -2px hsl(var(--shadow-color) / 0.08), 0 2px 4px -2px hsl(var(--shadow-color) / 0.05);
-        --shadow-lg: 0 12px 32px -8px hsl(var(--shadow-color) / 0.12), 0 4px 12px -4px hsl(var(--shadow-color) / 0.06);
+        --shadow-color: 215 28% 17%;
+        --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.06);
+        --shadow-md: 0 4px 12px -2px hsl(var(--shadow-color) / 0.09), 0 2px 4px -2px hsl(var(--shadow-color) / 0.05);
+        --shadow-lg: 0 12px 32px -8px hsl(var(--shadow-color) / 0.13), 0 4px 12px -4px hsl(var(--shadow-color) / 0.07);
+
+        /* Brand gradient (teal → emerald) used on buttons, hero accents, etc. */
+        --brand-gradient: linear-gradient(135deg, hsl(173 80% 40%) 0%, hsl(160 84% 39%) 100%);
     }
 
     .dark {
-        /* Dark theme — deep slate, refined, premium */
-        --background: 222 47% 7%;          /* #0B1220 near-black slate */
-        --foreground: 210 40% 96%;         /* #F1F5F9 */
-        --card: 222 40% 12%;               /* #1A2436 */
+        /* Dark theme — teal-tinted deep slate, premium */
+        --background: 200 50% 7%;             /* #08101A deep teal-slate */
+        --foreground: 210 40% 96%;            /* #F1F5F9 */
+        --card: 195 38% 13%;                  /* #14222E teal-tinted card */
         --card-foreground: 210 40% 96%;
-        --popover: 222 40% 12%;
+        --popover: 195 38% 13%;
         --popover-foreground: 210 40% 96%;
-        --primary: 160 84% 45%;            /* #10B981 emerald-500 */
-        --primary-foreground: 222 47% 7%;
-        --secondary: 222 30% 18%;          /* #243049 */
+        --primary: 172 76% 45%;               /* #14B8A6 teal-400 (brighter for dark) */
+        --primary-foreground: 200 50% 7%;
+        --secondary: 195 30% 20%;             /* #243640 */
         --secondary-foreground: 210 40% 96%;
-        --muted: 222 30% 18%;
-        --muted-foreground: 215 20% 65%;   /* #94A3B8 */
-        --accent: 160 84% 45%;
-        --accent-foreground: 222 47% 7%;
+        --muted: 195 30% 20%;
+        --muted-foreground: 200 18% 62%;      /* #8FA3B0 */
+        --accent: 160 70% 45%;                /* emerald-400 */
+        --accent-foreground: 200 50% 7%;
         --destructive: 0 63% 45%;
         --destructive-foreground: 0 0% 100%;
-        --border: 222 25% 22%;             /* #2B3A52 */
-        --input: 222 25% 22%;
-        --ring: 160 84% 45%;
+        --border: 195 25% 26%;                /* #2C4350 */
+        --input: 195 25% 26%;
+        --ring: 172 76% 45%;
 
-        --navy: 222 47% 7%;
-        --navy-light: 222 40% 12%;
-        --gold: 160 84% 45%;
+        --navy: 200 50% 7%;
+        --navy-light: 195 38% 13%;
+        --gold: 172 76% 45%;
         --offwhite: 210 40% 96%;
-        --dimmed: 215 20% 65%;
-        --sage: 160 40% 16%;
-        --forest: 150 25% 14%;
-        --growth: 160 84% 45%;
+        --dimmed: 200 18% 62%;
+        --sage: 160 70% 45%;
+        --forest: 172 76% 45%;
+        --growth: 160 70% 45%;
 
         --shadow-color: 0 0% 0%;
+        --brand-gradient: linear-gradient(135deg, hsl(172 76% 45%) 0%, hsl(160 70% 45%) 100%);
     }
 }
 
@@ -172,6 +175,16 @@
     .bg-grid {
         background-image: radial-gradient(hsl(var(--foreground) / 0.06) 1px, transparent 1px);
         background-size: 24px 24px;
+    }
+
+    /* Brand gradient (teal → emerald). */
+    .bg-brand { background: var(--brand-gradient); }
+    .text-gradient {
+        background: var(--brand-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
     }
 }
 

@@ -1,20 +1,30 @@
 version: '3.8'
 
+# Builds both services from the GitHub repository source on deploy — no
+# pre-built Docker Hub images required. Portainer clones the repo (branch
+# main), builds the images on the server, and runs them. This always deploys
+# the latest code from main.
+
 services:
   frontend:
-    image: amitkr64/sustainsutra-frontend:latest
+    build:
+      context: https://github.com/amitkr64/sustainsutra.git#main
+      dockerfile: Dockerfile
     container_name: sustainsutra-frontend
     restart: unless-stopped
     ports:
       - "8085:80"
     environment:
-      - VITE_API_URL=http://backend:5000
       - NODE_ENV=production
+    depends_on:
+      - backend
     networks:
       - sustainsutra-network
 
   backend:
-    image: amitkr64/sustainsutra-backend:latest
+    build:
+      context: https://github.com/amitkr64/sustainsutra.git#main
+      dockerfile: backend/Dockerfile
     container_name: sustainsutra-backend
     restart: unless-stopped
     ports:
@@ -23,15 +33,12 @@ services:
       - NODE_ENV=production
       - PORT=5000
       - MONGO_URI=mongodb://mongo:27017/sustainsutra
-      # Fail closed on DB outage instead of falling back to the (dev-only,
-      # password-bypassing) demo mode. Demo mode is unreachable in production
-      # regardless, but this makes the failure explicit.
+      # Fail closed on DB outage instead of falling back to demo-mode auth bypass.
       - REQUIRE_DB=true
-      # JWT_SECRET is REQUIRED — there is no insecure default. Generate one with:
+      # JWT_SECRET is REQUIRED. Set it as a stack env var in Portainer, or
+      # replace ${JWT_SECRET} below with a literal generated via:
       #   openssl rand -base64 64
-      # Set it as an environment variable in Portainer (or a .env file next to
-      # this compose file) before deploying. Compose fails fast if it's unset.
-      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required. Generate with: openssl rand -base64 64}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
     depends_on:
       - mongo
     networks:

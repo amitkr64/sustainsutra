@@ -22,15 +22,15 @@ const Logo = ({ size = 32, showWordmark = true, className = '' }) => (
         >
             <defs>
                 <linearGradient id="logoLeafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="hsl(173 80% 40%)" />
-                    <stop offset="100%" stopColor="hsl(160 84% 39%)" />
+                    <stop offset="0%" stopColor="#D4AF37" />
+                    <stop offset="100%" stopColor="#B8941F" />
                 </linearGradient>
             </defs>
             <rect x="6" y="6" width="88" height="88" rx="22" fill="url(#logoLeafGrad)" />
             {/* Leaf body */}
             <path d="M 30 70 Q 30 35, 65 30 Q 70 65, 30 70 Z" fill="white" fillOpacity="0.95" />
             {/* Growth vein */}
-            <path d="M 32 68 Q 45 55, 63 32" fill="none" stroke="hsl(173 80% 40%)" strokeWidth="3" strokeLinecap="round" />
+            <path d="M 32 68 Q 45 55, 63 32" fill="none" stroke="#D4AF37" strokeWidth="3" strokeLinecap="round" />
         </svg>
         {showWordmark && (
             <span className="text-xl font-extrabold tracking-tight text-foreground">

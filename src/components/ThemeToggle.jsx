@@ -5,7 +5,7 @@ import { useTheme } from '@/context/ThemeContext';
 // Sun/Moon theme toggle. Rendered in the Header next to the language switcher.
 const ThemeToggle = () => {
     const { theme, toggleTheme } = useTheme();
-    const isDark = theme === 'dark';
+    const isDark = theme !== 'light';
 
     return (
         <button

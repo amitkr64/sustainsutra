@@ -74,17 +74,17 @@ const HeroCalculatorWidget = ({ style }) => {
 
                     {/* Sliders */}
                     <div className="space-y-3.5">
-                        <Slider icon={Zap} label="Electricity" value={electricity} onChange={setElectricity} min={0} max={5000} unit="MWh" color="hsl(173 80% 40%)" />
-                        <Slider icon={Fuel} label="Fuel (Scope 1)" value={fuel} onChange={setFuel} min={0} max={500} unit="kL" color="hsl(160 84% 39%)" />
-                        <Slider icon={Factory} label="Materials" value={materials} onChange={setMaterials} min={0} max={10000} unit="t" color="hsl(190 80% 42%)" />
+                        <Slider icon={Zap} label="Electricity" value={electricity} onChange={setElectricity} min={0} max={5000} unit="MWh" color="#D4AF37" />
+                        <Slider icon={Fuel} label="Fuel (Scope 1)" value={fuel} onChange={setFuel} min={0} max={500} unit="kL" color="#74C69D" />
+                        <Slider icon={Factory} label="Materials" value={materials} onChange={setMaterials} min={0} max={10000} unit="t" color="#D4AF37" />
                     </div>
 
                     {/* Scope breakdown bars */}
                     <div className="mt-4 space-y-1.5">
                         {[
-                            ['Scope 1', scope1, 'hsl(173 80% 40%)'],
-                            ['Scope 2', scope2, 'hsl(160 84% 39%)'],
-                            ['Scope 3', scope3, 'hsl(190 80% 42%)'],
+                            ['Scope 1', scope1, '#D4AF37'],
+                            ['Scope 2', scope2, '#74C69D'],
+                            ['Scope 3', scope3, '#A0AAB5'],
                         ].map(([label, val, color]) => (
                             <div key={label} className="flex items-center gap-2">
                                 <span className="w-14 text-[10px] text-muted-foreground">{label}</span>

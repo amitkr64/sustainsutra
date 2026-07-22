@@ -248,7 +248,7 @@ const CarbonCalculatorPage = () => {
                         >
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
                                 <div className="lg:col-span-3">
-                                    <label className="lg:hidden block text-xs font-bold text-gold/60 uppercase mb-2">Description</label>
+                                    <span className="lg:hidden block text-xs font-semibold text-muted-foreground uppercase mb-2">Description</span>
                                     <input
                                         type="text"
                                         value={activity.name}
@@ -258,7 +258,7 @@ const CarbonCalculatorPage = () => {
                                     />
                                 </div>
                                 <div className="lg:col-span-4">
-                                    <label className="lg:hidden block text-xs font-bold text-gold/60 uppercase mb-2">Emission Factor</label>
+                                    <span className="lg:hidden block text-xs font-semibold text-muted-foreground uppercase mb-2">Emission Factor</span>
                                     <button
                                         onClick={() => openFactorBrowser(scope, activity.id)}
                                         className="w-full h-12 px-4 bg-navy/50 border border-white/10 rounded-xl text-left hover:border-gold/50 outline-none transition-all flex items-center justify-between group"
@@ -275,7 +275,7 @@ const CarbonCalculatorPage = () => {
                                     </button>
                                 </div>
                                 <div className="lg:col-span-4">
-                                    <label className="lg:hidden block text-xs font-bold text-gold/60 uppercase mb-2">Activity Value</label>
+                                    <span className="lg:hidden block text-xs font-semibold text-muted-foreground uppercase mb-2">Activity Value</span>
                                     <div className="flex items-center gap-2 bg-navy/50 border border-white/20 rounded-xl px-4 focus-within:border-gold transition-all overflow-hidden">
                                         <input
                                             type="number"
@@ -317,7 +317,7 @@ const CarbonCalculatorPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-background text-foreground">
             <Helmet>
                 <title>GHG Audit Engine | SustainSutra</title>
             </Helmet>
@@ -326,19 +326,19 @@ const CarbonCalculatorPage = () => {
                 {/* Product Header */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-16">
                     <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-gold/10 border border-gold/30 rounded-full mb-6 text-gold font-bold text-[10px] uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/30 rounded-full mb-6 text-primary font-semibold text-xs uppercase tracking-widest">
                             <Shield size={12} /> Audit-Ready Engine v2.0
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-playfair text-white mb-6">
-                            GHG <span className="text-gold italic">Audit</span> Tool
+                        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-4">
+                            GHG <span className="text-primary">Audit</span> Tool
                         </h1>
-                        <p className="text-xl text-dimmed font-light leading-relaxed">
+                        <p className="text-lg text-muted-foreground leading-relaxed">
                             A high-precision quantification engine designed for ISO 14064-1 compliance. Calculate Scope 1, 2, and 3 emissions with proprietary validation logic.
                         </p>
                     </div>
                     {isAuthenticated && (
-                        <div className="glassmorphism p-6 rounded-3xl border-white/5 flex items-center gap-6">
-                            <div className="w-14 h-14 bg-gold/10 rounded-2xl flex items-center justify-center text-gold border border-gold/20">
+                        <div className="glassmorphism p-6 rounded-2xl flex items-center gap-6">
+                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary border border-primary/20">
                                 <Shield size={28} />
                             </div>
                             <div>
@@ -361,7 +361,7 @@ const CarbonCalculatorPage = () => {
                             </h2>
                             <div className="grid md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
-                                    <label className="text-xs font-bold text-offwhite mb-2 block uppercase tracking-wide">Institutional Legal Name</label>
+                                    <span className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wide">Institutional Legal Name</span>
                                     <input
                                         type="text"
                                         value={organizationName}
@@ -371,7 +371,7 @@ const CarbonCalculatorPage = () => {
                                     />
                                 </div>
                                 <div className="space-y-4">
-                                    <label className="text-xs font-bold text-offwhite mb-2 block uppercase tracking-wide">Audit Reporting Period</label>
+                                    <span className="text-xs font-semibold text-muted-foreground mb-2 block uppercase tracking-wide">Audit Reporting Period</span>
                                     <input
                                         type="text"
                                         value={reportingPeriod}

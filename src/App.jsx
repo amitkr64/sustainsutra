@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { CourseProvider } from '@/context/CourseContext';
 import { AppointmentProvider } from '@/context/AppointmentContext';
 import Header from '@/components/Header';
@@ -101,6 +102,7 @@ function App() {
     const { toast } = useToast();
 
     return (
+        <ThemeProvider>
         <AuthProvider>
             <CourseProvider>
                 <AppointmentProvider>
@@ -204,12 +206,12 @@ function App() {
 
                                 <PWAInstallPrompt />
 
-                                <footer className="bg-navy/95 border-t border-white/10 py-12 mt-auto">
+                                <footer className="border-t border-border bg-secondary/30 py-12 mt-auto">
                                     <div className="container mx-auto px-4">
                                         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
                                             <div className="md:col-span-2">
-                                                <h3 className="text-2xl font-playfair text-gold mb-4">SustainSutra</h3>
-                                                <p className="text-dimmed text-sm leading-relaxed mb-4">
+                                                <h3 className="text-xl font-extrabold tracking-tight text-foreground mb-4">Sustain<span className="text-primary">Sutra</span></h3>
+                                                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                                                     Engineering NetZero pathways through holistic ESG strategy and compliance excellence.
                                                 </p>
                                                 <p className="text-dimmed text-sm">
@@ -297,6 +299,7 @@ function App() {
                 </AppointmentProvider>
             </CourseProvider>
         </AuthProvider>
+        </ThemeProvider>
     );
 }
 

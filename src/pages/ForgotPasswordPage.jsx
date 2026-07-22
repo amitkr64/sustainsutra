@@ -35,12 +35,12 @@ const ForgotPasswordPage = () => {
 
     if (submitted) {
         return (
-            <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+            <div className="flex min-h-screen items-center justify-center bg-background px-4">
                 <Helmet>
                     <title>Check Your Email | SustainSutra</title>
                 </Helmet>
 
-                <div className="max-w-md w-full bg-white/5 border border-white/10 p-8 rounded-2xl text-center">
+                <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
                     <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <Mail className="text-green-400" size={32} />
                     </div>
@@ -70,18 +70,18 @@ const ForgotPasswordPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+        <div className="flex min-h-screen items-center justify-center bg-background px-4">
             <Helmet>
                 <title>Forgot Password | SustainSutra</title>
             </Helmet>
 
-            <div className="max-w-md w-full bg-white/5 border border-white/10 p-8 rounded-2xl">
+            <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg">
                 <Link to="/login" className="inline-flex items-center gap-2 text-gold hover:underline mb-6">
                     <ArrowLeft size={20} />
                     {t('auth.backToLogin')}
                 </Link>
 
-                <h1 className="text-3xl font-playfair text-gold mb-2">{t('auth.forgotTitle')}</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground mb-2">{t('auth.forgotTitle')}</h1>
                 <p className="text-offwhite/60 mb-8">
                     {t('auth.forgotDesc')}
                 </p>
@@ -92,18 +92,18 @@ const ForgotPasswordPage = () => {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-offwhite mb-2">{t('auth.emailLabel')}</label>
+                        <label className="input-label">{t('auth.emailLabel')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Mail className="h-5 w-5 text-gray-400" />
+                                <Mail className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-lg bg-navy/50 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gold focus:border-gold"
+                                className="input-field pl-10"
                                 placeholder="your@email.com"
                                 required
                             />

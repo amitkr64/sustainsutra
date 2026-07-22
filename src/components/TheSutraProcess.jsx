@@ -56,19 +56,20 @@ const TheSutraProcess = () => {
     }, []);
 
     return (
-        <section className="section-padding bg-navy" id="process">
+        <section className="section-padding bg-secondary/30" id="process">
             <div className="container mx-auto px-4">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
-                    className="text-center mb-16"
+                    className="mx-auto mb-16 max-w-2xl text-center"
                 >
-                    <h2 className="text-4xl md:text-5xl font-playfair text-offwhite mb-4">
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Process</p>
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                         The Sutra
                     </h2>
-                    <p className="text-lg text-dimmed max-w-2xl mx-auto">
+                    <p className="mt-3 text-muted-foreground">
                         Our systematic approach to sustainable transformation
                     </p>
                 </motion.div>
@@ -76,10 +77,10 @@ const TheSutraProcess = () => {
                 <div className="max-w-4xl mx-auto" ref={sectionRef}>
                     <div className="relative">
                         {/* Vertical Line */}
-                        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gold/20">
+                        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border">
                             <motion.div
                                 ref={lineRef}
-                                className="w-full bg-gold origin-top"
+                                className="w-full bg-primary origin-top"
                                 style={{
                                     height: `${(visibleNodes.length / processNodes.length) * 100}%`,
                                     transition: 'height 0.6s ease-out'
@@ -93,9 +94,9 @@ const TheSutraProcess = () => {
                                 <motion.div
                                     key={node.id}
                                     data-node-id={node.id}
-                                    initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                                    initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.6, delay: 0.1 }}
+                                    transition={{ duration: 0.5, delay: 0.1 }}
                                     viewport={{ once: true }}
                                     className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                                         } flex-col gap-8`}
@@ -106,19 +107,19 @@ const TheSutraProcess = () => {
                                             initial={{ scale: 0 }}
                                             animate={visibleNodes.includes(node.id) ? { scale: 1 } : { scale: 0 }}
                                             transition={{ duration: 0.4, delay: 0.2 }}
-                                            className="w-8 h-8 rounded-full bg-gold shadow-lg shadow-gold/50 flex items-center justify-center"
+                                            className="w-8 h-8 rounded-full bg-primary shadow-md flex items-center justify-center"
                                         >
-                                            <div className="w-3 h-3 rounded-full bg-navy"></div>
+                                            <div className="w-2.5 h-2.5 rounded-full bg-primary-foreground"></div>
                                         </motion.div>
                                     </div>
 
                                     {/* Content Card */}
                                     <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:text-right md:pr-16' : 'md:text-left md:pl-16'} pl-16 md:pl-0`}>
-                                        <div className="glassmorphism rounded-xl p-6 hover:shadow-xl transition-smooth">
-                                            <h3 className="text-2xl font-playfair text-gold mb-3">
+                                        <div className="rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+                                            <h3 className="text-lg font-semibold text-foreground mb-2">
                                                 {node.title}
                                             </h3>
-                                            <p className="text-offwhite/90 leading-relaxed">
+                                            <p className="text-sm text-muted-foreground leading-relaxed">
                                                 {node.description}
                                             </p>
                                         </div>

@@ -3,6 +3,7 @@ import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Inf
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import ThemeToggle from '@/components/ThemeToggle';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -102,27 +103,23 @@ const Header = () => {
     return (
         <>
             <header
-                className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-500 transform ${(isVisible || isMenuOpen) ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-                    } ${isScrolled ? 'glassmorphism-strong shadow-lg' : 'glassmorphism'}`}
+                className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${(isVisible || isMenuOpen) ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+                    } ${isScrolled ? 'bg-background/80 backdrop-blur-md border-b border-border shadow-sm' : 'bg-background/40 backdrop-blur-sm'}`}
             >
-                <div className="bg-gold/90 text-navy overflow-hidden py-2">
-                    <div className="flex animate-scroll-ticker whitespace-nowrap">
-                        {[...tickerData, ...tickerData].map((item, index) => (
-                            <span key={index} className="inline-flex items-center mx-8 font-medium text-sm">
-                                <span className="w-1.5 h-1.5 bg-navy rounded-full mr-3"></span>
-                                {item}
-                            </span>
-                        ))}
+                {/* Slim accent announcement bar */}
+                <div className="bg-primary text-primary-foreground">
+                    <div className="container mx-auto px-4 py-1.5 text-center text-xs font-medium truncate">
+                        {tickerData[0]} &nbsp;&middot;&nbsp; {tickerData[1]}
                     </div>
                 </div>
 
-                <nav className="container mx-auto px-6 py-4 flex items-center justify-between h-20">
-                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-2xl font-playfair font-bold text-offwhite">
-                        Sustain<span className="text-gold">Sutra</span>
+                <nav className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-xl font-extrabold tracking-tight text-foreground">
+                        Sustain<span className="text-primary">Sutra</span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <ul className="hidden lg:flex items-center gap-8 text-offwhite/90">
+                    <ul className="hidden lg:flex items-center gap-7 text-sm font-medium text-foreground/80">
                         {/* Services Dropdown */}
                         <li>
                             <DropdownMenu>
@@ -227,13 +224,14 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
-                        <li className="flex items-center">
+                        <li className="flex items-center gap-1">
                             <LanguageSwitcher />
+                            <ThemeToggle />
                         </li>
 
                         {isAuthenticated ? (
-                            <li className="flex items-center gap-4">
-                                <Link to="/book-appointment" className="bg-gold text-navy px-6 py-2.5 rounded-lg font-bold hover:bg-gold/90 transition-all shadow-lg shadow-gold/20">
+                            <li className="flex items-center gap-3">
+                                <Link to="/book-appointment" className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold hover:brightness-110 transition-all text-sm">
                                     Book Appointment
                                 </Link>
                                 <DropdownMenu>
@@ -273,8 +271,8 @@ const Header = () => {
                                 </DropdownMenu>
                             </li>
                         ) : (
-                            <li className="border-l border-white/20 pl-4">
-                                <Link to="/login" className="px-4 py-2 border border-gold/30 text-gold rounded-lg hover:bg-gold/10 transition-colors font-medium">
+                            <li className="ml-1">
+                                <Link to="/login" className="px-4 py-2 border border-border text-foreground rounded-lg hover:bg-secondary transition-colors font-medium text-sm">
                                     Sign In
                                 </Link>
                             </li>

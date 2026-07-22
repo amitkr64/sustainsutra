@@ -1,84 +1,85 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, FileCheck, TrendingUp, Factory } from 'lucide-react';
+import { BarChart3, FileCheck, TrendingUp, Factory, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+const services = [
+    {
+        id: 'a',
+        title: 'GHG & Footprinting',
+        description: 'Precise quantification of Carbon Footprints across Value Chains (Scope 1, 2, 3) aligned with ISO 14064.',
+        icon: BarChart3,
+        href: '/services/carbon-footprinting',
+    },
+    {
+        id: 'b',
+        title: 'Compliance — BRSR/GRI',
+        description: 'SEBI BRSR Reporting & GRI Framework Integration. Ensuring regulatory compliance and stakeholder transparency.',
+        icon: FileCheck,
+        href: '/services/brsr-reporting',
+    },
+    {
+        id: 'c',
+        title: 'Strategy — ESG',
+        description: 'Comprehensive ESG Strategy Consulting. From Materiality Assessments to Green Financing readiness.',
+        icon: TrendingUp,
+        href: '/services/esg-strategy',
+    },
+    {
+        id: 'd',
+        title: 'Sector Specific',
+        description: 'Textile Decarbonization. Thermal efficiency, PAT Schemes, and circular economy audits.',
+        icon: Factory,
+        href: '/services/cleaner-production',
+    },
+];
 
 const ServiceMatrix = () => {
-    const services = [
-        {
-            id: 'a',
-            title: "GHG & Footprinting",
-            description: "Precise quantification of Carbon Footprints across Value Chains (Scope 1, 2, 3) aligned with ISO 14064.",
-            icon: BarChart3,
-            span: "md:col-span-7",
-            gradient: "from-sage/80 to-forest/80"
-        },
-        {
-            id: 'b',
-            title: "Compliance - BRSR/GRI",
-            description: "SEBI BRSR Reporting & GRI Framework Integration. Ensuring regulatory compliance and stakeholder transparency.",
-            icon: FileCheck,
-            span: "md:col-span-5",
-            gradient: "from-forest/80 to-sage/80"
-        },
-        {
-            id: 'c',
-            title: "Strategy - ESG",
-            description: "Comprehensive ESG Strategy Consulting. From Materiality Assessments to Green Financing readiness.",
-            icon: TrendingUp,
-            span: "md:col-span-5",
-            gradient: "from-sage/70 to-forest/70"
-        },
-        {
-            id: 'd',
-            title: "Sector Specific",
-            description: "Textile Decarbonization. Thermal efficiency, PAT Schemes, and circular economy audits.",
-            icon: Factory,
-            span: "md:col-span-7",
-            gradient: "from-forest/70 to-sage/70"
-        }
-    ];
-
     return (
-        <section className="section-padding bg-gradient-to-b from-navy to-navy/95" id="services">
+        <section className="section-padding bg-background" id="services">
             <div className="container mx-auto px-4">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
-                    className="text-center mb-16"
+                    className="mx-auto mb-14 max-w-2xl text-center"
                 >
-                    <h2 className="text-4xl md:text-5xl font-playfair text-offwhite mb-4">
-                        Technical Service Matrix
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Services</p>
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                        A complete ESG toolkit
                     </h2>
-                    <p className="text-lg text-dimmed max-w-2xl mx-auto">
-                        Comprehensive solutions across the ESG spectrum
+                    <p className="mt-3 text-muted-foreground">
+                        Comprehensive solutions across the sustainability spectrum.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 max-w-5xl mx-auto">
                     {services.map((service, index) => (
                         <motion.div
                             key={service.id}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 16 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            transition={{ duration: 0.4, delay: index * 0.06 }}
                             viewport={{ once: true }}
-                            className={`${service.span} group`}
                         >
-                            <div className={`h-full rounded-xl shadow-lg hover:shadow-2xl transition-smooth p-8 bg-gradient-to-br ${service.gradient} hover:scale-[1.02] cursor-pointer border border-white/10`}>
-                                <div className="flex items-start gap-4 mb-4">
-                                    <div className="p-3 bg-gold/20 rounded-lg group-hover:bg-gold/30 transition-smooth">
-                                        <service.icon className="text-gold" size={28} />
-                                    </div>
-                                    <h3 className="text-2xl font-playfair text-offwhite flex-1">
+                            <Link
+                                to={service.href}
+                                className="group block h-full rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+                            >
+                                <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                                    <service.icon size={22} />
+                                </div>
+                                <div className="flex items-start justify-between gap-2">
+                                    <h3 className="text-lg font-semibold text-foreground">
                                         {service.title}
                                     </h3>
+                                    <ArrowUpRight size={18} className="mt-1 flex-shrink-0 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                 </div>
-                                <p className="text-offwhite/90 leading-relaxed">
+                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                                     {service.description}
                                 </p>
-                            </div>
+                            </Link>
                         </motion.div>
                     ))}
                 </div>

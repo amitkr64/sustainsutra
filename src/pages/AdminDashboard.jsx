@@ -1,0 +1,452 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { blogService } from '@/services/blogService';
+import { courseService } from '@/services/courseService';
+import { appointmentService } from '@/services/appointmentService';
+import { newsletterService } from '@/services/newsletterService';
+import { getAllEntities } from '@/services/cctsEntityService';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Helmet } from 'react-helmet';
+import { Plus, Edit, Trash2, Eye, Search, FileText, CheckCircle, Clock, GraduationCap, Calendar, Users, LayoutDashboard } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import EmissionFactorManager from '@/components/EmissionFactorManager';
+import UserManagement from '@/components/UserManagement';
+import ResourceManager from '@/components/ResourceManager';
+import TeamManager from '@/components/TeamManager';
+import PaymentSettings from '@/components/PaymentSettings';
+import PaymentRevenue from '@/components/PaymentRevenue';
+import AdminActivityFeed from '@/components/AdminActivityFeed';
+
+const AdminDashboard = () => {
+    const [blogs, setBlogs] = useState([]);
+    const [courses, setCourses] = useState([]);
+    const [appointments, setAppointments] = useState([]);
+    const [subscribers, setSubscribers] = useState([]);
+    const [cctsEntities, setCCTSEntities] = useState([]);
+    const [activeTab, setActiveTab] = useState('blogs');
+    const [searchTerm, setSearchTerm] = useState('');
+    const { toast } = useToast();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = async () => {
+        try {
+            const [blogsData, appointmentsData, subscribersData, coursesData, cctsData] = await Promise.all([
+                blogService.getAll(),
+                appointmentService.getAllAppointments(),
+                newsletterService.getAll(),
+                courseService.getAllCourses(),
+                getAllEntities()
+            ]);
+
+            setBlogs(blogsData || []);
+            setCourses(coursesData || []);
+            setAppointments(appointmentsData || []);
+            setSubscribers(subscribersData || []);
+            setCCTSEntities(cctsData?.data || []);
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            // Fallbacks for when API is down
+            setBlogs([]);
+            setCourses(await courseService.getAllCourses() || []);
+            setAppointments([]);
+            setSubscribers([]);
+            setCCTSEntities([]);
+        }
+    };
+
+    const handleDeleteBlog = async (id) => {
+        if (window.confirm('Are you sure?')) {
+            await blogService.delete(id);
+            await loadData();
+            toast({ title: "Blog Deleted", variant: "destructive" });
+        }
+    };
+
+    const handleDeleteCourse = async (id) => {
+        if (window.confirm('Are you sure?')) {
+            await courseService.deleteCourse(id);
+            await loadData();
+            toast({ title: "Course Deleted", variant: "destructive" });
+        }
+    };
+
+    const handleUpdateAppointment = async (id, status) => {
+        await appointmentService.updateAppointmentStatus(id, status);
+        await loadData();
+        toast({ title: "Appointment Updated" });
+    };
+
+    const handleUnsubscribe = async (id) => {
+        if (confirm("Remove this subscriber?")) {
+            await newsletterService.unsubscribe(id);
+            await loadData();
+            toast({ title: "Subscriber Removed" });
+        }
+    };
+
+    const stats = {
+        blogs: blogs.length,
+        courses: courses.length,
+        appointments: appointments.length,
+        pendingAppointments: appointments.filter(a => a.status === 'pending').length,
+        subscribers: subscribers.length,
+        cctsEntities: cctsEntities.length
+    };
+
+    return (
+        <div className="min-h-screen bg-navy pt-12 px-4 pb-12">
+            <Helmet>
+                <title>Admin Dashboard | SustainSutra</title>
+            </Helmet>
+
+            <div className="container mx-auto max-w-7xl">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-playfair text-white mb-2">Admin Dashboard</h1>
+                    <p className="text-offwhite/60">Manage blogs, courses, and appointments.</p>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-offwhite/80 font-medium">Total Blogs</h3>
+                            <FileText className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.blogs}</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-offwhite/80 font-medium">Courses</h3>
+                            <GraduationCap className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.courses}</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-offwhite/80 font-medium">Appointments</h3>
+                            <Calendar className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.appointments}</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-offwhite/80 font-medium">Pending</h3>
+                            <Clock className="text-orange-400 w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.pendingAppointments}</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-offwhite/80 font-medium">CCTS Entities</h3>
+                            <LayoutDashboard className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.cctsEntities}</p>
+                    </div>
+                </div>
+
+                {/* Tabs */}
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="bg-white/5 border border-white/10 flex-wrap h-auto p-1">
+                        <TabsTrigger value="blogs">Blogs</TabsTrigger>
+                        <TabsTrigger value="courses">Courses</TabsTrigger>
+                        <TabsTrigger value="appointments">Appointments</TabsTrigger>
+                        <TabsTrigger value="ccts" className="text-gold font-semibold">CCTS</TabsTrigger>
+                        <TabsTrigger value="resources">Resources</TabsTrigger>
+                        <TabsTrigger value="users">Users</TabsTrigger>
+                        <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
+                        <TabsTrigger value="team">Team</TabsTrigger>
+                        <TabsTrigger value="impact" className="text-gold font-bold">Impact Gallery</TabsTrigger>
+                        <TabsTrigger value="payments" className="text-gold">Payments</TabsTrigger>
+                        <TabsTrigger value="activity">Activity</TabsTrigger>
+                    </TabsList>
+
+                    {/* Blogs Tab */}
+                    <TabsContent value="blogs" className="mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-playfair text-white">Blog Posts</h2>
+                            <Link to="/admin/blog/new">
+                                <Button className="bg-gold text-navy hover:bg-gold/90">
+                                    <Plus className="w-4 h-4 mr-2" /> New Blog
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/5">
+                                    <tr className="border-b border-white/10">
+                                        <th className="p-4 text-left text-offwhite/60">Title</th>
+                                        <th className="p-4 text-left text-offwhite/60">Author</th>
+                                        <th className="p-4 text-left text-offwhite/60">Status</th>
+                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {blogs.map(blog => (
+                                        <tr key={blog._id || blog.id} className="border-b border-white/5">
+                                            <td className="p-4 text-white">{blog.title}</td>
+                                            <td className="p-4 text-offwhite/80">{blog.author}</td>
+                                            <td className="p-4">
+                                                <span className={`px-2 py-1 rounded text-xs ${blog.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'}`}>
+                                                    {blog.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-right space-x-2">
+                                                <Link to={`/admin/blog/${blog.id}/edit`}>
+                                                    <button className="p-2 hover:text-gold"><Edit size={16} /></button>
+                                                </Link>
+                                                <button onClick={() => handleDeleteBlog(blog.id)} className="p-2 hover:text-red-400">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabsContent>
+
+                    {/* Courses Tab */}
+                    <TabsContent value="courses" className="mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-playfair text-white">Courses</h2>
+                            <Link to="/admin/course/new">
+                                <Button className="bg-gold text-navy hover:bg-gold/90">
+                                    <Plus className="w-4 h-4 mr-2" /> New Course
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/5">
+                                    <tr className="border-b border-white/10">
+                                        <th className="p-4 text-left text-offwhite/60">Title</th>
+                                        <th className="p-4 text-left text-offwhite/60">Category</th>
+                                        <th className="p-4 text-left text-offwhite/60">Level</th>
+                                        <th className="p-4 text-left text-offwhite/60">Price</th>
+                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {courses.map(course => (
+                                        <tr key={course._id || course.id} className="border-b border-white/5">
+                                            <td className="p-4 text-white">{course.title}</td>
+                                            <td className="p-4 text-offwhite/80">{course.category}</td>
+                                            <td className="p-4 text-offwhite/80">{course.level}</td>
+                                            <td className="p-4 text-gold">₹{course.price?.toLocaleString('en-IN')}</td>
+                                            <td className="p-4 text-right space-x-2">
+                                                <Link to={`/admin/course/${course._id || course.id}/edit`}>
+                                                    <button className="p-2 hover:text-gold"><Edit size={16} /></button>
+                                                </Link>
+                                                <button onClick={() => handleDeleteCourse(course._id || course.id)} className="p-2 hover:text-red-400">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabsContent>
+
+                    {/* Appointments Tab */}
+                    <TabsContent value="appointments" className="mt-6">
+                        <h2 className="text-2xl font-playfair text-white mb-4">Appointment Requests</h2>
+                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/5">
+                                    <tr className="border-b border-white/10">
+                                        <th className="p-4 text-left text-offwhite/60">Name</th>
+                                        <th className="p-4 text-left text-offwhite/60">Email</th>
+                                        <th className="p-4 text-left text-offwhite/60">Date</th>
+                                        <th className="p-4 text-left text-offwhite/60">Status</th>
+                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {appointments.map((apt, idx) => (
+                                        <tr key={apt._id || apt.id || idx} className="border-b border-white/5">
+                                            <td className="p-4 text-white">{apt.name}</td>
+                                            <td className="p-4 text-offwhite/80">{apt.email}</td>
+                                            <td className="p-4 text-offwhite/80">{apt.date} - {apt.timeSlot}</td>
+                                            <td className="p-4">
+                                                <span className={`px-2 py-1 rounded text-xs ${apt.status === 'confirmed' ? 'bg-green-500/20 text-green-400' :
+                                                    apt.status === 'cancelled' ? 'bg-red-500/20 text-red-400' :
+                                                        'bg-orange-500/20 text-orange-400'
+                                                    }`}>
+                                                    {apt.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-right space-x-2">
+                                                {apt.status === 'pending' && (
+                                                    <>
+                                                        <button onClick={() => handleUpdateAppointment(apt.id, 'confirmed')}
+                                                            className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">
+                                                            Confirm
+                                                        </button>
+                                                        <button onClick={() => handleUpdateAppointment(apt.id, 'cancelled')}
+                                                            className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs">
+                                                            Cancel
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabsContent>
+
+                    {/* CCTS Compliance Tab */}
+                    <TabsContent value="ccts" className="mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-playfair text-white">Consolidated CCTS Entities</h2>
+                            <Link to="/admin/ccts/register-entity">
+                                <Button className="bg-gold text-navy hover:bg-gold/90 font-bold">
+                                    <Plus className="w-4 h-4 mr-2" /> Register Entity
+                                </Button>
+                            </Link>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/5">
+                                    <tr className="border-b border-white/10">
+                                        <th className="p-4 text-left text-offwhite/60">Entity Name</th>
+                                        <th className="p-4 text-left text-offwhite/60">Registration No.</th>
+                                        <th className="p-4 text-left text-offwhite/60">Sector</th>
+                                        <th className="p-4 text-left text-offwhite/60">Baseline GEI</th>
+                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {cctsEntities.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="p-8 text-center text-offwhite/60 italic">
+                                                No entities registered yet. Click "Register Entity" to add one.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        cctsEntities.map(entity => (
+                                            <tr key={entity._id} className="border-b border-white/5 hover:bg-white/5">
+                                                <td className="p-4 text-white font-medium">{entity.entityName}</td>
+                                                <td className="p-4 text-offwhite/80">{entity.registrationNumber}</td>
+                                                <td className="p-4 text-offwhite/80">{entity.sector}</td>
+                                                <td className="p-4 text-gold font-mono">{entity.baselineData?.ghgIntensity?.toFixed(4) || '0.0000'}</td>
+                                                <td className="p-4 text-right space-x-2">
+                                                    <Link to={`/ccts/dashboard?entityId=${entity._id}`}>
+                                                        <button className="p-2 hover:text-gold text-offwhite/60" title="View Dashboard">
+                                                            <LayoutDashboard size={16} />
+                                                        </button>
+                                                    </Link>
+                                                    <button className="p-2 hover:text-red-400 text-offwhite/60" title="Delete">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabsContent>
+
+                    {/* Resources Tab */}
+                    <TabsContent value="resources" className="mt-6">
+                        <ResourceManager />
+                    </TabsContent>
+
+
+
+                    {/* Users Tab */}
+                    <TabsContent value="users" className="mt-6">
+                        <UserManagement />
+                    </TabsContent>
+
+                    {/* Subscribers Tab */}
+                    <TabsContent value="subscribers" className="mt-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-playfair text-white">Newsletter Subscribers</h2>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/5">
+                                    <tr className="border-b border-white/10">
+                                        <th className="p-4 text-left text-offwhite/60">Email</th>
+                                        <th className="p-4 text-left text-offwhite/60">Date Subscribed</th>
+                                        <th className="p-4 text-left text-offwhite/60">Status</th>
+                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {subscribers.map((sub, idx) => (
+                                        <tr key={sub._id || sub.id || idx} className="border-b border-white/5">
+                                            <td className="p-4 text-white">{sub.email}</td>
+                                            <td className="p-4 text-offwhite/80">{sub.date}</td>
+                                            <td className="p-4">
+                                                <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs capitalize">
+                                                    {sub.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-right">
+                                                <button
+                                                    onClick={() => handleUnsubscribe(sub.id)}
+                                                    className="p-2 text-red-400 hover:bg-red-400/10 rounded transition-colors"
+                                                    title="Remove Subscriber"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {subscribers.length === 0 && (
+                                        <tr>
+                                            <td colSpan="4" className="p-8 text-center text-dimmed">No subscribers yet.</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabsContent>
+
+                    {/* Team Tab */}
+                    <TabsContent value="team" className="mt-6">
+                        <TeamManager />
+                    </TabsContent>
+
+                    {/* Impact Gallery Tab */}
+                    <TabsContent value="impact" className="mt-6">
+                        <div className="mb-6 p-6 bg-gold/5 border border-gold/20 rounded-2xl">
+                            <h2 className="text-xl font-playfair text-white mb-2">Impact Gallery Management</h2>
+                            <p className="text-sm text-dimmed">
+                                The Impact Gallery on the website is populated by <strong className="text-gold">Projects</strong>, <strong className="text-gold">Trainings</strong>, and <strong className="text-gold">Operational Activities</strong>.
+                                Manage them below by switching categories.
+                            </p>
+                        </div>
+                        <ResourceManager initialTab="projects" />
+                    </TabsContent>
+
+                    {/* Payments Tab */}
+                    <TabsContent value="payments" className="mt-6">
+                        <div className="space-y-8">
+                            <PaymentRevenue />
+                            <PaymentSettings />
+                        </div>
+                    </TabsContent>
+
+                    {/* Activity Tab */}
+                    <TabsContent value="activity" className="mt-6">
+                        <AdminActivityFeed />
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </div>
+    );
+};
+
+export default AdminDashboard;

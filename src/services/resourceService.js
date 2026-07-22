@@ -1,0 +1,121 @@
+// Resource service. Auth is via the httpOnly JWT cookie (credentials:
+// 'include'). Reads are public; writes/deletes are admin-only.
+const API_URL = '/api/resources';
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
+
+export const resourceService = {
+    // --- Generic Methods ---
+    getAll: async (type) => {
+        try {
+            const url = type ? `${API_URL}?type=${type}` : API_URL;
+            const response = await fetch(url, { credentials: 'include' });
+            if (!response.ok) throw new Error('Failed to fetch resources');
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    },
+
+    create: async (data) => {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: JSON_HEADERS,
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error('Failed to create resource');
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    },
+
+    update: async (id, data) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: JSON_HEADERS,
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error('Failed to update resource');
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    },
+
+    delete: async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Failed to delete resource');
+            return true;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    },
+
+    // --- Specific Type Helpers (Mapping old service methods) ---
+
+    // Industry Reports
+    getIndustryReports: () => resourceService.getAll('report'),
+    addIndustryReport: (report) => resourceService.create({ ...report, type: 'report' }),
+    updateIndustryReport: (id, report) => resourceService.update(id, report),
+    deleteIndustryReport: (id) => resourceService.delete(id),
+
+    // Regulatory Updates
+    getRegulatoryUpdates: () => resourceService.getAll('update'),
+    addRegulatoryUpdate: (update) => resourceService.create({ ...update, type: 'update' }),
+    updateRegulatoryUpdate: (id, update) => resourceService.update(id, update),
+    deleteRegulatoryUpdate: (id) => resourceService.delete(id),
+
+    // Templates
+    getTemplates: () => resourceService.getAll('template'),
+    addTemplate: (template) => resourceService.create({ ...template, type: 'template' }),
+    updateTemplate: (id, template) => resourceService.update(id, template),
+    deleteTemplate: (id) => resourceService.delete(id),
+
+    // Case Studies
+    getCaseStudies: () => resourceService.getAll('casestudy'),
+    getCaseStudyById: async (id) => {
+        // Since we don't have getById specific in Generic, let's use getAll and find for now
+        // OR add getById to generic. Generic getById shouldn't strictly require type
+        // Let's implement proper getById via fetching specific ID if API supports it (it does: GET /:id)
+        try {
+            // Reusing generic getById pattern
+            const response = await fetch(`${API_URL}/${id}`, { credentials: 'include' }); // Assumes API returns item causing no check of type
+            if (!response.ok) throw new Error('Not found');
+            return await response.json();
+        } catch (e) { return null; }
+    },
+    createCaseStudy: (study) => resourceService.create({ ...study, type: 'casestudy' }),
+    updateCaseStudy: (id, study) => resourceService.update(id, study),
+    deleteCaseStudy: (id) => resourceService.delete(id),
+
+    // Projects (Showcase)
+    getProjects: () => resourceService.getAll('project'),
+    addProject: (project) => resourceService.create({ ...project, type: 'project' }),
+    updateProject: (id, project) => resourceService.update(id, project),
+    deleteProject: (id) => resourceService.delete(id),
+
+    // Training (Showcase)
+    getTrainings: () => resourceService.getAll('training'),
+    addTraining: (training) => resourceService.create({ ...training, type: 'training' }),
+    updateTraining: (id, training) => resourceService.update(id, training),
+    deleteTraining: (id) => resourceService.delete(id),
+
+    // Activities (Showcase)
+    getActivities: () => resourceService.getAll('activity'),
+    addActivity: (activity) => resourceService.create({ ...activity, type: 'activity' }),
+    updateActivity: (id, activity) => resourceService.update(id, activity),
+    deleteActivity: (id) => resourceService.delete(id),
+};

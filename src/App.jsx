@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { AuthProvider } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { CourseProvider } from '@/context/CourseContext';
@@ -84,6 +85,22 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { newsletterService } from '@/services/newsletterService';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
+// Wraps <Routes> in a keyed motion.div for a fade+rise on each navigation.
+// Must be rendered inside <Router> (it calls useLocation).
+const PageTransition = ({ children }) => {
+    const location = useLocation();
+    return (
+        <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+        >
+            {children}
+        </motion.div>
+    );
+};
+
 const ScrollToTopWrapper = () => {
     React.useEffect(() => {
         window.scrollTo(0, 0);
@@ -117,6 +134,7 @@ function App() {
 
                                 <main id="main-content" className="flex-grow pt-20 lg:pt-28">
                                     <Suspense fallback={<PageLoader />}>
+                                    <PageTransition>
                                         <Routes>
                                             {/* Public Routes */}
                                             <Route path="/" element={<HomePage />} />
@@ -201,6 +219,7 @@ function App() {
                                             <Route path="/admin/course/new" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><CreateCoursePage /></RoleProtectedRoute>} />
                                             <Route path="/admin/course/:id/edit" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><EditCoursePage /></RoleProtectedRoute>} />
                                         </Routes>
+                                    </PageTransition>
                                     </Suspense>
                                 </main>
 

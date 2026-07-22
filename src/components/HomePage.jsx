@@ -6,10 +6,13 @@ import ServiceMatrix from '@/components/ServiceMatrix';
 import ESGScoreChart from '@/components/ESGScoreChart';
 import CarbonAbatementChart from '@/components/CarbonAbatementChart';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
+import Reveal from '@/components/Reveal';
+import CountUp from '@/components/CountUp';
 import { blogService } from '@/services/blogService';
 import { Mail, Phone, MapPin, ArrowRight, Calendar, User, Calculator } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { staggerContainer, fadeUp, scaleIn, hoverLift, viewportOnce } from '@/lib/motion';
 
 const HomePage = () => {
     const [recentBlogs, setRecentBlogs] = useState([]);
@@ -31,26 +34,27 @@ const HomePage = () => {
             {/* Statistics Section */}
             <section className="border-y border-border bg-secondary/40">
                 <div className="container mx-auto px-4 py-16">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+                    <motion.div
+                        variants={staggerContainer(0.1)}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={viewportOnce}
+                        className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
+                    >
                         {[
-                            ['500+', 'Organizations Served'],
-                            ['2.5M+', 'Tonnes CO₂e Reduced'],
-                            ['15+', 'Industry Sectors'],
-                            ['98%', 'Client Satisfaction'],
-                        ].map(([num, label], i) => (
-                            <motion.div
-                                key={label}
-                                initial={{ opacity: 0, y: 16 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: i * 0.08 }}
-                                viewport={{ once: true }}
-                                className="text-center"
-                            >
-                                <div className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">{num}</div>
-                                <div className="mt-1 text-sm text-muted-foreground">{label}</div>
+                            { value: 500, suffix: '+', label: 'Organizations Served' },
+                            { value: 2.5, suffix: 'M+', label: 'Tonnes CO₂e Reduced', decimals: 1 },
+                            { value: 15, suffix: '+', label: 'Industry Sectors' },
+                            { value: 98, suffix: '%', label: 'Client Satisfaction' },
+                        ].map((stat) => (
+                            <motion.div key={stat.label} variants={fadeUp} className="text-center">
+                                <div className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
+                                    <CountUp value={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
+                                </div>
+                                <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
@@ -124,12 +128,13 @@ const HomePage = () => {
             {/* GHG Tool CTA Section */}
             <section className="section-padding bg-background">
                 <div className="container mx-auto px-4">
+                    <Reveal variant={scaleIn}>
                     <div className="relative overflow-hidden rounded-2xl bg-primary p-8 md:p-14 shadow-lg max-w-5xl mx-auto">
                         <div className="absolute inset-0 bg-grid opacity-20" aria-hidden="true" />
                         <div className="relative flex flex-col items-center gap-8 md:flex-row">
-                            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
+                            <motion.div whileHover={hoverLift} className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
                                 <Calculator size={32} />
-                            </div>
+                            </motion.div>
                             <div className="flex-1 text-center md:text-left">
                                 <div className="mb-2 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white">
                                     Proprietary Technology
@@ -155,11 +160,12 @@ const HomePage = () => {
                             </div>
                         </div>
                     </div>
+                    </Reveal>
                 </div>
             </section>
 
             {/* Dynamic Insights Section */}
-            <section className="section-padding bg-gradient-to-b from-navy/95 to-navy" id="insights">
+            <section className="section-padding bg-background" id="insights">
                 <div className="container mx-auto px-4">
                     <div className="flex justify-between items-end mb-12">
                         <div>

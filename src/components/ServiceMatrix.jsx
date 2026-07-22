@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, FileCheck, TrendingUp, Factory, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { staggerContainer, fadeUp, hoverLift, viewportOnce } from '@/lib/motion';
 
 const services = [
     {
@@ -54,18 +55,18 @@ const ServiceMatrix = () => {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 max-w-5xl mx-auto">
-                    {services.map((service, index) => (
-                        <motion.div
-                            key={service.id}
-                            initial={{ opacity: 0, y: 16 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: index * 0.06 }}
-                            viewport={{ once: true }}
-                        >
+                <motion.div
+                    variants={staggerContainer(0.08)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={viewportOnce}
+                    className="grid grid-cols-1 gap-5 sm:grid-cols-2 max-w-5xl mx-auto"
+                >
+                    {services.map((service) => (
+                        <motion.div key={service.id} variants={fadeUp} whileHover={hoverLift}>
                             <Link
                                 to={service.href}
-                                className="group block h-full rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+                                className="group block h-full rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-lg"
                             >
                                 <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                                     <service.icon size={22} />
@@ -82,7 +83,7 @@ const ServiceMatrix = () => {
                             </Link>
                         </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );

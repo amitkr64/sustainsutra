@@ -12,7 +12,16 @@ const connectDB = async (retryCount = 2) => {
                 family: 4, // Use IPv4, skip trying IPv6
             });
             logger.info(`✓ MongoDB Connected: ${conn.connection.host}`);
-            logger.info(`✓ Connection pool configured: min=${conn.connection.pool.minSize}, max=${conn.connection.pool.maxSize}`);
+            // Log pool config defensively — the pool/minSize API varies across
+            // mongoose/driver versions, and reading it must never throw (it
+            // previously crashed the connection path with "Cannot read
+            // properties of undefined (reading 'minSize')").
+            try {
+                const pool = conn.connection.pool;
+                if (pool && (pool.minSize !== undefined || pool.maxSize !== undefined)) {
+                    logger.info(`✓ Connection pool configured: min=${pool.minSize}, max=${pool.maxSize}`);
+                }
+            } catch (_) { /* pool stats are informational only */ }
             return;
         } catch (error) {
             logger.error(`✗ Error connecting to MongoDB: ${error.message}`);

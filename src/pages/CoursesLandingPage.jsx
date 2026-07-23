@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { GraduationCap, Search, Filter, CheckCircle } from 'lucide-react';
@@ -7,6 +8,7 @@ import CourseCard from '@/components/CourseCard';
 import { CourseCardSkeleton } from '@/components/LoadingSkeletons';
 
 const CoursesLandingPage = () => {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedLevel, setSelectedLevel] = useState('all');
@@ -75,12 +77,11 @@ const CoursesLandingPage = () => {
                         >
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/20 border border-gold/30 rounded-full mb-6 backdrop-blur-md">
                                 <GraduationCap className="text-gold" size={20} />
-                                <span className="text-gold font-medium tracking-wide uppercase text-xs">Academic Excellence</span>
+                                <span className="text-gold font-medium tracking-wide uppercase text-xs">{t('courses.eyebrow', 'Academic Excellence')}</span>
                             </div>
 
                             <h1 className="text-5xl md:text-7xl font-playfair text-offwhite mb-6 leading-tight">
-                                Professional <br />
-                                <span className="text-gold italic">Sustainability</span> Training
+                                {t('courses.title', 'Professional Sustainability Training')}
                             </h1>
                             <p className="text-xl text-dimmed max-w-xl leading-relaxed mb-8">
                                 Gain industry-recognized certifications and practical expertise from Dr. Amit Kumar and global ESG experts. Transform your career with data-driven climate action.

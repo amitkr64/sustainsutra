@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FileText, BookOpen, FileCheck, Download, ExternalLink, GraduationCap, ArrowRight, Sparkles } from 'lucide-react';
 
 const ResourcesLandingPage = () => {
+    const { t } = useTranslation();
     const resourceCategories = [
         {
             title: "Insights & Articles",
@@ -68,7 +70,7 @@ const ResourcesLandingPage = () => {
                         className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/20 rounded-full mb-8"
                     >
                         < Sparkles className="text-gold" size={16} />
-                        <span className="text-gold text-xs font-black uppercase tracking-widest">Premium Resource Center</span>
+                        <span className="text-gold text-xs font-black uppercase tracking-widest">{t('resources.eyebrow', 'Premium Resource Center')}</span>
                     </motion.div>
 
                     <motion.h1
@@ -77,7 +79,7 @@ const ResourcesLandingPage = () => {
                         transition={{ delay: 0.1 }}
                         className="text-6xl md:text-8xl font-playfair mb-8 leading-tight"
                     >
-                        Knowledge <span className="text-gold italic">Intelligence</span>
+                        {t('resources.title', 'Knowledge Intelligence')}
                     </motion.h1>
 
                     <motion.p

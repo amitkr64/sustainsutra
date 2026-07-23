@@ -72,25 +72,26 @@ function processFile(filePath) {
     let content = fs.readFileSync(filePath, 'utf8');
     let modified = false;
 
-    // Match <button ...> tags that DON'T have aria-label
-    // We look for icon components inside the button
-    const buttonRegex = /<button([^>]*?)(?<!aria-label="[^"]*")>/g;
+    // Match <button ...> AND <motion.button ...> tags that DON'T have aria-label
+    const buttonRegex = /<(motion\.)?button([^>]*?)(?<!aria-label="[^"]*")>/g;
     let match;
     const replacements = [];
 
     while ((match = buttonRegex.exec(content)) !== null) {
-        const attrs = match[1];
+        const attrs = match[2] || match[1] || ''; // group 2 for motion.button, group 1 for plain
         // Skip if already has aria-label
         if (attrs.includes('aria-label')) continue;
 
         // Find the closing </button> to check content
-        const closeIdx = content.indexOf('</button>', match.index);
+        const closeTag = match[0].includes('motion') ? '</motion.button>' : '</button>';
+        const closeIdx = content.indexOf(closeTag, match.index);
         if (closeIdx === -1) continue;
 
         const buttonContent = content.slice(match.index + match[0].length, closeIdx);
 
-        // Check if content is primarily an icon (no visible text)
-        const hasText = buttonContent.replace(/<[^>]+>/g, '').trim().length > 2;
+        // Check if content is primarily an icon (no visible text, or very short text like "×")
+        const textOnly = buttonContent.replace(/<[^>]+>/g, '').trim();
+        const hasText = textOnly.length > 3; // allow short symbols like "×", "→"
         if (hasText) continue;
 
         // Find the first icon component name

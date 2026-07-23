@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,6 +8,7 @@ import { Lock, Mail, User, Phone } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 
 const LoginPage = () => {
+    const { t } = useTranslation();
     const [loginData, setLoginData] = useState({ email: '', password: '' });
     const [registerData, setRegisterData] = useState({
         name: '',
@@ -100,7 +102,7 @@ const LoginPage = () => {
                     <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
                         Sustain<span className="text-primary">Sutra</span>
                     </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">Welcome to your sustainability journey</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{t('auth.loginSubtitle')}</p>
                 </div>
 
                 {error && (
@@ -111,8 +113,8 @@ const LoginPage = () => {
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="login">Login</TabsTrigger>
-                        <TabsTrigger value="register">Register</TabsTrigger>
+                        <TabsTrigger value="login">{t('nav.login')}</TabsTrigger>
+                        <TabsTrigger value="register">{t('nav.register')}</TabsTrigger>
                     </TabsList>
 
                     {/* Login Tab */}
@@ -161,7 +163,7 @@ const LoginPage = () => {
                             </div>
 
                             <Button type="submit" disabled={isLoading} className="w-full">
-                                {isLoading ? 'Signing in...' : 'Sign In'}
+                                {isLoading ? t('common.loading') : t('auth.loginButton')}
                             </Button>
                         </form>
                     </TabsContent>
@@ -260,7 +262,7 @@ const LoginPage = () => {
                             </div>
 
                             <Button type="submit" disabled={isLoading} className="w-full">
-                                {isLoading ? 'Creating account...' : 'Create Account'}
+                                {isLoading ? t('common.loading') : t('auth.registerButton')}
                             </Button>
                         </form>
                     </TabsContent>

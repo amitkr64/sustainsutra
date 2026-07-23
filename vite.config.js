@@ -63,4 +63,25 @@ export default defineConfig({
             },
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    // Split heavy libraries into separate chunks so they load
+                    // on-demand rather than bloating the initial bundle.
+                    'vendor-charts': ['recharts'],
+                    'vendor-xlsx': ['xlsx'],
+                    'vendor-pdf': ['jspdf'],
+                    'vendor-framer': ['framer-motion'],
+                    'vendor-radix': [
+                        '@radix-ui/react-dialog',
+                        '@radix-ui/react-dropdown-menu',
+                        '@radix-ui/react-tabs',
+                        '@radix-ui/react-toast',
+                        '@radix-ui/react-alert-dialog',
+                    ],
+                },
+            },
+        },
+    },
 });

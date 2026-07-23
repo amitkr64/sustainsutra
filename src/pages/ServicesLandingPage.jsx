@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -9,6 +10,7 @@ import {
 } from 'lucide-react';
 
 const ServicesLandingPage = () => {
+    const { t } = useTranslation();
     const services = [
         {
             id: 'carbon-footprinting',
@@ -128,14 +130,13 @@ const ServicesLandingPage = () => {
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-8">
                             <Target className="text-gold" size={16} />
-                            <span className="text-gold font-bold tracking-widest uppercase text-xs">Net-Zero Pathways</span>
+                            <span className="text-gold font-bold tracking-widest uppercase text-xs">{t('services.heroEyebrow', 'Net-Zero Pathways')}</span>
                         </div>
                         <h1 className="text-6xl md:text-8xl font-playfair text-white mb-8 leading-[1.1]">
-                            Elite <span className="text-gold italic">Advisory</span> <br />
-                            Solutions
+                            {t('services.title')}
                         </h1>
                         <p className="text-xl md:text-2xl text-offwhite/80 max-w-2xl font-light leading-relaxed">
-                            Engineering environmental resilience through high-precision carbon accounting, strategic foresight, and regulatory mastery.
+                            {t('services.heroSubtitle', 'Engineering environmental resilience through high-precision carbon accounting, strategic foresight, and regulatory mastery.')}
                         </p>
                     </motion.div>
                 </div>

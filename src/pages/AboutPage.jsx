@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Target, Users, Award, TrendingUp, Globe, Shield, Linkedin, Mail, CheckCircle, ArrowRight, Zap, Microscope } from 'lucide-react';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 const AboutPage = () => {
+    const { t } = useTranslation();
     const [team, setTeam] = useState([]);
     const navigate = useNavigate();
 
@@ -53,11 +55,10 @@ const AboutPage = () => {
                         >
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-8">
                                 <Shield className="text-gold" size={16} />
-                                <span className="text-gold font-bold tracking-widest uppercase text-xs">Institutional Profile</span>
+                                <span className="text-gold font-bold tracking-widest uppercase text-xs">{t('about.eyebrow', 'Institutional Profile')}</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-playfair text-white mb-8 leading-[1.05]">
-                                Engineering a <br />
-                                <span className="text-gold italic">Resilient</span> Future
+                                {t('about.title', 'Engineering a Resilient Future')}
                             </h1>
                             <p className="text-xl md:text-3xl text-offwhite/80 max-w-2xl font-light leading-relaxed border-l-4 border-gold pl-8">
                                 SustainSutra is an elite advisory firm dedicated to bridging the gap between corporate ambition and climate reality through rigorous science and strategic clarity.

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Menu, X, ChevronDown, LogOut, User, Calculator, BookOpen, FileText, Info, Mail, LayoutDashboard, Database, Shield, BarChart3, Settings, Leaf, Globe, FileCheck, Landmark, GraduationCap, Zap, Recycle, Repeat, ClipboardCheck, Factory, Lightbulb, GraduationCap as TrainingIcon, Search, FileJson, FileType, Newspaper, Briefcase, Award } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -15,6 +16,7 @@ import {
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const { t } = useTranslation();
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const location = useLocation();
@@ -147,8 +149,8 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
-                        <li><Link to="/courses" className="hover:text-gold transition-colors font-medium">Academy</Link></li>
-                        <li><Link to="/insights" className="hover:text-gold transition-colors font-medium">Insights</Link></li>
+                        <li><Link to="/courses" className="hover:text-gold transition-colors font-medium">{t('nav.academy')}</Link></li>
+                        <li><Link to="/insights" className="hover:text-gold transition-colors font-medium">{t('nav.insights')}</Link></li>
 
                         {/* Resources Dropdown */}
                         <li>

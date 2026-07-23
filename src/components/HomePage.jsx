@@ -8,6 +8,10 @@ import CarbonAbatementChart from '@/components/CarbonAbatementChart';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import Reveal from '@/components/Reveal';
 import CountUp from '@/components/CountUp';
+import FAQ from '@/components/FAQ';
+import PricingSection from '@/components/PricingSection';
+import TeamSection from '@/components/TeamSection';
+import ResourcesPreview from '@/components/ResourcesPreview';
 import { blogService } from '@/services/blogService';
 import { Mail, Phone, MapPin, ArrowRight, Calendar, User, Calculator } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -124,6 +128,12 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Pricing Section */}
+            <PricingSection />
+
+            {/* Team Section */}
+            <TeamSection />
 
             {/* GHG Tool CTA Section */}
             <section className="section-padding bg-background">
@@ -244,6 +254,12 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Resources Preview */}
+            <ResourcesPreview />
+
+            {/* FAQ Section */}
+            <FAQ />
 
             {/* Contact Section */}
             <section className="section-padding bg-gradient-to-b from-navy to-sage/20" id="contact">

@@ -264,14 +264,24 @@ function App() {
                                                 </ul>
                                             </div>
                                             <div>
+                                                <h4 className="font-playfair text-lg text-offwhite mb-4">Resources</h4>
+                                                <ul className="space-y-2 text-dimmed text-sm">
+                                                    <li><a href="/resources/templates" className="hover:text-gold transition-smooth">Templates</a></li>
+                                                    <li><a href="/resources/glossary" className="hover:text-gold transition-smooth">Glossary</a></li>
+                                                    <li><a href="/resources/case-studies" className="hover:text-gold transition-smooth">Case Studies</a></li>
+                                                    <li><a href="/resources/reports" className="hover:text-gold transition-smooth">Industry Reports</a></li>
+                                                    <li><a href="/resources/regulatory-updates" className="hover:text-gold transition-smooth">Regulatory Updates</a></li>
+                                                </ul>
+                                            </div>
+                                            <div>
                                                 <h4 className="font-playfair text-lg text-offwhite mb-4">Connect</h4>
                                                 <div className="flex gap-4 mb-6">
                                                     <a href="https://www.linkedin.com/in/amit-kumar-42a79927/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center hover:bg-gold/30 transition-smooth">
                                                         <Linkedin className="text-gold" size={20} />
                                                     </a>
-                                                    <button className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center hover:bg-gold/30 transition-smooth">
+                                                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center hover:bg-gold/30 transition-smooth">
                                                         <Twitter className="text-gold" size={20} />
-                                                    </button>
+                                                    </a>
                                                 </div>
                                                 <p className="text-dimmed text-xs mb-3">
                                                     Subscribe to our newsletter for sustainability insights

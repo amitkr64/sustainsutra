@@ -131,6 +131,7 @@ app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/emission-factors', require('./routes/emissionFactorRoutes'));
 app.use('/api/nic', require('./routes/nicRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/leads', require('./routes/leadRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
 // BRSR master reports (the wizard + dashboard + diff consume these).

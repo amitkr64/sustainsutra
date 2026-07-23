@@ -17,6 +17,7 @@ import TeamManager from '@/components/TeamManager';
 import PaymentSettings from '@/components/PaymentSettings';
 import PaymentRevenue from '@/components/PaymentRevenue';
 import AdminActivityFeed from '@/components/AdminActivityFeed';
+import LeadsManager from '@/components/LeadsManager';
 
 const AdminDashboard = () => {
     const [blogs, setBlogs] = useState([]);
@@ -155,6 +156,7 @@ const AdminDashboard = () => {
                         <TabsTrigger value="blogs">Blogs</TabsTrigger>
                         <TabsTrigger value="courses">Courses</TabsTrigger>
                         <TabsTrigger value="appointments">Appointments</TabsTrigger>
+                        <TabsTrigger value="leads" className="text-gold">Leads</TabsTrigger>
                         <TabsTrigger value="ccts" className="text-gold font-semibold">CCTS</TabsTrigger>
                         <TabsTrigger value="resources">Resources</TabsTrigger>
                         <TabsTrigger value="users">Users</TabsTrigger>
@@ -300,6 +302,11 @@ const AdminDashboard = () => {
                                 </tbody>
                             </table>
                         </div>
+                    </TabsContent>
+
+                    {/* Leads Tab */}
+                    <TabsContent value="leads" className="mt-6">
+                        <LeadsManager />
                     </TabsContent>
 
                     {/* CCTS Compliance Tab */}

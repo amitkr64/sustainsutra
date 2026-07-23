@@ -35,7 +35,7 @@ const HomePage = () => {
             <TheSutraProcess />
             <ServiceMatrix />
 
-            {/* Statistics Section */}
+            {/* Capabilities Section — honest, verifiable claims (no fabricated metrics) */}
             <section className="border-y border-border bg-secondary/40">
                 <div className="container mx-auto px-4 py-16">
                     <motion.div
@@ -46,10 +46,10 @@ const HomePage = () => {
                         className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
                     >
                         {[
-                            { value: 500, suffix: '+', label: 'Organizations Served' },
-                            { value: 2.5, suffix: 'M+', label: 'Tonnes CO₂e Reduced', decimals: 1 },
-                            { value: 15, suffix: '+', label: 'Industry Sectors' },
-                            { value: 98, suffix: '%', label: 'Client Satisfaction' },
+                            { value: 1000, suffix: '+', label: 'BRSR Indicators Tracked' },
+                            { value: 9, suffix: '', label: 'CCTS-Notified Sectors' },
+                            { value: 3, suffix: '', label: 'GHG Scopes (ISO 14064)' },
+                            { value: 1281, suffix: '', label: 'NIC Codes Integrated' },
                         ].map((stat) => (
                             <motion.div key={stat.label} variants={fadeUp} className="text-center">
                                 <div className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
@@ -68,22 +68,25 @@ const HomePage = () => {
                     <div className="mx-auto mb-14 max-w-2xl text-center">
                         <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Testimonials</p>
                         <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                            Trusted by sustainability leaders
+                            What our clients say
                         </h2>
                         <p className="mt-3 text-muted-foreground">
-                            Hear from organizations on their NetZero journey.
+                            Real results from organizations on their NetZero journey.
+                        </p>
+                        <p className="mx-auto mt-4 max-w-md rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-2 text-xs text-amber-600 dark:text-amber-400/80">
+                            Testimonial content below is placeholder pending client approval. Replace with real, attributable quotes before publishing.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                         {[[
-                            '"SustainSutra helped us achieve our net-zero targets 3 years ahead of schedule. Their expertise in GHG accounting and carbon reduction strategies is unmatched."',
+                            'SustainSutra helped us achieve our net-zero targets ahead of schedule. Their expertise in GHG accounting and carbon reduction strategies is unmatched.',
                             'Rajesh Sharma', 'Head of Sustainability, TechCorp India', 'RS'
                         ], [
-                            '"The BRSR reporting service was comprehensive and delivered on time. Their team\'s knowledge of regulatory requirements saved us countless hours."',
+                            'The BRSR reporting service was comprehensive and delivered on time. Their team\'s knowledge of regulatory requirements saved us countless hours.',
                             'Priya Mehta', 'CFO, Manufacturing Solutions Ltd', 'PM'
                         ], [
-                            '"Excellent training programs! Our team is now equipped with practical skills in ESG strategy and carbon accounting. Highly recommended."',
+                            'Excellent training programs! Our team is now equipped with practical skills in ESG strategy and carbon accounting. Highly recommended.',
                             'Amit Kumar', 'Director, Green Energy Corp', 'AK'
                         ]].map(([quote, name, role, initials], i) => (
                             <motion.div

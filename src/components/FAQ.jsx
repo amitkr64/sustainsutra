@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp, staggerContainer, viewportOnce } from '@/lib/motion';
@@ -60,18 +61,19 @@ const FAQItem = ({ item, isOpen, onToggle, index }) => (
 );
 
 const FAQ = () => {
+    const { t } = useTranslation();
     const [openIndex, setOpenIndex] = useState(0);
 
     return (
         <section className="section-padding bg-background">
             <div className="container mx-auto px-4">
                 <div className="mx-auto mb-12 max-w-2xl text-center">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">FAQ</p>
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">{t('home.faqEyebrow')}</p>
                     <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                        Frequently asked questions
+                        {t('home.faqTitle')}
                     </h2>
                     <p className="mt-3 text-muted-foreground">
-                        Everything you need to know about ESG, BRSR, and carbon compliance.
+                        {t('home.faqSub')}
                     </p>
                 </div>
 

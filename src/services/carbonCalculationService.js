@@ -42,6 +42,20 @@ export const carbonCalculationService = {
         }, 0);
     },
 
+    // Calculate gas-type breakdown for a scope (groups by gas type)
+    calculateGasBreakdown: (activities) => {
+        if (!activities || activities.length === 0) return {};
+        return activities.reduce((acc, activity) => {
+            const gas = activity.emissionFactor?.gas || 'Unknown';
+            const emissions = carbonCalculationService.calculateActivity(
+                activity.quantity,
+                activity.emissionFactor
+            );
+            acc[gas] = (acc[gas] || 0) + emissions;
+            return acc;
+        }, {});
+    },
+
     // Calculate complete carbon footprint with gas breakdown
     calculateFootprint: (data) => {
         const scope1Total = data.scope1 ? carbonCalculationService.calculateScope(data.scope1) : 0;

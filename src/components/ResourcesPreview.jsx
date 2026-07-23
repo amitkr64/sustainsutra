@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FileText, BookOpen, Award, FileBarChart, Scale, ArrowUpRight } from 'lucide-react';
@@ -18,16 +19,17 @@ const resources = [
 ];
 
 const ResourcesPreview = () => {
+    const { t } = useTranslation();
     return (
         <section className="section-padding bg-secondary/30" id="resources-preview">
             <div className="container mx-auto px-4">
                 <div className="mx-auto mb-12 max-w-2xl text-center">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Resources</p>
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">{t('home.resourcesEyebrow')}</p>
                     <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                        Free tools &amp; knowledge base
+                        {t('home.resourcesTitle')}
                     </h2>
                     <p className="mt-3 text-muted-foreground">
-                        Templates, glossaries, and regulatory guidance — all in one place.
+                        {t('home.resourcesSub')}
                     </p>
                 </div>
 

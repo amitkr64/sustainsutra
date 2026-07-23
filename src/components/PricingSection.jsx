@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, Sparkles } from 'lucide-react';
@@ -57,16 +58,17 @@ const plans = [
 ];
 
 const PricingSection = () => {
+    const { t } = useTranslation();
     return (
         <section className="section-padding bg-secondary/30" id="pricing">
             <div className="container mx-auto px-4">
                 <div className="mx-auto mb-12 max-w-2xl text-center">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Engagement Models</p>
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">{t('home.pricingEyebrow')}</p>
                     <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                        Plans built for every stage
+                        {t('home.pricingTitle')}
                     </h2>
                     <p className="mt-3 text-muted-foreground">
-                        From initial assessment to full compliance — choose the level of support that fits.
+                        {t('home.pricingSub')}
                     </p>
                 </div>
 

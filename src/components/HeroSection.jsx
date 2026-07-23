@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     motion,
     useScroll,
@@ -17,6 +18,7 @@ import HeroCalculatorWidget from '@/components/HeroCalculatorWidget';
 const item = fadeUp;
 
 const HeroSection = () => {
+    const { t } = useTranslation();
     const sectionRef = useRef(null);
     const reduceMotion = useReducedMotion();
 
@@ -86,7 +88,7 @@ const HeroSection = () => {
                     >
                         <motion.div variants={item} className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
                             <Sparkles size={14} className="text-primary" />
-                            ISO 14064 &middot; BRSR &middot; CCTS Compliance Platform
+                            {t('home.heroEyebrow')}
                         </motion.div>
 
                         <motion.h1 variants={item} className="text-4xl font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-5xl md:text-6xl">
@@ -95,16 +97,13 @@ const HeroSection = () => {
                                 <span className="bg-gradient-to-r from-primary via-emerald-500 to-emerald-400 bg-clip-text text-transparent">
                                     NetZero
                                 </span>
-                                {/* gradient shine sweep */}
                                 <span className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/40 to-transparent bg-[length:200%_100%] animate-[shimmer_3s_ease-in-out_infinite]" aria-hidden="true" />
                             </span>
                             {' '}Pathways.
                         </motion.h1>
 
                         <motion.p variants={item} className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
-                            Holistic ESG strategy, GHG accounting, and regulatory compliance —
-                            quantified, verified, and actionable. Built for organizations serious
-                            about their sustainability roadmap.
+                            {t('home.heroSubtitle')}
                         </motion.p>
 
                         <motion.div variants={item} className="mt-8 flex flex-wrap items-center gap-3">
@@ -112,13 +111,13 @@ const HeroSection = () => {
                                 <Link to="/carbon-calculator">
                                     <Button size="lg" className="gap-2">
                                         <Calculator size={18} />
-                                        Launch GHG Tool
+                                        {t('home.launchTool')}
                                     </Button>
                                 </Link>
                             </motion.div>
                             <motion.div whileHover={{ scale: reduceMotion ? 1 : 1.03 }} whileTap={{ scale: reduceMotion ? 1 : 0.97 }}>
                                 <Button onClick={scrollToContact} variant="outline" size="lg" className="gap-2">
-                                    Get Expert Audit
+                                    {t('home.getAudit')}
                                     <ArrowRight size={18} />
                                 </Button>
                             </motion.div>
@@ -127,9 +126,9 @@ const HeroSection = () => {
                         {/* Trust pills */}
                         <motion.div variants={item} className="mt-10 flex flex-wrap gap-x-6 gap-y-2">
                             {[
-                                ['ISO 14064', 'Certified'],
-                                ['GRI', 'Compliant'],
-                                ['BRSR', 'Ready'],
+                                ['ISO 14064', t('home.isoCertified')],
+                                ['GRI', t('home.griCompliant')],
+                                ['BRSR', t('home.brsrReady')],
                             ].map(([k, v]) => (
                                 <div key={k} className="flex items-baseline gap-1.5">
                                     <ShieldCheck size={14} className="text-primary" />

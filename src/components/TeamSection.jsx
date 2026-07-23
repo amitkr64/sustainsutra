@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Linkedin } from 'lucide-react';
 import { staggerContainer, fadeUp, viewportOnce } from '@/lib/motion';
@@ -34,16 +35,17 @@ const team = [
 ];
 
 const TeamSection = () => {
+    const { t } = useTranslation();
     return (
         <section className="section-padding bg-background" id="team">
             <div className="container mx-auto px-4">
                 <div className="mx-auto mb-12 max-w-2xl text-center">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Team</p>
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">{t('home.teamEyebrow')}</p>
                     <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                        Meet the experts behind SustainSutra
+                        {t('home.teamTitle')}
                     </h2>
                     <p className="mt-3 text-muted-foreground">
-                        Certified professionals with deep expertise across ESG, carbon accounting, and regulatory compliance.
+                        {t('home.teamSub')}
                     </p>
                 </div>
 

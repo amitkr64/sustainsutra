@@ -9,6 +9,11 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: './src/tests/setup.js',
         css: true,
+        exclude: [
+            '**/node_modules/**',
+            '**/dist/**',
+            '**/backend/**',  // backend tests use jest, not vitest
+        ],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],

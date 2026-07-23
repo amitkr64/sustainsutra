@@ -199,7 +199,7 @@ const AdminDashboard = () => {
                                             </td>
                                             <td className="p-4 text-right space-x-2">
                                                 <Link to={`/admin/blog/${blog.id}/edit`}>
-                                                    <button className="p-2 hover:text-gold"><Edit size={16} /></button>
+                                                    <button className="p-2 hover:text-gold" aria-label="Edit"><Edit size={16} /></button>
                                                 </Link>
                                                 <button onClick={() => handleDeleteBlog(blog.id)} className="p-2 hover:text-red-400">
                                                     <Trash2 size={16} />
@@ -242,7 +242,7 @@ const AdminDashboard = () => {
                                             <td className="p-4 text-gold">₹{course.price?.toLocaleString('en-IN')}</td>
                                             <td className="p-4 text-right space-x-2">
                                                 <Link to={`/admin/course/${course._id || course.id}/edit`}>
-                                                    <button className="p-2 hover:text-gold"><Edit size={16} /></button>
+                                                    <button className="p-2 hover:text-gold" aria-label="Edit"><Edit size={16} /></button>
                                                 </Link>
                                                 <button onClick={() => handleDeleteCourse(course._id || course.id)} className="p-2 hover:text-red-400">
                                                     <Trash2 size={16} />
@@ -347,11 +347,11 @@ const AdminDashboard = () => {
                                                 <td className="p-4 text-gold font-mono">{entity.baselineData?.ghgIntensity?.toFixed(4) || '0.0000'}</td>
                                                 <td className="p-4 text-right space-x-2">
                                                     <Link to={`/ccts/dashboard?entityId=${entity._id}`}>
-                                                        <button className="p-2 hover:text-gold text-offwhite/60" title="View Dashboard">
+                                                        <button className="p-2 hover:text-gold text-offwhite/60" title="View Dashboard" aria-label="Dashboard">
                                                             <LayoutDashboard size={16} />
                                                         </button>
                                                     </Link>
-                                                    <button className="p-2 hover:text-red-400 text-offwhite/60" title="Delete">
+                                                    <button className="p-2 hover:text-red-400 text-offwhite/60" title="Delete" aria-label="Delete">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </td>

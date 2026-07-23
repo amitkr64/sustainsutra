@@ -45,7 +45,7 @@ const FilterButton = ({
         <button
           onClick={onRemove}
           className="ml-2 p-1 hover:bg-red-500/20 rounded-full transition-colors"
-        >
+         aria-label="Delete">
           <Trash2 size={14} className="text-red-400" />
         </button>
       )}
@@ -53,7 +53,7 @@ const FilterButton = ({
         <button
           onClick={onEdit}
           className="ml-2 p-1 hover:bg-white/10 rounded-full transition-colors"
-        >
+         aria-label="Refresh">
           <RefreshCw size={14} className="text-dimmed" />
         </button>
       )}

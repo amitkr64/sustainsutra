@@ -89,7 +89,7 @@ const Annotation = ({
 
         <div className="flex items-center gap-2">
           {onEdit && (
-            <button onClick={onEdit} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
+            <button onClick={onEdit} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors" aria-label="Edit">
               <Edit3 size={14} className="text-dimmed" />
             </button>
           )}

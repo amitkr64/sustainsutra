@@ -393,10 +393,10 @@ const TrainingDevelopment = ({ indicators }) => {
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-emerald-400 text-sm uppercase tracking-wider">Training & Development</h3>
         <div className="flex gap-2">
-          <button className="p-2 bg-navy rounded-lg border border-white/10 hover:border-gold/30 transition-all">
+          <button className="p-2 bg-navy rounded-lg border border-white/10 hover:border-gold/30 transition-all" aria-label="Download">
             <Download size={16} className="text-dimmed" />
           </button>
-          <button className="p-2 bg-navy rounded-lg border border-white/10 hover:border-gold/30 transition-all">
+          <button className="p-2 bg-navy rounded-lg border border-white/10 hover:border-gold/30 transition-all" aria-label="View">
             <Eye size={16} className="text-dimmed" />
           </button>
         </div>

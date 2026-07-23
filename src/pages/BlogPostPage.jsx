@@ -122,10 +122,10 @@ const BlogPostPage = () => {
                         <ArrowLeft size={16} /> Back to Insights
                     </Link>
                     <div className="flex items-center gap-4">
-                        <button className="text-offwhite/40 hover:text-gold transition-colors">
+                        <button className="text-offwhite/40 hover:text-gold transition-colors" aria-label="Bookmark">
                             <Bookmark size={18} />
                         </button>
-                        <button className="text-offwhite/40 hover:text-gold transition-colors">
+                        <button className="text-offwhite/40 hover:text-gold transition-colors" aria-label="Share2">
                             <Share2 size={18} />
                         </button>
                     </div>

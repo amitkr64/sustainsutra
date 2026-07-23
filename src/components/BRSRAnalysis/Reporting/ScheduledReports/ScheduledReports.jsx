@@ -58,7 +58,7 @@ const ScheduledReport = ({
             <button
               onClick={onEdit(id)}
               className="p-1 hover:bg-white/10 rounded-lg transition-colors"
-            >
+             aria-label="Calendar Check">
               <CalendarCheck size={16} className="text-dimmed" />
             </button>
             <button

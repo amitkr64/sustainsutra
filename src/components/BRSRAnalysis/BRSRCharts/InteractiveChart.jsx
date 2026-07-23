@@ -173,7 +173,7 @@ const InteractiveChart = ({
               <button
                 onClick={onRefresh}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-              >
+               aria-label="Refresh">
                 <RefreshCw size={18} className="text-dimmed" />
               </button>
             )}
@@ -195,7 +195,7 @@ const InteractiveChart = ({
               <button
                 onClick={onExport}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-              >
+               aria-label="Download">
                 <Download size={18} className="text-dimmed" />
               </button>
             )}

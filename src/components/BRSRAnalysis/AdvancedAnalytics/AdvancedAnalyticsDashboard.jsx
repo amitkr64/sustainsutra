@@ -115,7 +115,7 @@ const ForecastChart = ({ data, title, unit = '', type = 'line' }) => {
               </button>
             ))}
           </div>
-          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" aria-label="Refresh">
             <RefreshCw size={18} className="text-dimmed" />
           </button>
         </div>

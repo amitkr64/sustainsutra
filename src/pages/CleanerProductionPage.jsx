@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const CleanerProductionPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Cleaner Production & Process Optimization"
+            title={t('services.cleanerProductionTitle', 'Cleaner Production & Process Optimization')}
             heroImage="https://images.unsplash.com/photo-1581094794329-c8112a89af12"
             overview="Implement cleaner production methodologies to reduce environmental impact at the source, improve process efficiency, and minimize waste generation while enhancing profitability."
             keyFeatures={[

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { createMonitoringData, updateMonitoringData, getMonitoringDataById, calculateEmissions } from '@/services/cctsMonitoringService';
@@ -10,6 +11,7 @@ import { ChevronLeft, ChevronRight, Save, Send, Plus, Trash2, Calculator, Info, 
 import MonitoringBulkImport from '@/components/CCTS/MonitoringBulkImport';
 
 const MonitoringDataForm = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -350,7 +352,7 @@ const MonitoringDataForm = () => {
                     {/* Header */}
                     <div className="mb-8">
                         <h1 className="text-4xl font-bold text-gold mb-2">
-                            {id ? 'Edit' : 'Submit'} Monitoring Data
+                            {t(id ? 'ccts.editMonitoringDataTitle' : 'ccts.submitMonitoringDataTitle', `${id ? 'Edit' : 'Submit'} Monitoring Data`)}
                         </h1>
                         <p className="text-offwhite/70">{entity?.entityName}</p>
                     </div>

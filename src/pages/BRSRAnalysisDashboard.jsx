@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { getMyEntity, getEntityDashboard } from '@/services/cctsEntityService';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 const BRSDashboard = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -92,7 +94,7 @@ const BRSDashboard = () => {
                 <div className="container mx-auto">
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
-                        <h1 className="text-5xl font-bold text-gold">BRSR Analysis Dashboard</h1>
+                        <h1 className="text-5xl font-bold text-gold">{t('brsr.analysisTitle', 'BRSR Analysis Dashboard')}</h1>
                         {entity && (
                             <div className="flex items-center gap-8">
                                 <h2 className="text-2xl font-semibold text-white">{entity.entityName}</h2>

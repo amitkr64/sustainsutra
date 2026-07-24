@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const ResourceEfficiencyPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Resource Efficiency & Sustainable Operations"
+            title={t('services.resourceEfficiencyTitle', 'Resource Efficiency & Sustainable Operations')}
             heroImage="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9"
             overview="Optimize resource consumption across water, energy, and materials to reduce operational costs, minimize environmental footprint, and build resilience in resource-constrained scenarios."
             keyFeatures={[

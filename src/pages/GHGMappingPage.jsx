@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const GHGMappingPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="GHG Mapping & Accounting"
+            title={t('services.ghgMappingTitle', 'GHG Mapping & Accounting')}
             heroImage="https://images.unsplash.com/photo-1580120656760-c652daad203c"
             overview="Systematic mapping and accounting of greenhouse gas emissions across organizational boundaries to ensure transparency and regulatory compliance."
             keyFeatures={[

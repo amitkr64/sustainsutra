@@ -6,8 +6,10 @@ import { useAuth } from '@/context/AuthContext';
 import { useCourses } from '@/context/CourseContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 const UserProfilePage = () => {
+    const { t } = useTranslation();
     const { user, updateProfile, changePassword } = useAuth();
     const { registrations } = useCourses();
     const { toast } = useToast();
@@ -69,7 +71,7 @@ const UserProfilePage = () => {
 
             <div className="min-h-screen bg-navy pt-12 pb-12 px-4">
                 <div className="container mx-auto max-w-4xl">
-                    <h1 className="text-4xl font-playfair text-gold mb-8">My Profile</h1>
+                    <h1 className="text-4xl font-playfair text-gold mb-8">{t('profile.title', 'My Profile')}</h1>
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {/* Profile Card */}

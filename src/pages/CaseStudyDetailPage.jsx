@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Building2, CheckCircle, Target, TrendingUp, Sparkles, ChevronRight, Zap, Award } from 'lucide-react';
@@ -8,6 +9,7 @@ import { resourceService } from '@/services/resourceService';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const CaseStudyDetailPage = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [study, setStudy] = useState(null);
     const [loading, setLoading] = useState(true);

@@ -7,8 +7,10 @@ import { Search, Info, Database, Filter, ArrowUpRight, Zap, Sparkles, Binary, Sh
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import EmissionFactorManager from '@/components/EmissionFactorManager';
+import { useTranslation } from 'react-i18next';
 
 const EmissionFactorLibrary = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [factors, setFactors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ const EmissionFactorLibrary = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="text-6xl md:text-7xl font-playfair leading-tight text-white m-0"
                         >
-                            Emission <span className="text-gold italic">Intelligence</span>
+                            {t('library.title', 'Emission ')}<span className="text-gold italic">{t('library.titleAccent', 'Intelligence')}</span>
                         </motion.h1>
 
                         {isAuthorized && (

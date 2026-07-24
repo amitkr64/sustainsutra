@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { blogService } from '@/services/blogService';
 import BlogEditor from '@/components/BlogEditor';
 import { useToast } from '@/components/ui/use-toast';
 
 const EditBlogPage = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -47,7 +49,7 @@ const EditBlogPage = () => {
             </Helmet>
 
             <div className="container mx-auto">
-                <h1 className="text-3xl font-playfair text-white mb-8">Edit Blog Post</h1>
+                <h1 className="text-3xl font-playfair text-white mb-8">{t('insights.editBlogTitle', 'Edit Blog Post')}</h1>
                 <BlogEditor initialData={blogData} isEditing={true} />
             </div>
         </div>

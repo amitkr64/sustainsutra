@@ -3,8 +3,10 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Search, Lightbulb, Settings, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const OurApproachPage = () => {
+    const { t } = useTranslation();
     const steps = [
         {
             id: 1,
@@ -60,7 +62,7 @@ const OurApproachPage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="text-5xl md:text-6xl font-playfair mb-6"
                         >
-                            The 4D Framework
+                            {t('approach.title', 'The 4D Framework')}
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}

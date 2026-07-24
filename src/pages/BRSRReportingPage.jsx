@@ -1,11 +1,13 @@
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const BRSRReportingPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     return (
         <ServicePageTemplate
-            title="BRSR Compliance"
+            title={t('brsr.reportingTitle', 'BRSR Compliance')}
             heroImage="https://images.unsplash.com/photo-1618044733300-9472054094ee"
             overview="End-to-end SEBI Business Responsibility and Sustainability Reporting (BRSR) implementation for top-tier Indian listed entities."
             executiveSummary="As SEBI transitions from voluntary disclosures to the mandatory BRSR and BRSR Core framework, organizational transparency is no longer optional—it is a regulatory prerequisite. Our compliance advisory specializes in the rigorous compilation, validation, and narrative development required to meet the Nine Principles of the National Guidelines on Responsible Business Conduct (NGRBC). We ensure your disclosures are not only compliant but also optimized for ESG rating agencies and stakeholder scrutiny."

@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const CircularEconomyPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Circular Economy Transition"
+            title={t('services.circularEconomyTitle', 'Circular Economy Transition')}
             heroImage="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09"
             overview="Transform your business model from linear 'take-make-dispose' to circular economy principles that regenerate resources, extend product lifecycles, and create new value streams."
             keyFeatures={[

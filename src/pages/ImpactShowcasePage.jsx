@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { resourceService } from '@/services/resourceService';
 import { ExternalLink, Calendar, Award, GraduationCap, Zap, ArrowRight, Building2 } from 'lucide-react';
 
 const ImpactShowcasePage = () => {
+    const { t } = useTranslation();
     const [projects, setProjects] = useState([]);
     const [trainings, setTrainings] = useState([]);
     const [activities, setActivities] = useState([]);
@@ -70,7 +72,7 @@ const ImpactShowcasePage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-6xl md:text-8xl font-playfair mb-8 leading-tight"
                     >
-                        Our <span className="text-gold italic">Impact</span> Gallery
+                        {t('showcase.titleLead', 'Our')} <span className="text-gold italic">{t('showcase.titleHighlight', 'Impact')}</span> {t('showcase.titleTrail', 'Gallery')}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}

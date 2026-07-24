@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { createEntity } from '@/services/cctsEntityService';
@@ -7,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Building2, Save, ArrowLeft, Plus, Trash2, MapPin, User, Phone, Mail, Factory } from 'lucide-react';
 
 const EntityRegistration = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -162,7 +164,7 @@ const EntityRegistration = () => {
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
-                        <h1 className="text-3xl font-bold text-gold">Register New Entity</h1>
+                        <h1 className="text-3xl font-bold text-gold">{t('ccts.registerEntityTitle', 'Register New Entity')}</h1>
                     </div>
 
                     <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-[32px] p-8 space-y-8 shadow-4xl">

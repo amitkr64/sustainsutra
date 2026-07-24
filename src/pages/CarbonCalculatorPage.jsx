@@ -15,8 +15,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import HierarchicalEmissionFactorSelector from '@/components/CarbonCalculator/HierarchicalEmissionFactorSelector';
+import { useTranslation } from 'react-i18next';
 
 const CarbonCalculatorPage = () => {
+    const { t } = useTranslation();
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -330,7 +332,7 @@ const CarbonCalculatorPage = () => {
                             <Shield size={12} /> Audit-Ready Engine v2.0
                         </div>
                         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-4">
-                            GHG <span className="text-primary">Audit</span> Tool
+                            {t('calculator.title', 'GHG ')}<span className="text-primary">{t('calculator.titleAccent', 'Audit')}</span>{t('calculator.titleSuffix', ' Tool')}
                         </h1>
                         <p className="text-lg text-muted-foreground leading-relaxed">
                             A high-precision quantification engine designed for ISO 14064-1 compliance. Calculate Scope 1, 2, and 3 emissions with proprietary validation logic.

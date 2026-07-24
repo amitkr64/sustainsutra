@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const ISOVerificationPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="ISO 14064 Verification & Assurance"
+            title={t('services.isoVerificationTitle', 'ISO 14064 Verification & Assurance')}
             heroImage="https://images.unsplash.com/photo-1699854427600-842027e87f1b"
             overview="Third-party verification and assurance of greenhouse gas emissions data and reports to enhance credibility and meet regulatory requirements."
             keyFeatures={[

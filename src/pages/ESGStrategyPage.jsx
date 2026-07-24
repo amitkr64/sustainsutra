@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const ESGStrategyPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="ESG Strategy"
+            title={t('services.esgStrategyTitle', 'ESG Strategy')}
             heroImage="https://images.unsplash.com/photo-1460925895917-afdab827c52f"
             overview="Engineering holistic ESG strategies that transform sustainability from a compliance mandate into a competitive advantage."
             executiveSummary="Environmental, Social, and Governance (ESG) performance is no longer a peripheral concern—it is a core driver of institutional value and long-term resilience. Our strategy team works with executive leadership to identify material risks and opportunities, establishing a robust framework for ethical growth. We move beyond generic checklists to build a purpose-driven strategy that aligns with your unique business model, stakeholder expectations, and global sustainability frameworks, ensuring your organization is built to thrive in a low-carbon economy."

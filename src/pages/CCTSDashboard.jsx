@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 const CCTSDashboard = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -111,7 +113,7 @@ const CCTSDashboard = () => {
                     {/* Header */}
                     <div className="mb-6">
                         <h1 className="text-4xl md:text-5xl font-bold text-gold mb-2">
-                            CCTS Compliance Dashboard
+                            {t('ccts.dashboardTitle', 'CCTS Compliance Dashboard')}
                         </h1>
                         <p className="text-xl text-offwhite/80">{entity.entityName}</p>
                         <p className="text-sm text-offwhite/60">Registration: {entity.registrationNumber} | Sector: {entity.sector}</p>

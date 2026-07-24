@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import {
     ArrowLeft, CheckCircle, Circle, Lock, ChevronDown, ChevronRight,
@@ -15,6 +16,7 @@ import PDFViewer from '@/components/PDFViewer';
 import DocumentViewer from '@/components/DocumentViewer';
 
 const CourseContentPage = () => {
+    const { t } = useTranslation();
     const { slug } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -236,7 +238,7 @@ const CourseContentPage = () => {
                                     <ArrowLeft size={20} />
                                     Back to Course
                                 </Link>
-                                <h1 className="text-xl font-playfair text-offwhite">{course.title}</h1>
+                                <h1 className="text-xl font-playfair text-offwhite">{t('courses.contentTitle', course.title)}</h1>
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="text-sm text-dimmed">

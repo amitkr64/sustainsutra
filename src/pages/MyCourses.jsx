@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { GraduationCap, BookOpen, Clock, TrendingUp, ArrowRight } from 'lucide-react';
@@ -8,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { courseService } from '@/services/courseService';
 
 const MyCourses = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const { registrations, courses, loading } = useCourses();
     const navigate = useNavigate();
@@ -69,7 +71,7 @@ const MyCourses = () => {
                         </div>
 
                         <h1 className="text-5xl md:text-6xl font-playfair text-offwhite mb-6">
-                            My <span className="text-gold">Courses</span>
+                            {t('courses.myTitleLead', 'My')} <span className="text-gold">{t('courses.myTitleHighlight', 'Courses')}</span>
                         </h1>
                         <p className="text-xl text-dimmed">
                             Welcome back, {user.name || user.email}

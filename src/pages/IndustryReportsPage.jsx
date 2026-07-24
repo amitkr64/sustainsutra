@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Download, ArrowRight, TrendingUp, Filter, Search, Globe, ChevronRight } from 'lucide-react';
@@ -6,6 +7,7 @@ import { FileText, Download, ArrowRight, TrendingUp, Filter, Search, Globe, Chev
 import { resourceService } from '@/services/resourceService';
 
 const IndustryReportsPage = () => {
+    const { t } = useTranslation();
     const [reports, setReports] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSector, setSelectedSector] = useState('All');
@@ -60,7 +62,7 @@ const IndustryReportsPage = () => {
                             transition={{ delay: 0.1 }}
                             className="text-5xl md:text-7xl font-playfair mb-6 leading-tight"
                         >
-                            Industry <span className="text-gold italic">Insights</span>
+                            {t('resources.reportsTitleLead', 'Industry')} <span className="text-gold italic">{t('resources.reportsTitleHighlight', 'Insights')}</span>
                         </motion.h1>
 
                         <motion.p

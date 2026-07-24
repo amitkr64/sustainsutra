@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const WasteManagementPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Waste Management & Zero Waste Strategy"
+            title={t('services.wasteManagementTitle', 'Waste Management & Zero Waste Strategy')}
             heroImage="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b"
             overview="Strategic waste management consulting to minimize waste generation, maximize resource recovery, and establish circular economy practices across operations."
             keyFeatures={[

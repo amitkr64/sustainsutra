@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, User, ArrowRight, Search, Grid, List, Zap, Sparkles, Filter } from 'lucide-react';
@@ -8,6 +9,7 @@ import { blogService } from '@/services/blogService';
 import { BlogCardSkeleton } from '@/components/LoadingSkeletons';
 
 const InsightsLandingPage = () => {
+    const { t } = useTranslation();
     const [blogs, setBlogs] = useState([]);
     const [viewMode, setViewMode] = useState('grid');
     const [searchTerm, setSearchTerm] = useState('');
@@ -64,7 +66,7 @@ const InsightsLandingPage = () => {
                         transition={{ delay: 0.1 }}
                         className="text-6xl md:text-8xl font-playfair mb-8 leading-tight"
                     >
-                        Strategic <span className="text-gold italic">Perspectives</span>
+                        {t('insights.titleLead', 'Strategic')} <span className="text-gold italic">{t('insights.titleHighlight', 'Perspectives')}</span>
                     </motion.h1>
 
                     <motion.p

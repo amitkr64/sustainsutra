@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import {
@@ -12,6 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
 const CourseDetailPage = () => {
+    const { t } = useTranslation();
     const { slug } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -128,7 +130,7 @@ const CourseDetailPage = () => {
                             </div>
 
                             <h1 className="text-4xl md:text-5xl font-playfair text-offwhite mb-6">
-                                {course.title}
+                                {t('courses.detailTitle', course.title)}
                             </h1>
 
                             <p className="text-xl text-dimmed leading-relaxed mb-8">

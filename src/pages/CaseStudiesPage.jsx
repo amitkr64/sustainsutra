@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { ArrowRight, Building2, Calendar, Filter, Search, Award, ChevronRight } 
 import { resourceService } from '@/services/resourceService';
 
 const CaseStudiesPage = () => {
+    const { t } = useTranslation();
     const [caseStudies, setCaseStudies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedIndustry, setSelectedIndustry] = useState('All');
@@ -60,7 +62,7 @@ const CaseStudiesPage = () => {
                         transition={{ delay: 0.1 }}
                         className="text-6xl md:text-8xl font-playfair mb-8 leading-tight"
                     >
-                        Success <span className="text-gold italic">Blueprints</span>
+                        {t('resources.caseStudiesTitleLead', 'Success')} <span className="text-gold italic">{t('resources.caseStudiesTitleHighlight', 'Blueprints')}</span>
                     </motion.h1>
 
                     <motion.p

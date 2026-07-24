@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Info, ArrowUpRight, BookOpen } from 'lucide-react';
 
 const SustainabilityGlossaryPage = () => {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedLetter, setSelectedLetter] = useState('ALL');
 
@@ -99,7 +101,7 @@ const SustainabilityGlossaryPage = () => {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-playfair mb-6"
                     >
-                        Sustainability <span className="text-gold italic">Glossary</span>
+                        {t('resources.glossaryTitleLead', 'Sustainability')} <span className="text-gold italic">{t('resources.glossaryTitleHighlight', 'Glossary')}</span>
                     </motion.h1>
 
                     <motion.p

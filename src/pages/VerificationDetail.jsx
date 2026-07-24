@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { getMonitoringDataById } from '@/services/cctsMonitoringService';
@@ -8,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CheckCircle, XCircle, FileText, Download, Save, AlertTriangle, Upload, FileCheck, ClipboardList, Search, Plus } from 'lucide-react';
 
 const VerificationDetail = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -157,7 +159,7 @@ const VerificationDetail = () => {
 
             <div className="min-h-screen bg-navy py-20 px-4">
                 <div className="container mx-auto max-w-5xl">
-                    <h1 className="text-3xl font-bold text-gold mb-8">Verification Assessment</h1>
+                    <h1 className="text-3xl font-bold text-gold mb-8">{t('ccts.verificationDetailTitle', 'Verification Assessment')}</h1>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Left: Entity Submission */}

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, FileText, Trash2, Edit3, ChevronRight, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 const BRSRDashboard = () => {
+    const { t } = useTranslation();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const { toast } = useToast();
@@ -75,7 +77,7 @@ const BRSRDashboard = () => {
         <div className="container mx-auto px-4 py-12">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">BRSR Master Dashboard</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">{t('brsr.dashboardTitle', 'BRSR Master Dashboard')}</h1>
                     <p className="mt-2 max-w-2xl text-muted-foreground">
                         Manage your Business Responsibility &amp; Sustainability Reports. Complete all 1000+ indicators through our guided compliance system.
                     </p>

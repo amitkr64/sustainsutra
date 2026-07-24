@@ -1,6 +1,7 @@
 // Simple course create page - uses similar structure to BlogEditor
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { courseService } from '@/services/courseService';
 import { useToast } from '@/components/ui/use-toast';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Save } from 'lucide-react';
 
 const CreateCoursePage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { toast } = useToast();
     const [formData, setFormData] = useState({
@@ -72,7 +74,7 @@ const CreateCoursePage = () => {
                     <ArrowLeft size={20} /> Back to Dashboard
                 </button>
 
-                <h1 className="text-3xl font-playfair text-white mb-8">Create New Course</h1>
+                <h1 className="text-3xl font-playfair text-white mb-8">{t('courses.createTitle', 'Create New Course')}</h1>
 
                 <div className="glassmorphism rounded-2xl p-8 space-y-6">
                     <div>

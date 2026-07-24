@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const TrainingCapacityPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Training & Capacity Building"
+            title={t('services.trainingCapacityTitle', 'Training & Capacity Building')}
             heroImage="https://images.unsplash.com/photo-1560849144-739435323954"
             overview="Comprehensive training programs to build internal expertise in sustainability reporting, carbon management, and regulatory compliance."
             keyFeatures={[

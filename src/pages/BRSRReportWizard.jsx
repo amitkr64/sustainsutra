@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -34,6 +35,7 @@ import ActivityFeed from '@/components/ActivityFeed';
 
 
 const BRSRReportWizard = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -1239,7 +1241,7 @@ const BRSRReportWizard = () => {
                             <LayoutDashboard size={20} />
                         </button>
                         <div>
-                            <h2 className="text-xl font-playfair text-gold">BRSR Master Report</h2>
+                            <h2 className="text-xl font-playfair text-gold">{t('brsr.wizardTitle', 'BRSR Master Report')}</h2>
                             <p className="text-xs text-dimmed">FY {report.financialYear} • {currentStep.label}</p>
                         </div>
                     </div>

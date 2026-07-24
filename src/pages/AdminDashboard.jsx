@@ -18,8 +18,10 @@ import PaymentSettings from '@/components/PaymentSettings';
 import PaymentRevenue from '@/components/PaymentRevenue';
 import AdminActivityFeed from '@/components/AdminActivityFeed';
 import LeadsManager from '@/components/LeadsManager';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard = () => {
+    const { t } = useTranslation();
     const [blogs, setBlogs] = useState([]);
     const [courses, setCourses] = useState([]);
     const [appointments, setAppointments] = useState([]);
@@ -107,7 +109,7 @@ const AdminDashboard = () => {
 
             <div className="container mx-auto max-w-7xl">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-playfair text-white mb-2">Admin Dashboard</h1>
+                    <h1 className="text-3xl font-playfair text-white mb-2">{t('admin.dashboardTitle', 'Admin Dashboard')}</h1>
                     <p className="text-offwhite/60">Manage blogs, courses, and appointments.</p>
                 </div>
 

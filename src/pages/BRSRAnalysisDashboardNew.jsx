@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Filter, Download, BarChart3, FileText, AlertCircle, Leaf, Zap, Target, Settings } from 'lucide-react';
 import { BRSRAnalysisProvider, useBRSRAnalysis } from '../contexts/BRSRAnalysisContext';
@@ -68,6 +69,7 @@ const formatCompanyName = (rawName) => {
 };
 
 const ReportsList = () => {
+  const { t } = useTranslation();
   const { state, actions } = useBRSRAnalysis();
   const { reports, loading } = state;
   const { filteredReports } = useBRSRFilters();
@@ -122,7 +124,7 @@ const ReportsList = () => {
     <div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
         <div>
-          <h1 className="text-5xl font-playfair text-gold mb-4">BRSR Analytics Suite</h1>
+          <h1 className="text-5xl font-playfair text-gold mb-4">{t('brsr.analyticsSuiteTitle', 'BRSR Analytics Suite')}</h1>
           <p className="max-w-xl text-dimmed leading-relaxed">
             Advanced extraction engine. Real-time XBRL analytics. Enterprise-grade insights.
           </p>

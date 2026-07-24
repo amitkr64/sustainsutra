@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const EPRPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Extended Producer Responsibility (EPR)"
+            title={t('services.eprTitle', 'Extended Producer Responsibility (EPR)')}
             heroImage="https://images.unsplash.com/photo-1532094349884-543bc11b234d"
             overview="Navigate India's EPR regulations with expert compliance support for plastic packaging, e-waste, batteries, and tires. Ensure regulatory adherence while building sustainable product stewardship programs."
             keyFeatures={[

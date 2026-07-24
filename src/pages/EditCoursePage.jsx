@@ -1,6 +1,7 @@
 // Edit course page - simplified version
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { courseService } from '@/services/courseService';
 import { useToast } from '@/components/ui/use-toast';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Save } from 'lucide-react';
 
 const EditCoursePage = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -65,7 +67,7 @@ const EditCoursePage = () => {
                     <ArrowLeft size={20} /> Back to Dashboard
                 </button>
 
-                <h1 className="text-3xl font-playfair text-white mb-8">Edit Course</h1>
+                <h1 className="text-3xl font-playfair text-white mb-8">{t('courses.editTitle', 'Edit Course')}</h1>
 
                 <div className="glassmorphism rounded-2xl p-8 space-y-6">
                     <div>

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileSpreadsheet, FileText, Download, CheckCircle, Lock, Filter, Search } from 'lucide-react';
@@ -8,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { resourceService } from '@/services/resourceService';
 
 const DownloadableTemplatesPage = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [templates, setTemplates] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -72,7 +74,7 @@ const DownloadableTemplatesPage = () => {
                             transition={{ delay: 0.1 }}
                             className="text-5xl md:text-7xl font-playfair mb-6 leading-tight"
                         >
-                            Strategic <span className="text-gold italic">Asset Library</span>
+                            {t('resources.templatesTitleLead', 'Strategic')} <span className="text-gold italic">{t('resources.templatesTitleHighlight', 'Asset Library')}</span>
                         </motion.h1>
 
                         <motion.p

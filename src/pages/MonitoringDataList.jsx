@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { getMonitoringData, deleteMonitoringData } from '@/services/cctsMonitoringService';
@@ -7,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Plus, Eye, Edit, Trash2, Filter, FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
 
 const MonitoringDataList = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -95,7 +97,7 @@ const MonitoringDataList = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h1 className="text-4xl font-bold text-gold mb-2">Monitoring Reports</h1>
+                            <h1 className="text-4xl font-bold text-gold mb-2">{t('ccts.monitoringReportsTitle', 'Monitoring Reports')}</h1>
                             <p className="text-offwhite/70">View and manage your emissions monitoring data</p>
                         </div>
                         <Button

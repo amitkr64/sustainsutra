@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const EnergyAuditsPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Energy Audits & Optimization"
+            title={t('services.energyAuditsTitle', 'Energy Audits & Optimization')}
             heroImage="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e"
             overview="Comprehensive energy auditing services to identify inefficiencies, reduce consumption, and optimize operational costs while supporting decarbonization goals."
             keyFeatures={[

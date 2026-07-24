@@ -7,8 +7,10 @@ import { appointmentService } from '@/services/appointmentService';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
 
 const AppointmentBookingPage = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -123,7 +125,7 @@ const AppointmentBookingPage = () => {
                         </div>
 
                         <h1 className="text-5xl md:text-6xl font-playfair text-offwhite mb-6">
-                            Book an <span className="text-gold">Appointment</span>
+                            {t('booking.title', 'Book an ')}<span className="text-gold">{t('booking.titleAccent', 'Appointment')}</span>
                         </h1>
                         <p className="text-xl text-dimmed">
                             Connect with our sustainability experts to discuss your ESG goals and initiatives.

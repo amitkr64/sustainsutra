@@ -1,10 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
+import { useTranslation } from 'react-i18next';
 
 const CarbonFootprintingPage = () => {
+    const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title="Carbon Footprinting"
+            title={t('services.carbonFootprintingTitle', 'Carbon Footprinting')}
             heroImage="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e"
             overview="Systematic quantification of organizational GHG emissions to establish baseline credibility and drive science-based decarbonization."
             executiveSummary="In an era of increasing environmental scrutiny, Carbon Footprinting is the foundational step for any organization committed to sustainability. Our advisory service provides an exhaustive inventory of Greenhouse Gas (GHG) emissions across your entire value chain, from direct operational fuel combustion to subtle upstream supply chain activities. By translating complex consumption data into actionable CO2e metrics, we empower your leadership to make data-driven decisions that reduce both environmental impact and operational costs."

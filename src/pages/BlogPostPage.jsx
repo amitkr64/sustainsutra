@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { blogService } from '@/services/blogService';
@@ -7,6 +8,7 @@ import { Calendar, User, Clock, Share2, Linkedin, Twitter, Facebook, ArrowLeft, 
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const BlogPostPage = () => {
+    const { t } = useTranslation();
     const { slug } = useParams();
     const [blog, setBlog] = useState(null);
     const [relatedPosts, setRelatedPosts] = useState([]);

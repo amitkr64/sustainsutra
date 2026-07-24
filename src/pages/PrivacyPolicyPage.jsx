@@ -1,7 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
 
 const PrivacyPolicyPage = () => {
+    const { t } = useTranslation();
     return (
         <>
             <Helmet>
@@ -10,7 +12,7 @@ const PrivacyPolicyPage = () => {
 
             <div className="min-h-screen bg-navy pt-16 pb-16 px-4">
                 <div className="container mx-auto max-w-4xl">
-                    <h1 className="text-5xl font-playfair text-offwhite mb-8">Privacy Policy</h1>
+                    <h1 className="text-5xl font-playfair text-offwhite mb-8">{t('legal.privacyTitle', 'Privacy Policy')}</h1>
                     <div className="glassmorphism rounded-xl p-8 space-y-6 text-dimmed leading-relaxed">
                         <p className="text-sm text-dimmed">Last updated: January 22, 2026</p>
 

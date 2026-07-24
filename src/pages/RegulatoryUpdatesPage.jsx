@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Calendar, ShieldCheck, Filter, Search, ArrowRight, Zap } from 'lucide-react';
@@ -6,6 +7,7 @@ import { ExternalLink, Calendar, ShieldCheck, Filter, Search, ArrowRight, Zap } 
 import { resourceService } from '@/services/resourceService';
 
 const RegulatoryUpdatesPage = () => {
+    const { t } = useTranslation();
     const [updates, setUpdates] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSource, setSelectedSource] = useState('All');
@@ -59,7 +61,7 @@ const RegulatoryUpdatesPage = () => {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-playfair mb-6 leading-tight"
                     >
-                        Regulatory <span className="text-gold italic">Intelligence</span>
+                        {t('resources.regulatoryTitleLead', 'Regulatory')} <span className="text-gold italic">{t('resources.regulatoryTitleHighlight', 'Intelligence')}</span>
                     </motion.h1>
 
                     <motion.p

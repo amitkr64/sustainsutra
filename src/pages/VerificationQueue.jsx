@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/context/AuthContext';
@@ -9,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Eye, CheckCircle, Clock, AlertCircle, Search, Filter, Briefcase } from 'lucide-react';
 
 const VerificationQueue = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -65,7 +67,7 @@ const VerificationQueue = () => {
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
                         <div>
-                            <h1 className="text-3xl font-bold text-gold mb-2">Verification Queue</h1>
+                            <h1 className="text-3xl font-bold text-gold mb-2">{t('ccts.verificationQueueTitle', 'Verification Queue')}</h1>
                             <p className="text-offwhite/70">Review and verify emission monitoring reports</p>
                         </div>
                         <div className="flex gap-2">

@@ -42,9 +42,8 @@ const blogSchema = mongoose.Schema({
     timestamps: true
 });
 
-// Database indexes for performance
-blogSchema.index({ slug: 1 }); // Unique index for URL routing
-blogSchema.index({ status: 1, createdAt: -1 }); // Common query: published blogs sorted by date
+// Database indexes for performance (slug already indexed via unique: true)
+blogSchema.index({ status: 1, createdAt: -1 });
 blogSchema.index({ tags: 1 });
 blogSchema.index({ categories: 1 });
 blogSchema.index({ createdAt: -1 });

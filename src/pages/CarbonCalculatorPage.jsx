@@ -322,6 +322,8 @@ const CarbonCalculatorPage = () => {
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
                 <title>GHG Audit Engine | SustainSutra</title>
+                <meta name="description" content="Calculate your Scope 1, 2, and 3 emissions with our ISO 14064-1 compliant GHG Audit Engine. Free institutional-grade carbon footprint analysis." />
+                <meta name="keywords" content="carbon calculator, GHG audit, scope 1 2 3 emissions, ISO 14064, carbon footprint calculator India" />
             </Helmet>
 
             <div className="pt-12 pb-24 container mx-auto px-4 max-w-7xl">

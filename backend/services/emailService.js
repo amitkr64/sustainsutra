@@ -205,6 +205,28 @@ const templates = {
             </body>
             </html>
         `
+    }),
+
+    leadNotification: (data) => ({
+        subject: `New Lead: ${data.contactName} at ${data.company}`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #D4AF37;">New Lead Received</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Name:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${data.contactName}</td></tr>
+                    <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Company:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${data.company}</td></tr>
+                    <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Email:</td><td style="padding: 8px; border-bottom: 1px solid #eee;"><a href="mailto:${data.email}">${data.email}</a></td></tr>
+                    <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Phone:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${data.phone}</td></tr>
+                    <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Sector:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${data.sector}</td></tr>
+                </table>
+                <h3 style="margin-top: 20px; color: #333;">Inquiry:</h3>
+                <p style="background: #f9f9f9; padding: 12px; border-radius: 8px;">${data.inquiryDetails}</p>
+                <p style="margin-top: 20px; color: #666; font-size: 12px;">This lead was submitted via the SustainSutra website contact form. View and manage it in the Admin Dashboard → Leads.</p>
+            </body>
+            </html>
+        `
     })
 };
 

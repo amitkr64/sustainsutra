@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Lead = require('../models/leadModel');
 const logger = require('../utils/logger');
+const emailService = require('../services/emailService');
 
 // @desc    Submit a new lead (public)
 // @route   POST /api/leads
@@ -25,6 +26,21 @@ const createLead = asyncHandler(async (req, res) => {
     });
 
     logger.info(`New lead from ${contactName} at ${company} (${email})`);
+
+    // Notify the team about the new lead (demo-safe: silently skips if SMTP not configured)
+    try {
+        const teamEmail = process.env.EMAIL_USER || process.env.EMAIL_FROM || 'info@sustainsutra.in';
+        await emailService.sendEmail(teamEmail, 'leadNotification', {
+            contactName,
+            company,
+            email,
+            phone: phone || 'Not provided',
+            sector: sector || 'Not specified',
+            inquiryDetails
+        });
+    } catch (emailErr) {
+        logger.warn(`Failed to send lead notification email: ${emailErr.message}`);
+    }
 
     if (req.logActivity) {
         req.logActivity({

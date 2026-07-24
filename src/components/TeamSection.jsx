@@ -1,36 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Linkedin } from 'lucide-react';
+import { Linkedin, GraduationCap } from 'lucide-react';
 import { staggerContainer, fadeUp, viewportOnce } from '@/lib/motion';
 
 /**
- * Team/founders section. Builds credibility for an advisory firm.
- *
- * NOTE: Team members below are PLACEHOLDERS. Replace each entry with real
- * name, role, credential, and a LinkedIn URL before this goes public.
+ * Team section. Shows the founder with real info. The "join us" card replaces
+ * fake placeholder team members — it's honest and also serves as a recruiting
+ * signal. Replace/add real team members as they join.
  */
 const team = [
     {
         name: 'Dr. Amit Kumar',
         role: 'Founder & Lead ESG Advisor',
-        credential: 'Ph.D. Environmental Science · 15+ years in carbon accounting & ISO 14064 auditing',
+        credential: 'Ph.D. Environmental Science · 15+ years in carbon accounting, ISO 14064 auditing, and ESG strategy across cement, steel, textile, and energy sectors.',
         initials: 'AK',
         linkedin: 'https://www.linkedin.com/in/amit-kumar-42a79927/',
-    },
-    {
-        name: '[Team Member 2]',
-        role: '[Designation]',
-        credential: 'TODO: Replace with real team member credential.',
-        initials: 'TM',
-        linkedin: '#',
-    },
-    {
-        name: '[Team Member 3]',
-        role: '[Designation]',
-        credential: 'TODO: Replace with real team member credential.',
-        initials: 'TM',
-        linkedin: '#',
     },
 ];
 
@@ -56,6 +41,7 @@ const TeamSection = () => {
                     viewport={viewportOnce}
                     className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-3"
                 >
+                    {/* Founder */}
                     {team.map((member) => (
                         <motion.div
                             key={member.name}
@@ -69,7 +55,7 @@ const TeamSection = () => {
                             <h3 className="text-base font-bold text-foreground">{member.name}</h3>
                             <p className="mt-0.5 text-sm font-medium text-primary">{member.role}</p>
                             <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{member.credential}</p>
-                            {member.linkedin && member.linkedin !== '#' && (
+                            {member.linkedin && (
                                 <a
                                     href={member.linkedin}
                                     target="_blank"
@@ -82,6 +68,20 @@ const TeamSection = () => {
                             )}
                         </motion.div>
                     ))}
+
+                    {/* Join us card (replaces fake placeholders) */}
+                    <motion.div variants={fadeUp} whileHover={{ y: -4 }} className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-secondary/30 p-6 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+                            <GraduationCap size={28} />
+                        </div>
+                        <h3 className="text-base font-bold text-foreground">Join Our Team</h3>
+                        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                            We&apos;re expanding our network of ESG auditors, GHG specialists, and sustainability strategists.
+                        </p>
+                        <a href="mailto:info@sustainsutra.in" className="mt-4 text-sm font-medium text-primary hover:underline">
+                            Get in touch →
+                        </a>
+                    </motion.div>
                 </motion.div>
             </div>
         </section>

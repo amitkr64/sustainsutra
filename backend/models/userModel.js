@@ -79,8 +79,7 @@ userSchema.pre('save', async function (next) {
     }
 });
 
-// Database indexes for performance
-userSchema.index({ email: 1 }); // Already unique, but explicit index
+// Database indexes for performance (email is already indexed via unique: true)
 userSchema.index({ role: 1 });
 userSchema.index({ cctsEntity: 1 });
 userSchema.index({ createdAt: -1 });

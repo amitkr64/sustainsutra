@@ -104,7 +104,8 @@ const CCTSDashboard = () => {
         <>
             <Helmet>
                 <title>CCTS Dashboard - {entity.entityName} | SustainSutra</title>
-                <meta name="description" content="Carbon Credit Trading Scheme compliance dashboard" />
+                <meta name="description" content="Carbon Credit Trading Scheme compliance dashboard. Track GHG intensity, CCC balances, and verification status." />
+                <meta name="keywords" content="CCTS dashboard, carbon credit trading, CCC balance, GHG intensity, compliance India" />
             </Helmet>
 
             <div className="min-h-screen bg-navy py-20 px-4">

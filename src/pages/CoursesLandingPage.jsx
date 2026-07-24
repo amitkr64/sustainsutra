@@ -53,6 +53,7 @@ const CoursesLandingPage = () => {
             <Helmet>
                 <title>Professional Courses - SustainSutra</title>
                 <meta name="description" content="Master sustainability with expert-led courses in GHG Accounting, ISO 14064, LCA, Carbon Footprinting, ESG Strategy, and Materiality Assessment." />
+                <meta name="keywords" content="ESG courses, sustainability training, carbon accounting course, ISO 14064 training, BRSR course India" />
             </Helmet>
 
             {/* Premium Hero Section */}

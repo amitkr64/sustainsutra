@@ -44,6 +44,7 @@ const InsightsLandingPage = () => {
             <Helmet>
                 <title>Insights & Intelligence | SustainSutra</title>
                 <meta name="description" content="Board-level insights and engineering perspectives on the future of corporate sustainability and Net-Zero strategy." />
+                <meta name="keywords" content="ESG insights, sustainability articles, NetZero strategy, climate risk, corporate responsibility India" />
             </Helmet>
 
             {/* Premium Hero */}

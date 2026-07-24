@@ -62,57 +62,40 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* Testimonials Section */}
+            {/* Why Choose Us Section (replaces fabricated testimonials) */}
             <section className="section-padding bg-background">
                 <div className="container mx-auto px-4">
                     <div className="mx-auto mb-14 max-w-2xl text-center">
-                        <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Testimonials</p>
+                        <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Why SustainSutra</p>
                         <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                            What our clients say
+                            Built for compliance, designed for impact
                         </h2>
                         <p className="mt-3 text-muted-foreground">
-                            Real results from organizations on their NetZero journey.
-                        </p>
-                        <p className="mx-auto mt-4 max-w-md rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-2 text-xs text-amber-600 dark:text-amber-400/80">
-                            Testimonial content below is placeholder pending client approval. Replace with real, attributable quotes before publishing.
+                            What sets us apart in the ESG advisory landscape.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                        {[[
-                            'SustainSutra helped us achieve our net-zero targets ahead of schedule. Their expertise in GHG accounting and carbon reduction strategies is unmatched.',
-                            'Rajesh Sharma', 'Head of Sustainability, TechCorp India', 'RS'
-                        ], [
-                            'The BRSR reporting service was comprehensive and delivered on time. Their team\'s knowledge of regulatory requirements saved us countless hours.',
-                            'Priya Mehta', 'CFO, Manufacturing Solutions Ltd', 'PM'
-                        ], [
-                            'Excellent training programs! Our team is now equipped with practical skills in ESG strategy and carbon accounting. Highly recommended.',
-                            'Amit Kumar', 'Director, Green Energy Corp', 'AK'
-                        ]].map(([quote, name, role, initials], i) => (
-                            <motion.div
-                                key={name}
-                                initial={{ opacity: 0, y: 16 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: i * 0.08 }}
-                                viewport={{ once: true }}
-                                className="rounded-xl border border-border bg-card p-6 shadow-sm"
-                            >
-                                <div className="mb-3 flex gap-0.5 text-primary">
-                                    {[...Array(5)].map((_, j) => <span key={j} className="text-sm">★</span>)}
+                    <motion.div
+                        variants={staggerContainer(0.08)}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={viewportOnce}
+                        className="grid max-w-5xl gap-6 md:grid-cols-3 mx-auto"
+                    >
+                        {[
+                            { title: 'Audit-Ready Methodology', desc: 'Every calculation aligns with ISO 14064-1, GHG Protocol, and GRI standards. Our reports withstand third-party verification without rework.' },
+                            { title: 'Regulatory Expertise', desc: 'Deep knowledge of SEBI BRSR, CCTS, and CBAM requirements. We track regulatory changes so your disclosures stay current.' },
+                            { title: 'Technology-Driven', desc: 'Our proprietary GHG Audit Engine quantifies Scope 1, 2, and 3 emissions with precision — no spreadsheets, no guesswork.' },
+                        ].map((item, i) => (
+                            <motion.div key={i} variants={fadeUp} whileHover={{ y: -4 }} className="rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
+                                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary text-sm font-bold">
+                                    {String(i + 1).padStart(2, '0')}
                                 </div>
-                                <p className="mb-5 leading-relaxed text-foreground/90">{quote}</p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                                        {initials}
-                                    </div>
-                                    <div>
-                                        <div className="text-sm font-semibold text-foreground">{name}</div>
-                                        <div className="text-xs text-muted-foreground">{role}</div>
-                                    </div>
-                                </div>
+                                <h3 className="text-base font-bold text-foreground">{item.title}</h3>
+                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 

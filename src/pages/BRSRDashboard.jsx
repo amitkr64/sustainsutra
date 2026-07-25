@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, FileText, Trash2, Edit3, ChevronRight, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit3, ChevronRight, AlertCircle, BarChart3 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 const BRSRDashboard = () => {

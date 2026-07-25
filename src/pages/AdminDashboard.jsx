@@ -5,10 +5,13 @@ import { courseService } from '@/services/courseService';
 import { appointmentService } from '@/services/appointmentService';
 import { newsletterService } from '@/services/newsletterService';
 import { getAllEntities } from '@/services/cctsEntityService';
+import { leadService } from '@/services/leadService';
+import { paymentService } from '@/services/paymentService';
+import { userService } from '@/services/userService';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Helmet } from 'react-helmet';
-import { Plus, Edit, Trash2, Eye, Search, FileText, CheckCircle, Clock, GraduationCap, Calendar, Users, LayoutDashboard } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Search, FileText, CheckCircle, Clock, GraduationCap, Calendar, Users, LayoutDashboard, TrendingUp, UserCog, IndianRupee } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import EmissionFactorManager from '@/components/EmissionFactorManager';
 import UserManagement from '@/components/UserManagement';
@@ -27,6 +30,9 @@ const AdminDashboard = () => {
     const [appointments, setAppointments] = useState([]);
     const [subscribers, setSubscribers] = useState([]);
     const [cctsEntities, setCCTSEntities] = useState([]);
+    const [leadsStats, setLeadsStats] = useState({ total: 0, new: 0 });
+    const [revenueStats, setRevenueStats] = useState({ totalINR: 0, paidCount: 0 });
+    const [usersCount, setUsersCount] = useState(0);
     const [activeTab, setActiveTab] = useState('blogs');
     const [searchTerm, setSearchTerm] = useState('');
     const { toast } = useToast();
@@ -37,13 +43,24 @@ const AdminDashboard = () => {
     }, []);
 
     const loadData = async () => {
+        // Fire all independent requests in parallel. Each resolves independently
+        // so one failing endpoint (e.g. payments not configured) doesn't blank
+        // the whole dashboard.
+        const safe = (p) => p.catch((err) => {
+            console.warn('Dashboard partial load failed:', err?.message || err);
+            return null;
+        });
+
         try {
-            const [blogsData, appointmentsData, subscribersData, coursesData, cctsData] = await Promise.all([
-                blogService.getAll(),
-                appointmentService.getAllAppointments(),
-                newsletterService.getAll(),
-                courseService.getAllCourses(),
-                getAllEntities()
+            const [blogsData, appointmentsData, subscribersData, coursesData, cctsData, leadsData, revenueData, usersData] = await Promise.all([
+                safe(blogService.getAll()),
+                safe(appointmentService.getAllAppointments()),
+                safe(newsletterService.getAll()),
+                safe(courseService.getAllCourses()),
+                safe(getAllEntities()),
+                safe(leadService.getLeads({ limit: 100 })),
+                safe(paymentService.getRevenueStats()),
+                safe(userService.getAll())
             ]);
 
             setBlogs(blogsData || []);
@@ -51,11 +68,27 @@ const AdminDashboard = () => {
             setAppointments(appointmentsData || []);
             setSubscribers(subscribersData || []);
             setCCTSEntities(cctsData?.data || []);
+
+            // Leads: API returns { data, total, page, pages }
+            const leads = leadsData?.data || [];
+            setLeadsStats({
+                total: leadsData?.total ?? leads.length,
+                new: leads.filter(l => (l.status || 'new') === 'new').length
+            });
+
+            // Revenue: API returns { totals: [{ _id, total, count }], recent: [] }
+            const inrTotal = (revenueData?.totals || []).find(t => (t._id || 'INR') === 'INR');
+            setRevenueStats({
+                totalINR: inrTotal?.total || 0,
+                paidCount: inrTotal?.count || (revenueData?.recent?.length || 0)
+            });
+
+            setUsersCount(Array.isArray(usersData) ? usersData.length : (usersData?.data?.length || 0));
         } catch (error) {
             console.error('Error loading dashboard data:', error);
             // Fallbacks for when API is down
             setBlogs([]);
-            setCourses(await courseService.getAllCourses() || []);
+            setCourses(await courseService.getAllCourses().catch(() => []) || []);
             setAppointments([]);
             setSubscribers([]);
             setCCTSEntities([]);
@@ -98,8 +131,15 @@ const AdminDashboard = () => {
         appointments: appointments.length,
         pendingAppointments: appointments.filter(a => a.status === 'pending').length,
         subscribers: subscribers.length,
-        cctsEntities: cctsEntities.length
+        cctsEntities: cctsEntities.length,
+        leads: leadsStats.total,
+        newLeads: leadsStats.new,
+        revenue: revenueStats.totalINR,
+        paidOrders: revenueStats.paidCount,
+        users: usersCount
     };
+
+    const formatINR = (amt) => '₹' + Number(amt || 0).toLocaleString('en-IN');
 
     return (
         <div className="min-h-screen bg-navy pt-12 px-4 pb-12">
@@ -110,42 +150,67 @@ const AdminDashboard = () => {
             <div className="container mx-auto max-w-7xl">
                 <div className="mb-8">
                     <h1 className="text-3xl font-playfair text-white mb-2">{t('admin.dashboardTitle', 'Admin Dashboard')}</h1>
-                    <p className="text-offwhite/60">Manage blogs, courses, and appointments.</p>
+                    <p className="text-offwhite/60">Manage blogs, courses, appointments, leads, and payments.</p>
                 </div>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-offwhite/80 font-medium">Total Blogs</h3>
+                {/* Stats Cards — responsive grid that wraps cleanly at all breakpoints */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">New Leads</h3>
+                            <TrendingUp className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.leads}</p>
+                        {stats.newLeads > 0 && (
+                            <p className="text-xs text-gold mt-1">{stats.newLeads} new</p>
+                        )}
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">Revenue</h3>
+                            <IndianRupee className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{formatINR(stats.revenue)}</p>
+                        <p className="text-xs text-offwhite/50 mt-1">{stats.paidOrders} paid orders</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">Registered Users</h3>
+                            <UserCog className="text-gold w-5 h-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white">{stats.users}</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">Total Blogs</h3>
                             <FileText className="text-gold w-5 h-5" />
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.blogs}</p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-offwhite/80 font-medium">Courses</h3>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">Courses</h3>
                             <GraduationCap className="text-gold w-5 h-5" />
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.courses}</p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-offwhite/80 font-medium">Appointments</h3>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">Appointments</h3>
                             <Calendar className="text-gold w-5 h-5" />
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.appointments}</p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-offwhite/80 font-medium">Pending</h3>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">Pending</h3>
                             <Clock className="text-orange-400 w-5 h-5" />
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.pendingAppointments}</p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-offwhite/80 font-medium">CCTS Entities</h3>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-offwhite/80 text-sm font-medium">CCTS Entities</h3>
                             <LayoutDashboard className="text-gold w-5 h-5" />
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.cctsEntities}</p>
@@ -203,7 +268,7 @@ const AdminDashboard = () => {
                                                 <Link to={`/admin/blog/${blog.id}/edit`}>
                                                     <button className="p-2 hover:text-gold" aria-label="Edit"><Edit size={16} /></button>
                                                 </Link>
-                                                <button onClick={() => handleDeleteBlog(blog.id)} className="p-2 hover:text-red-400">
+                                                <button onClick={() => handleDeleteBlog(blog.id)} className="p-2 hover:text-red-400" aria-label="Delete blog">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </td>
@@ -246,7 +311,7 @@ const AdminDashboard = () => {
                                                 <Link to={`/admin/course/${course._id || course.id}/edit`}>
                                                     <button className="p-2 hover:text-gold" aria-label="Edit"><Edit size={16} /></button>
                                                 </Link>
-                                                <button onClick={() => handleDeleteCourse(course._id || course.id)} className="p-2 hover:text-red-400">
+                                                <button onClick={() => handleDeleteCourse(course._id || course.id)} className="p-2 hover:text-red-400" aria-label="Delete course">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </td>
@@ -407,6 +472,7 @@ const AdminDashboard = () => {
                                                     onClick={() => handleUnsubscribe(sub.id)}
                                                     className="p-2 text-red-400 hover:bg-red-400/10 rounded transition-colors"
                                                     title="Remove Subscriber"
+                                                    aria-label="Remove subscriber"
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>

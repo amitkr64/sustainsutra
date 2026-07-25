@@ -42,8 +42,9 @@ export const blogService = {
     // Increment view count
     incrementView: async (id) => {
         try {
-            console.log(`Incrementing view for blog ${id}`);
+            await fetch(`${API_URL}/${id}/view`, { method: 'POST', credentials: 'include' });
         } catch (error) {
+            // View-count increment is best-effort; don't surface to the user.
             console.error('Error incrementing view:', error);
         }
     },

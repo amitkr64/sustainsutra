@@ -87,6 +87,7 @@ const IndustryReportsPage = () => {
                             <input
                                 type="text"
                                 placeholder="Search by report name or keyword..."
+                                aria-label="Search industry reports"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full bg-transparent pl-12 pr-4 py-2 border-none focus:ring-0 text-offwhite placeholder:text-dimmed"

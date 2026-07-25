@@ -318,7 +318,13 @@ const BRSRAnalysisDashboardContent = () => {
         <UserSettings
           isOpen={showSettings}
           onClose={() => setShowSettings(false)}
-          onSave={(newSettings) => console.log('Settings saved:', newSettings)}
+          onSave={(newSettings) => {
+                    // UserSettings persists to localStorage internally; this
+                    // callback is a hook for future server-side sync.
+                    try {
+                        localStorage.setItem('brsr-user-settings', JSON.stringify(newSettings));
+                    } catch (e) { /* storage may be unavailable in private mode */ }
+                }}
         />
       )}
     </BRSRErrorBoundary>

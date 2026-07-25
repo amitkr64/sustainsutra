@@ -47,8 +47,7 @@ const CCTSDashboard = () => {
                 const balanceRes = await getMyCCCBalance(currentYear);
                 setCCCBalance(balanceRes.data);
             } catch (err) {
-                // Balance might not exist yet
-                console.log('No balance for current year');
+                // Balance might not exist yet for the current year — that's fine.
             }
 
         } catch (error) {

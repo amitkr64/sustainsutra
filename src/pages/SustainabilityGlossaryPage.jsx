@@ -125,6 +125,7 @@ const SustainabilityGlossaryPage = () => {
                             <input
                                 type="text"
                                 placeholder="Search by term or definition..."
+                                aria-label="Search glossary terms"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="relative w-full py-5 pl-14 pr-6 bg-navy/80 border border-white/10 rounded-2xl text-offwhite placeholder:text-dimmed focus:outline-none focus:border-gold/50 backdrop-blur-xl transition-all text-lg"

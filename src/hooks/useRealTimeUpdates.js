@@ -27,7 +27,6 @@ const useRealTimeUpdates = (endpoint, options = {}) => {
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('WebSocket connected:', endpoint);
         setIsConnected(true);
         setConnectionQuality('connected');
         reconnectTimeoutRef.current && clearTimeout(reconnectTimeoutRef.current);
@@ -50,8 +49,7 @@ const useRealTimeUpdates = (endpoint, options = {}) => {
         }
       };
 
-      ws.onclose = (event) => {
-        console.log('WebSocket closed:', event);
+      ws.onclose = () => {
         setIsConnected(false);
         setConnectionQuality('disconnected');
         scheduleReconnect();
@@ -67,7 +65,6 @@ const useRealTimeUpdates = (endpoint, options = {}) => {
       ws.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data);
-          console.log('WebSocket message:', message);
 
           switch (message.type) {
             case 'pong':
@@ -142,17 +139,13 @@ const useRealTimeUpdates = (endpoint, options = {}) => {
         const reconnect = () => {
           if (attempt < maxReconnectAttempts) {
             attempt++;
-            console.log(`Reconnect attempt ${attempt}/${maxReconnectAttempts}`);
             connect();
-          } else {
-            console.log('Max reconnect attempts reached');
           }
         };
 
         reconnect();
-      } else {
-        console.log('Reconnect already scheduled');
       }
+      // else: a reconnect is already scheduled — nothing to do.
     }, reconnectDelay);
   }, [isConnected, maxReconnectAttempts, reconnectDelay, connect]);
 

@@ -8,8 +8,8 @@ import { ExportService } from '@/services/exportService';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import {
-    Calculator, Plus, Trash2, Download, Lock, ChevronDown, X,
-    Flame, Zap, Globe, TrendingUp, Shield, HelpCircle, ArrowRight,
+    Calculator, Plus, Trash2, Download, Lock, X,
+    Flame, Zap, Globe, TrendingUp, Shield,
     LineChart, LayoutDashboard, Database, Info, Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

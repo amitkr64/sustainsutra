@@ -109,6 +109,7 @@ const InsightsLandingPage = () => {
                             <input
                                 type="text"
                                 placeholder="Search insights..."
+                                aria-label="Search insights"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-offwhite focus:border-gold/50 transition-all outline-none"

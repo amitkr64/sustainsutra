@@ -94,12 +94,13 @@ const ForgotPasswordPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="input-label">{t('auth.emailLabel')}</label>
+                        <label htmlFor="forgot-email" className="input-label">{t('auth.emailLabel')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Mail className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <input
+                                id="forgot-email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}

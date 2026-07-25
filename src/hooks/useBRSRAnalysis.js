@@ -157,14 +157,6 @@ export const useBRSRMetrics = (report) => {
   const metrics = useMemo(() => {
     if (!report) return null;
 
-    // DEBUG: Log what's in the report
-    console.log('[useBRSRMetrics] Report:', {
-      hasIndicators: !!report.indicators,
-      hasMetrics: !!report.metrics,
-      indicators: report.indicators,
-      metrics: report.metrics
-    });
-
     const indicators = report.indicators || {};
     const prevIndicators = indicators.prev_year || {};
     // Use backend-calculated metrics as primary source if available

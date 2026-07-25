@@ -90,12 +90,13 @@ const ResetPasswordPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="input-label">{t('auth.newPassword')}</label>
+                        <label htmlFor="reset-password" className="input-label">{t('auth.newPassword')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Lock className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <input
+                                id="reset-password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -108,12 +109,13 @@ const ResetPasswordPage = () => {
                     </div>
 
                     <div>
-                        <label className="input-label">{t('auth.confirmPassword')}</label>
+                        <label htmlFor="reset-confirm" className="input-label">{t('auth.confirmPassword')}</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Lock className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <input
+                                id="reset-confirm"
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}

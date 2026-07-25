@@ -75,7 +75,7 @@ const SEOMeta = ({
 
             {/* Additional Meta Tags */}
             <meta name="author" content="SustainSutra" />
-            <meta name="theme-color" content="#c9a227" />
+            <meta name="theme-color" content="#2D5016" />
 
             {/* Structured Data (JSON-LD) */}
             <script type="application/ld+json">

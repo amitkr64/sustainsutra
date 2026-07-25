@@ -61,6 +61,15 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false,
             },
+            // SEO routes served by the backend in development.
+            '/sitemap.xml': {
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+            },
+            '/robots.txt': {
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+            },
         },
     },
     build: {

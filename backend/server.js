@@ -108,6 +108,13 @@ app.get('/', (req, res) => {
   res.send('SustainSutra API is running...');
 });
 
+// SEO: dynamic sitemap + robots (served by the backend so they reflect
+// published blogs/courses/case-studies automatically). The frontend static
+// public/robots.txt acts as a fallback if these routes are not proxied.
+const { getSitemap, getRobots } = require('./controllers/seoController');
+app.get('/sitemap.xml', getSitemap);
+app.get('/robots.txt', getRobots);
+
 // Health check route
 // NOTE: intentionally does NOT expose demoMode — advertising that the
 // password bypass is active is itself a security leak.

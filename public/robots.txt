@@ -1,0 +1,19 @@
+# SustainSutra — ESG Advisory & NetZero Strategy
+# Allow all search engines to crawl all public content.
+User-agent: *
+Allow: /
+
+# Private/authenticated areas should not be indexed.
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /profile
+Disallow: /brsr/wizard/
+Disallow: /ccts/dashboard
+Disallow: /ccts/monitoring-data
+Disallow: /ccts/verification
+Disallow: /my-courses
+Disallow: /courses/*/learn
+
+# Sitemap (absolute URL — update SITE_URL env on the backend to match production)
+Sitemap: https://sustainsutra.in/sitemap.xml

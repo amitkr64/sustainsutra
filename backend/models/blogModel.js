@@ -27,6 +27,23 @@ const blogSchema = mongoose.Schema({
     categories: [{
         type: String
     }],
+    // Frontend (InsightsLandingPage / BlogPostPage) reads these fields —
+    // Mongoose strict mode silently drops them if not declared here.
+    category: {
+        type: String
+    },
+    featuredImage: {
+        type: String
+    },
+    publishDate: {
+        type: String
+    },
+    authorBio: {
+        type: String
+    },
+    authorImage: {
+        type: String
+    },
     image: {
         type: String
     },

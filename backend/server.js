@@ -143,6 +143,11 @@ app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
 // BRSR master reports (the wizard + dashboard + diff consume these).
 app.use('/api/brsr-reports', require('./routes/brsrMasterReportRoutes'));
+
+// Content resources (case studies, templates, reports, regulatory updates).
+// NOTE: this mount line was missing — every /api/resources request 404'd,
+// leaving Case Studies, Templates, Reports and Regulatory Updates pages empty.
+app.use('/api/resources', require('./routes/resourceRoutes'));
 // Carbon Credit Trading Scheme (CCTS). Requires a real database — fail closed
 // in demo mode rather than letting the controllers hit an absent DB.
 app.use('/api/ccts', require('./middleware/requireRealDb'), require('./routes/cctsRoutes'));

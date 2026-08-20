@@ -14,6 +14,20 @@ const getResources = asyncHandler(async (req, res) => {
     res.json(resources);
 });
 
+// @desc    Get a single resource by ID
+// @route   GET /api/resources/:id
+// @access  Public
+const getResourceById = asyncHandler(async (req, res) => {
+    const resource = await Resource.findById(req.params.id);
+
+    if (resource) {
+        res.json(resource);
+    } else {
+        res.status(404);
+        throw new Error('Resource not found');
+    }
+});
+
 // @desc    Create a resource
 // @route   POST /api/resources
 // @access  Private/Admin
@@ -54,6 +68,7 @@ const deleteResource = asyncHandler(async (req, res) => {
 
 module.exports = {
     getResources,
+    getResourceById,
     createResource,
     updateResource,
     deleteResource

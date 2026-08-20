@@ -11,11 +11,18 @@ const resourceSchema = mongoose.Schema({
     description: { type: String },
     // Fields specific to Case Studies
     client: { type: String },
+    clientIndustry: { type: String },
     challenge: { type: String },
     solution: { type: String },
+    results: { type: String },
     impact: { type: String },
     image: { type: String },
-    date: { type: String }
+    date: { type: String },
+    // Fields specific to Regulatory Updates
+    summary: { type: String },
+    authority: { type: String },
+    link: { type: String },
+    tags: [{ type: String }]
 }, {
     timestamps: true
 });

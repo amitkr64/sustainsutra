@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { blogService } from '@/services/blogService';
+import { marked } from 'marked';
 import { Calendar, User, Clock, Share2, Linkedin, Twitter, Facebook, ArrowLeft, Bookmark, Sparkles, ChevronRight } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
@@ -138,22 +139,20 @@ const BlogPostPage = () => {
             <div className="container mx-auto px-4 lg:px-8 py-24">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
                     <main ref={contentRef} className="lg:col-span-8">
-                        <div className="prose prose-invert prose-2xl max-w-none 
+                        <div className="prose prose-invert prose-2xl max-w-none
                             prose-headings:font-playfair prose-headings:text-white prose-headings:mb-10 prose-headings:mt-16
+                            prose-h2:border-b prose-h2:border-white/5 prose-h2:pb-4
                             prose-p:text-dimmed prose-p:leading-[1.8] prose-p:mb-8
                             prose-strong:text-gold prose-strong:font-black
                             prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:p-8 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-white
                             prose-li:text-dimmed prose-li:mb-2
+                            prose-a:text-gold
                             selection:bg-gold/30"
+                            // Blog content is admin-authored (create/update routes are
+                            // protect+admin only), so rendering the markdown as HTML
+                            // stays within that trusted boundary.
+                            dangerouslySetInnerHTML={{ __html: marked.parse(blog.content) }}
                         >
-                            {blog.content.split('\n').map((paragraph, idx) => {
-                                if (paragraph.startsWith('###')) return <h3 key={idx}>{paragraph.replace('###', '')}</h3>;
-                                if (paragraph.startsWith('##')) return <h2 key={idx} className="border-b border-white/5 pb-4">{paragraph.replace('##', '')}</h2>;
-                                if (paragraph.startsWith('#')) return <h1 key={idx}>{paragraph.replace('#', '')}</h1>;
-                                if (paragraph.startsWith('>')) return <blockquote key={idx}>{paragraph.replace('>', '')}</blockquote>;
-                                if (!paragraph.trim()) return <div key={idx} className="h-4" />;
-                                return <p key={idx}>{paragraph}</p>;
-                            })}
                         </div>
 
                         {/* Metadata & Author */}

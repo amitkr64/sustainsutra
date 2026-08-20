@@ -11,9 +11,9 @@ import { staggerContainer, fadeUp, viewportOnce } from '@/lib/motion';
  */
 const team = [
     {
-        name: 'Dr. Amit Kumar',
-        role: 'Founder & Lead ESG Advisor',
-        credential: 'Ph.D. Environmental Science · 15+ years in carbon accounting, ISO 14064 auditing, and ESG strategy across cement, steel, textile, and energy sectors.',
+        name: 'Amit Kumar',
+        role: 'Founder & CEO',
+        credential: 'ISO 14064 Lead Verifier (GHG) · EPD/PCF Verification Expert · ESG & decarbonization consultant for cement, steel, chemicals, textile and energy sectors. Founder, SustainSutra GreenTech LLP (Startup Bihar seed-fund selected).',
         initials: 'AK',
         linkedin: 'https://www.linkedin.com/in/amit-kumar-42a79927/',
     },

@@ -20,6 +20,7 @@ const TermsOfServicePage = () => {
                             <h2 className="text-2xl font-playfair text-offwhite mb-4">1. Acceptance of Terms</h2>
                             <p>
                                 By accessing and using SustainSutra's services, you accept and agree to be bound by these Terms of Service.
+                                These terms are issued by SustainSutra GreenTech LLP, a limited liability partnership registered in India.
                                 If you do not agree to these terms, please do not use our services.
                             </p>
                         </section>
@@ -27,8 +28,13 @@ const TermsOfServicePage = () => {
                         <section>
                             <h2 className="text-2xl font-playfair text-offwhite mb-4">2. Services Description</h2>
                             <p>
-                                SustainSutra provides sustainability consulting, training, carbon footprint calculation tools,
-                                and related services. We reserve the right to modify, suspend, or discontinue any service at any time.
+                                SustainSutra GreenTech LLP provides environmental, sustainability and climate consulting and technology
+                                services — including ESG advisory; GHG accounting, verification support and decarbonisation strategy;
+                                water, energy and waste audits; water, wastewater, solid waste and plastic waste management advisory;
+                                circular economy and resource efficiency services; environmental law and regulatory compliance advisory;
+                                carbon markets, carbon credits and climate finance advisory; green skills training and capacity building;
+                                software and digital platforms; and technical testing and analysis services.
+                                We reserve the right to modify, suspend, or discontinue any service at any time.
                             </p>
                         </section>
 
@@ -46,7 +52,7 @@ const TermsOfServicePage = () => {
                         <section>
                             <h2 className="text-2xl font-playfair text-offwhite mb-4">4. Intellectual Property</h2>
                             <p>
-                                All content, features, and functionality of our services are owned by SustainSutra and are protected
+                                All content, features, and functionality of our services are owned by SustainSutra GreenTech LLP and are protected
                                 by international copyright, trademark, and other intellectual property laws.
                             </p>
                         </section>

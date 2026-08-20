@@ -30,8 +30,8 @@ const AboutPage = () => {
     return (
         <div className="min-h-screen bg-navy text-offwhite font-ibm selection:bg-gold/30">
             <Helmet>
-                <title>Institutional Profile | SustainSutra</title>
-                <meta name="description" content="SustainSutra is an elite ESG consulting firm engineering NetZero pathways through technical rigor and strategic foresight." />
+                <title>Institutional Profile | SustainSutra GreenTech LLP</title>
+                <meta name="description" content="SustainSutra GreenTech LLP — environmental, sustainability and climate consulting and technology services: ESG advisory, GHG accounting and verification, water, energy and waste audits, circular economy, carbon markets, and green skilling." />
             </Helmet>
 
             {/* Elite Hero Section */}
@@ -61,7 +61,7 @@ const AboutPage = () => {
                                 {t('about.title', 'Engineering a Resilient Future')}
                             </h1>
                             <p className="text-xl md:text-3xl text-offwhite/80 max-w-2xl font-light leading-relaxed border-l-4 border-gold pl-8">
-                                SustainSutra is an elite advisory firm dedicated to bridging the gap between corporate ambition and climate reality through rigorous science and strategic clarity.
+                                SustainSutra GreenTech LLP is an environmental, sustainability and climate consulting and technology firm — bridging the gap between corporate ambition and climate reality through rigorous science, strategic clarity, and purpose-built digital platforms.
                             </p>
                             <div className="mt-12 flex gap-6">
                                 <Button
@@ -173,7 +173,7 @@ const AboutPage = () => {
                                     We realized that generic advice wasn't enough. The market needed <span className="text-white font-medium">engineering rigor</span>—a firm that could translate complex greenhouse gas protocols into actionable operational blueprints.
                                 </p>
                                 <p>
-                                    Today, we operate as a high-fidelity advisory node for over 500 organizations. We don't just write reports; we build the technical infrastructure that allows companies to survive and lead in a world of carbon taxes and ESG disclosure mandates.
+                                    Today, operating as <span className="text-white font-medium">SustainSutra GreenTech LLP</span>, we combine consulting with technology — designing, developing, and maintaining the software platforms (like this one) that allow companies to survive and lead in a world of carbon taxes and ESG disclosure mandates. Our practice spans ESG advisory, GHG accounting and verification, water, energy and waste audits, circular economy, environmental law and regulatory compliance, carbon markets and climate finance, green skilling, and technical testing and analysis.
                                 </p>
                             </div>
                             <div className="mt-12 flex items-center gap-4 text-gold font-bold">

@@ -16,6 +16,11 @@ const PrivacyPolicyPage = () => {
                     <div className="glassmorphism rounded-xl p-8 space-y-6 text-dimmed leading-relaxed">
                         <p className="text-sm text-dimmed">Last updated: January 22, 2026</p>
 
+                        <p>
+                            This Privacy Policy describes how SustainSutra GreenTech LLP ("SustainSutra", "we", "us") collects,
+                            uses, and protects your personal information when you use our website and services.
+                        </p>
+
                         <section>
                             <h2 className="text-2xl font-playfair text-offwhite mb-4">1. Information We Collect</h2>
                             <p>

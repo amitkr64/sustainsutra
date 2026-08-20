@@ -64,6 +64,8 @@ const getSitemap = asyncHandler(async (req, res) => {
         ['/services/epr', '0.8', 'monthly'],
         ['/services/cleaner-production', '0.8', 'monthly'],
         ['/services/resource-efficiency', '0.8', 'monthly'],
+        ['/services/water-wastewater', '0.8', 'monthly'],
+        ['/services/carbon-markets', '0.8', 'monthly'],
         ['/carbon-calculator', '0.9', 'monthly'],
         ['/courses', '0.9', 'weekly'],
         ['/insights', '0.9', 'daily'],

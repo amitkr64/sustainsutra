@@ -6,11 +6,12 @@ const ISOVerificationPage = () => {
     const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title={t('services.isoVerificationTitle', 'ISO 14064 Verification & Assurance')}
+            title={t('services.isoVerificationTitle', 'ISO 14064 Verification, Assurance & Technical Testing')}
             heroImage="https://images.unsplash.com/photo-1699854427600-842027e87f1b"
-            overview="Third-party verification and assurance of greenhouse gas emissions data and reports to enhance credibility and meet regulatory requirements."
+            overview="Third-party verification and assurance of greenhouse gas emissions data and reports, backed by technical testing and analysis services — enhancing credibility and meeting regulatory requirements."
             keyFeatures={[
                 "Independent Data Verification",
+                "Technical Testing & Analysis Services",
                 "Compliance Audit Procedures",
                 "Assurance Statement Issuance",
                 "Quality Control Review",

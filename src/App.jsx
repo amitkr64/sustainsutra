@@ -33,6 +33,8 @@ const CircularEconomyPage = lazy(() => import('@/pages/CircularEconomyPage'));
 const EPRPage = lazy(() => import('@/pages/EPRPage'));
 const CleanerProductionPage = lazy(() => import('@/pages/CleanerProductionPage'));
 const ResourceEfficiencyPage = lazy(() => import('@/pages/ResourceEfficiencyPage'));
+const WaterWastewaterPage = lazy(() => import('@/pages/WaterWastewaterPage'));
+const CarbonMarketsPage = lazy(() => import('@/pages/CarbonMarketsPage'));
 
 const CoursesLandingPage = lazy(() => import('@/pages/CoursesLandingPage'));
 const CourseDetailPage = lazy(() => import('@/pages/CourseDetailPage'));
@@ -157,6 +159,8 @@ function App() {
                                             <Route path="/services/epr" element={<EPRPage />} />
                                             <Route path="/services/cleaner-production" element={<CleanerProductionPage />} />
                                             <Route path="/services/resource-efficiency" element={<ResourceEfficiencyPage />} />
+                                            <Route path="/services/water-wastewater" element={<WaterWastewaterPage />} />
+                                            <Route path="/services/carbon-markets" element={<CarbonMarketsPage />} />
 
                                             {/* Courses */}
                                             <Route path="/courses" element={<CoursesLandingPage />} />
@@ -232,7 +236,7 @@ function App() {
                                             <div className="md:col-span-2">
                                                 <div className="mb-4"><Logo size={28} /></div>
                                                 <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                                                    Engineering NetZero pathways through holistic ESG strategy and compliance excellence.
+                                                    Environmental, sustainability and climate consulting and technology services — engineering NetZero pathways through ESG advisory, GHG accounting, audits, carbon markets, and green skilling.
                                                 </p>
                                                 <p className="text-dimmed text-sm">
                                                     <strong className="text-offwhite">Email:</strong> info@sustainsutra.in<br />
@@ -248,6 +252,8 @@ function App() {
                                                     <li><a href="/services/esg-strategy" className="hover:text-gold transition-smooth">ESG Strategy</a></li>
                                                     <li><a href="/services/brsr-reporting" className="hover:text-gold transition-smooth">BRSR Reporting</a></li>
                                                     <li><a href="/services/iso-verification" className="hover:text-gold transition-smooth">ISO Verification</a></li>
+                                                    <li><a href="/services/water-wastewater" className="hover:text-gold transition-smooth">Water & Wastewater</a></li>
+                                                    <li><a href="/services/carbon-markets" className="hover:text-gold transition-smooth">Carbon Markets & Climate Finance</a></li>
                                                     <li><a href="/services" className="hover:text-gold transition-smooth">View All →</a></li>
                                                 </ul>
                                             </div>
@@ -312,7 +318,7 @@ function App() {
                                             </div>
                                         </div>
                                         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                                            <p className="text-dimmed text-sm">© 2026 SustainSutra. All rights reserved.</p>
+                                            <p className="text-dimmed text-sm">© 2026 SustainSutra GreenTech LLP. All rights reserved.</p>
                                             <div className="flex gap-6 text-dimmed text-sm">
                                                 <a href="/privacy" className="hover:text-gold transition-smooth">Privacy Policy</a>
                                                 <a href="/terms" className="hover:text-gold transition-smooth">Terms of Service</a>

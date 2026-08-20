@@ -6,11 +6,13 @@ const EPRPage = () => {
     const { t } = useTranslation();
     return (
         <ServicePageTemplate
-            title={t('services.eprTitle', 'Extended Producer Responsibility (EPR)')}
+            title={t('services.eprTitle', 'EPR & Environmental Regulatory Compliance')}
             heroImage="https://images.unsplash.com/photo-1532094349884-543bc11b234d"
-            overview="Navigate India's EPR regulations with expert compliance support for plastic packaging, e-waste, batteries, and tires. Ensure regulatory adherence while building sustainable product stewardship programs."
+            overview="Environmental law and regulatory compliance advisory — from Extended Producer Responsibility (plastic packaging, e-waste, batteries, tires) to consent conditions, environmental clearances, and periodic compliance filings. Ensure regulatory adherence while building sustainable product stewardship programs."
             keyFeatures={[
                 "EPR Registration & Authorization Support",
+                "Environmental Law & Regulatory Compliance Advisory",
+                "Consent & Environmental Clearance Compliance Tracking",
                 "Target Achievement Planning",
                 "PRO (Producer Responsibility Organization) Selection",
                 "Recycling Partner Network Development"

@@ -6,85 +6,21 @@ import { Link } from 'react-router-dom';
 import {
     ArrowRight, BarChart3, Globe, Layers, FileSpreadsheet,
     ShieldCheck, GraduationCap, Zap, Trash2, RefreshCw,
-    Package, Leaf, Droplet, Target, Award, Shield
+    Package, Leaf, Droplet, Target, Award, Shield, Scale,
+    TrendingUp, Factory
 } from 'lucide-react';
+import { SERVICES } from '@/constants/services';
+
+// Map icon string names from the SERVICES constant to components.
+const ICONS = {
+    BarChart3, Globe, Layers, FileSpreadsheet, ShieldCheck,
+    GraduationCap, Zap, RefreshCw, Droplet, Trash2,
+    Scale, TrendingUp, Factory
+};
 
 const ServicesLandingPage = () => {
     const { t } = useTranslation();
-    const services = [
-        {
-            id: 'carbon-footprinting',
-            title: 'Carbon Footprinting',
-            description: 'Engineering high-precision GHG inventories across Scope 1, 2, and 3 to establish science-based decarbonization baselines.',
-            icon: <BarChart3 className="w-8 h-8" />,
-            link: '/services/carbon-footprinting',
-            category: 'Advisory'
-        },
-        {
-            id: 'ghg-mapping',
-            title: 'GHG Mapping',
-            description: 'Strategic source identification and boundary setting to ensure complete transparency in organizational emissions accounting.',
-            icon: <Globe className="w-8 h-8" />,
-            link: '/services/ghg-mapping',
-            category: 'Accounting'
-        },
-        {
-            id: 'esg-strategy',
-            title: 'ESG Strategy',
-            description: 'Transforming sustainability into institutional value through double materiality and board-level strategic alignment.',
-            icon: <Layers className="w-8 h-8" />,
-            link: '/services/esg-strategy',
-            category: 'Strategic'
-        },
-        {
-            id: 'brsr-reporting',
-            title: 'BRSR Reporting',
-            description: 'End-to-end SEBI compliance support for top-listed entities, ensuring robust and audit-ready sustainability disclosures.',
-            icon: <FileSpreadsheet className="w-8 h-8" />,
-            link: '/services/brsr-reporting',
-            category: 'Compliance'
-        },
-        {
-            id: 'iso-verification',
-            title: 'ISO Verification',
-            description: 'Independent third-party assurance of carbon data according to ISO 14064, enhancing stakeholder trust and credibility.',
-            icon: <ShieldCheck className="w-8 h-8" />,
-            link: '/services/iso-verification',
-            category: 'Assurance'
-        },
-        {
-            id: 'training',
-            title: 'Academy & Training',
-            description: 'Upskilling executive and operational teams on global standards like GRI, SASB, and Net-Zero methodologies.',
-            icon: <GraduationCap className="w-8 h-8" />,
-            link: '/services/training-capacity',
-            category: 'Capacity Building'
-        },
-        {
-            id: 'energy-audits',
-            title: 'Energy Audits',
-            description: 'Technical assessments to identify efficiency gaps and implement cost-saving decarbonization measures.',
-            icon: <Zap className="w-8 h-8" />,
-            link: '/services/energy-audits',
-            category: 'Technical'
-        },
-        {
-            id: 'circular-economy',
-            title: 'Circular Economy',
-            description: 'Redesigning linear value chains into restorative systems that maximize resource utility and minimize waste.',
-            icon: <RefreshCw className="w-8 h-8" />,
-            link: '/services/circular-economy',
-            category: 'Innovation'
-        },
-        {
-            id: 'resource-efficiency',
-            title: 'Resource Efficiency',
-            description: 'Optimizing water, energy, and material throughput to build operational resilience in a resource-constrained world.',
-            icon: <Droplet className="w-8 h-8" />,
-            link: '/services/resource-efficiency',
-            category: 'Operations'
-        }
-    ];
+    const services = SERVICES;
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -187,12 +123,15 @@ const ServicesLandingPage = () => {
                                 variants={cardVariants}
                                 className="group relative"
                             >
-                                <Link to={service.link} className="block h-full">
+                                <Link to={service.href} className="block h-full">
                                     <div className="glassmorphism h-full p-10 rounded-3xl border-white/5 hover:border-gold/30 hover:bg-white/10 transition-all duration-500 hover:-translate-y-3 shadow-2xl overflow-hidden group">
                                         <div className="absolute -top-10 -right-10 w-32 h-32 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/20 transition-all" />
 
                                         <div className="mb-8 inline-flex items-center justify-center w-16 h-16 bg-navy border border-white/10 rounded-2xl text-gold group-hover:bg-gold group-hover:text-navy transition-all duration-300">
-                                            {service.icon}
+                                            {(() => {
+                                                const Icon = ICONS[service.icon] || BarChart3;
+                                                return <Icon className="w-8 h-8" />;
+                                            })()}
                                         </div>
 
                                         <div className="text-xs font-bold text-gold uppercase tracking-[0.2em] mb-4 opacity-70">

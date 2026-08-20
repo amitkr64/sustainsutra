@@ -2,14 +2,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
     BarChart3, Globe, Layers, FileSpreadsheet, ShieldCheck,
-    GraduationCap, Zap, RefreshCw, Droplet, ArrowUpRight
+    GraduationCap, Zap, RefreshCw, Droplet, ArrowUpRight,
+    Trash2, Scale, TrendingUp, Factory
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SERVICES } from '@/constants/services';
 import { staggerContainer, fadeUp, hoverLift, viewportOnce } from '@/lib/motion';
 
 // Map icon string names to components.
-const ICONS = { BarChart3, Globe, Layers, FileSpreadsheet, ShieldCheck, GraduationCap, Zap, RefreshCw, Droplet };
+const ICONS = {
+    BarChart3, Globe, Layers, FileSpreadsheet, ShieldCheck, GraduationCap,
+    Zap, RefreshCw, Droplet, Trash2, Scale, TrendingUp, Factory
+};
 
 const ServiceMatrix = () => {
     return (

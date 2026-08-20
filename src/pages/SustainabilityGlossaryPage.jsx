@@ -101,7 +101,7 @@ const SustainabilityGlossaryPage = () => {
             {/* Alphabet Filter */}
             <section className={`sticky z-40 py-4 bg-navy/80 backdrop-blur-md border-y border-white/5 transition-[top] duration-300 ${isHeaderVisible ? 'top-[80px]' : 'top-0'}`}>
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-wrap justify-center gap-2">
+                    <div className="flex justify-center gap-1.5 md:gap-2 flex-nowrap overflow-x-auto no-scrollbar">
                         <button
                             onClick={() => setSelectedLetter('ALL')}
                             className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${selectedLetter === 'ALL' ? 'bg-gold text-navy shadow-lg shadow-gold/20' : 'hover:bg-white/5 text-dimmed'}`}
@@ -112,7 +112,7 @@ const SustainabilityGlossaryPage = () => {
                             <button
                                 key={letter}
                                 onClick={() => setSelectedLetter(letter)}
-                                className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${selectedLetter === letter ? 'bg-gold text-navy shadow-lg shadow-gold/20' : 'hover:bg-white/5 text-dimmed'}`}
+                                className={`w-8 h-8 md:w-9 md:h-9 shrink-0 flex items-center justify-center rounded-lg text-xs md:text-sm font-bold transition-all ${selectedLetter === letter ? 'bg-gold text-navy shadow-lg shadow-gold/20' : 'hover:bg-white/5 text-dimmed'}`}
                             >
                                 {letter}
                             </button>

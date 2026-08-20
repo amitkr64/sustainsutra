@@ -232,7 +232,7 @@ const ImpactShowcasePage = () => {
 
             {/* CTA Section */}
             <section className="py-24 container mx-auto px-4">
-                <div className="bg-gradient-to-r from-navy to-[#1a2533] border border-white/10 rounded-[40px] p-12 text-center relative overflow-hidden">
+                <div className="bg-gradient-to-r from-navy to-secondary border border-white/10 rounded-[40px] p-12 text-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-3xl rounded-full" />
                     <h2 className="text-4xl md:text-6xl font-playfair text-white mb-8">Ready to create <br /><span className="text-gold italic">Your Success Story?</span></h2>
                     <p className="text-xl text-dimmed mb-12 max-w-2xl mx-auto">

@@ -48,7 +48,7 @@ const BlogPostPage = () => {
     if (!blog) return <LoadingSpinner fullScreen />;
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>{blog.title} | SustainSutra Insights</title>
                 <meta name="description" content={blog.excerpt} />
@@ -75,7 +75,7 @@ const BlogPostPage = () => {
                         alt={blog.title}
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-navy/40 to-[#0A0F14]" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-navy/40 to-navy" />
                 </motion.div>
 
                 <div className="absolute inset-0 flex flex-col justify-end pb-20">
@@ -118,7 +118,7 @@ const BlogPostPage = () => {
             </header>
 
             {/* Back Navigation */}
-            <div className="sticky top-20 z-40 bg-[#0A0F14]/80 backdrop-blur-xl border-y border-white/5 h-16 flex items-center">
+            <div className="sticky top-20 z-40 bg-navy/80 backdrop-blur-xl border-y border-white/5 h-16 flex items-center">
                 <div className="container mx-auto px-4 lg:px-8 flex justify-between items-center">
                     <Link to="/insights" className="flex items-center gap-2 text-gold/60 hover:text-gold transition-colors font-black text-[10px] uppercase tracking-widest">
                         <ArrowLeft size={16} /> Back to Insights

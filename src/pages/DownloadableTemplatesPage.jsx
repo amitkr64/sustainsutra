@@ -47,7 +47,7 @@ const DownloadableTemplatesPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Sustainability Templates | SustainSutra</title>
                 <meta name="description" content="Free and premium templates for carbon accounting, ESG reporting, and sustainability strategy." />
@@ -204,7 +204,7 @@ const DownloadableTemplatesPage = () => {
             </section>
 
             {!user && (
-                <section className="py-24 bg-[#0F161E]">
+                <section className="py-24 bg-navy/50">
                     <div className="container mx-auto px-4">
                         <div className="max-w-5xl mx-auto glassmorphism p-12 md:p-20 rounded-[40px] border border-gold/20 text-center relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-gold to-transparent" />

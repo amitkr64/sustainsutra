@@ -35,7 +35,7 @@ const IndustryReportsPage = () => {
     }, [reports, searchTerm, selectedSector]);
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Institutional Reports | SustainSutra</title>
                 <meta name="description" content="Download institutional-grade reports and deep-dive analysis on sustainability trends across global sectors." />

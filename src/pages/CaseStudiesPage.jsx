@@ -36,7 +36,7 @@ const CaseStudiesPage = () => {
     }, [caseStudies, searchTerm, selectedIndustry]);
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Success Stories & Impact | SustainSutra</title>
                 <meta name="description" content="Explore institutional-grade case studies detailing how leading global organizations achieved net-zero with SustainSutra." />
@@ -188,7 +188,7 @@ const CaseStudiesPage = () => {
             </section>
 
             {/* Premium CTA Section */}
-            <section className="py-24 bg-[#0F161E] border-t border-white/5 overflow-hidden relative">
+            <section className="py-24 bg-navy/50 border-t border-white/5 overflow-hidden relative">
                 <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
                 <div className="container relative z-10 mx-auto px-4 max-w-4xl text-center">
                     <motion.h2

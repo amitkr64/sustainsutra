@@ -35,7 +35,7 @@ const RegulatoryUpdatesPage = () => {
     }, [updates, searchTerm, selectedSource]);
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Regulatory Hub | SustainSutra</title>
                 <meta name="description" content="Real-time tracking of ESG regulations, SEBI BRSR circulars, and global climate policy updates." />
@@ -129,7 +129,7 @@ const RegulatoryUpdatesPage = () => {
                                     className={`relative flex flex-col md:flex-row gap-8 items-center ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
                                 >
                                     {/* Timeline Dot */}
-                                    <div className="absolute left-1/2 top-10 -translate-x-1/2 w-4 h-4 rounded-full bg-[#0A0F14] border-4 border-gold z-20 hidden md:block" />
+                                    <div className="absolute left-1/2 top-10 -translate-x-1/2 w-4 h-4 rounded-full bg-navy border-4 border-gold z-20 hidden md:block" />
 
                                     {/* Date Column */}
                                     <div className={`md:w-1/2 flex ${idx % 2 === 0 ? 'md:justify-start' : 'md:justify-end'}`}>

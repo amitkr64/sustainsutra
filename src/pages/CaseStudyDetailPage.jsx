@@ -28,7 +28,7 @@ const CaseStudyDetailPage = () => {
 
     if (!study) {
         return (
-            <div className="min-h-screen bg-[#0A0F14] flex items-center justify-center text-white">
+            <div className="min-h-screen bg-navy flex items-center justify-center text-white">
                 <div className="text-center p-12 glassmorphism rounded-3xl border border-white/10">
                     <Target size={64} className="text-gold mx-auto mb-6 opacity-20" />
                     <h2 className="text-3xl font-playfair mb-4">Perspective Not Found</h2>
@@ -42,7 +42,7 @@ const CaseStudyDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>{study.title} | SustainSutra</title>
                 <meta name="description" content={`Institutional deep-dive: How we engineered ${study.clientIndustry} performance for board-level impact.`} />
@@ -56,7 +56,7 @@ const CaseStudyDetailPage = () => {
                         alt={study.title}
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/80 to-[#0A0F14]" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/80 to-navy" />
                 </div>
 
                 <div className="absolute inset-0 flex flex-col justify-end pb-24">

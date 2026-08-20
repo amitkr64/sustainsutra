@@ -75,7 +75,7 @@ const SustainabilityGlossaryPage = () => {
     }, [searchTerm, selectedLetter]);
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Sustainability Glossary | SustainSutra</title>
                 <meta name="description" content="Detailed definitions of key sustainability terms, carbon accounting acronyms, and global ESG frameworks." />
@@ -137,7 +137,7 @@ const SustainabilityGlossaryPage = () => {
             </section>
 
             {/* Alphabet Filter */}
-            <section className="sticky top-[80px] z-40 py-4 bg-[#0A0F14]/80 backdrop-blur-md border-y border-white/5">
+            <section className="sticky top-[80px] z-40 py-4 bg-navy/80 backdrop-blur-md border-y border-white/5">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-wrap justify-center gap-2">
                         <button

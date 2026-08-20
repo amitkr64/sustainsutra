@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
+// Backend proxy target. Override with BACKEND_TARGET when the backend runs on
+// a non-default port locally (e.g. BACKEND_TARGET=http://localhost:5001).
+const backendTarget = process.env.BACKEND_TARGET || 'http://localhost:5000';
+
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
@@ -57,17 +61,17 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'http://localhost:5000',
+                target: backendTarget,
                 changeOrigin: true,
                 secure: false,
             },
             // SEO routes served by the backend in development.
             '/sitemap.xml': {
-                target: 'http://localhost:5000',
+                target: backendTarget,
                 changeOrigin: true,
             },
             '/robots.txt': {
-                target: 'http://localhost:5000',
+                target: backendTarget,
                 changeOrigin: true,
             },
         },

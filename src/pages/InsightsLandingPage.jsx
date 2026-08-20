@@ -40,7 +40,7 @@ const InsightsLandingPage = () => {
     }, [blogs, selectedCategory, searchTerm]);
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Insights & Intelligence | SustainSutra</title>
                 <meta name="description" content="Board-level insights and engineering perspectives on the future of corporate sustainability and Net-Zero strategy." />
@@ -82,7 +82,7 @@ const InsightsLandingPage = () => {
             </section>
 
             {/* Controls Bar */}
-            <section className="sticky top-20 z-40 bg-[#0A0F14]/80 backdrop-blur-2xl border-y border-white/5 py-6">
+            <section className="sticky top-20 z-40 bg-navy/80 backdrop-blur-2xl border-y border-white/5 py-6">
                 <div className="container mx-auto px-4 lg:px-8 flex flex-col lg:flex-row justify-between items-center gap-8">
                     {/* Category Scroll */}
                     <div className="flex items-center gap-6 w-full lg:w-auto overflow-x-auto no-scrollbar">

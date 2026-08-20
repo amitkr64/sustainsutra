@@ -53,7 +53,7 @@ const ResourcesLandingPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#0A0F14] text-offwhite selection:bg-gold/30">
+        <div className="min-h-screen bg-navy text-offwhite selection:bg-gold/30">
             <Helmet>
                 <title>Knowledge Hub | SustainSutra</title>
                 <meta name="description" content="Access premium sustainability resources, board-grade templates, glossaries, and institutional reports." />

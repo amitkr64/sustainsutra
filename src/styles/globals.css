@@ -105,7 +105,8 @@
         --muted: 220 14% 95%;
         --muted-foreground: 220 9% 46%;
         --accent: 46 65% 45%;
-        --accent-foreground: 0 0% 100%;
+        /* Dark text on the gold accent — white-on-gold is unreadable on hover */
+        --accent-foreground: 220 16% 7%;
         --destructive: 0 72% 51%;
         --destructive-foreground: 0 0% 100%;
         --border: 220 13% 89%;

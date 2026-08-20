@@ -63,8 +63,9 @@ const BlogPostPage = () => {
                 style={{ scaleX }}
             />
 
-            {/* Premium Hero */}
-            <header className="relative w-full h-[85vh] overflow-hidden">
+            {/* Premium Hero — in-flow content column + min-h so long titles
+                grow the header instead of overflowing into the nav bar below */}
+            <header className="relative w-full min-h-[60vh] md:min-h-[75vh] overflow-hidden flex flex-col justify-end">
                 <motion.div
                     initial={{ scale: 1.1, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -79,7 +80,7 @@ const BlogPostPage = () => {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-navy/40 to-navy" />
                 </motion.div>
 
-                <div className="absolute inset-0 flex flex-col justify-end pb-20">
+                <div className="relative w-full pb-16 md:pb-20 pt-32">
                     <div className="container mx-auto px-4 lg:px-8">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -97,7 +98,7 @@ const BlogPostPage = () => {
                                 </span>
                             </div>
 
-                            <h1 className="text-5xl md:text-8xl font-playfair text-white mb-10 leading-[1.1] drop-shadow-2xl">
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair text-white mb-8 md:mb-10 leading-[1.1] drop-shadow-2xl">
                                 {blog.title}
                             </h1>
 

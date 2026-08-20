@@ -7,6 +7,7 @@ import { blogService } from '@/services/blogService';
 import { marked } from 'marked';
 import { Calendar, User, Clock, Share2, Linkedin, Twitter, Facebook, ArrowLeft, Bookmark, Sparkles, ChevronRight } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import useHeaderVisible from '@/hooks/useHeaderVisible';
 
 const BlogPostPage = () => {
     const { t } = useTranslation();
@@ -14,6 +15,7 @@ const BlogPostPage = () => {
     const [blog, setBlog] = useState(null);
     const [relatedPosts, setRelatedPosts] = useState([]);
     const contentRef = useRef(null);
+    const isHeaderVisible = useHeaderVisible();
 
     const { scrollYProgress } = useScroll({
         target: contentRef,
@@ -120,7 +122,7 @@ const BlogPostPage = () => {
             </header>
 
             {/* Back Navigation */}
-            <div className="sticky top-20 z-40 bg-navy/80 backdrop-blur-xl border-y border-white/5 h-16 flex items-center">
+            <div className={`sticky z-40 bg-navy/80 backdrop-blur-xl border-y border-white/5 h-16 flex items-center transition-[top] duration-300 ${isHeaderVisible ? 'top-20' : 'top-0'}`}>
                 <div className="container mx-auto px-4 lg:px-8 flex justify-between items-center">
                     <Link to="/insights" className="flex items-center gap-2 text-gold/60 hover:text-gold transition-colors font-black text-[10px] uppercase tracking-widest">
                         <ArrowLeft size={16} /> Back to Insights

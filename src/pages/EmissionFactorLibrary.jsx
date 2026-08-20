@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import EmissionFactorManager from '@/components/EmissionFactorManager';
 import { useTranslation } from 'react-i18next';
+import useHeaderVisible from '@/hooks/useHeaderVisible';
 
 const EmissionFactorLibrary = () => {
     const { t } = useTranslation();
@@ -17,6 +18,7 @@ const EmissionFactorLibrary = () => {
     const [search, setSearch] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('All');
     const [isAdminMode, setIsAdminMode] = useState(false);
+    const isHeaderVisible = useHeaderVisible();
 
     const isAuthorized = user?.role === 'admin' || user?.role === 'verifier';
 
@@ -118,7 +120,7 @@ const EmissionFactorLibrary = () => {
             ) : (
                 <>
                     {/* Control Center */}
-                    <section className="sticky top-20 z-40 bg-navy/80 backdrop-blur-2xl border-y border-white/5 py-8">
+                    <section className={`sticky z-40 bg-navy/80 backdrop-blur-2xl border-y border-white/5 py-8 transition-[top] duration-300 ${isHeaderVisible ? 'top-20' : 'top-0'}`}>
                         <div className="container mx-auto px-4 lg:px-8">
                             <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
                                 <div className="relative group w-full lg:max-w-xl">

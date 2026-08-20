@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
@@ -7,6 +7,7 @@ import { Calendar, User, ArrowRight, Search, Grid, List, Zap, Sparkles, Filter }
 
 import { blogService } from '@/services/blogService';
 import { BlogCardSkeleton } from '@/components/LoadingSkeletons';
+import useHeaderVisible from '@/hooks/useHeaderVisible';
 
 const InsightsLandingPage = () => {
     const { t } = useTranslation();
@@ -15,24 +16,7 @@ const InsightsLandingPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [isLoading, setIsLoading] = useState(true);
-    // Mirrors Header.jsx hide-on-scroll-down logic so the sticky filter bar
-    // tucks under the header when it is visible and rises to top-0 when hidden.
-    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-    const lastScrollYRef = useRef(0);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) {
-                setIsHeaderVisible(false);
-            } else {
-                setIsHeaderVisible(true);
-            }
-            lastScrollYRef.current = currentScrollY;
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const isHeaderVisible = useHeaderVisible();
 
     useEffect(() => {
         const fetchBlogs = async () => {

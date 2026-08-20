@@ -4,11 +4,13 @@ import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Info, ArrowUpRight, BookOpen } from 'lucide-react';
 import { GLOSSARY_TERMS } from '@/constants/glossaryTerms';
+import useHeaderVisible from '@/hooks/useHeaderVisible';
 
 const SustainabilityGlossaryPage = () => {
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedLetter, setSelectedLetter] = useState('ALL');
+    const isHeaderVisible = useHeaderVisible();
 
     const glossaryTerms = GLOSSARY_TERMS;
 
@@ -97,7 +99,7 @@ const SustainabilityGlossaryPage = () => {
             </section>
 
             {/* Alphabet Filter */}
-            <section className="sticky top-[80px] z-40 py-4 bg-navy/80 backdrop-blur-md border-y border-white/5">
+            <section className={`sticky z-40 py-4 bg-navy/80 backdrop-blur-md border-y border-white/5 transition-[top] duration-300 ${isHeaderVisible ? 'top-[80px]' : 'top-0'}`}>
                 <div className="container mx-auto px-4">
                     <div className="flex flex-wrap justify-center gap-2">
                         <button

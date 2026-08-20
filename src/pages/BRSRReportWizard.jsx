@@ -32,6 +32,7 @@ import NICSelector from '@/components/BRSRShared/NICSelector';
 import { HIERARCHY, WIZARD_STEPS } from '@/components/BRSRForm/wizardConfig';
 import TextEntryModal from '@/components/BRSRForm/TextEntryModal';
 import ActivityFeed from '@/components/ActivityFeed';
+import useHeaderVisible from '@/hooks/useHeaderVisible';
 
 
 const BRSRReportWizard = () => {
@@ -44,6 +45,7 @@ const BRSRReportWizard = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const isHeaderVisible = useHeaderVisible();
 
     // Row Edit Modal State
     const [rowEditModalOpen, setRowEditModalOpen] = useState(false);
@@ -1231,7 +1233,7 @@ const BRSRReportWizard = () => {
     return (
         <div className="min-h-screen bg-navy text-offwhite pb-20">
             {/* Header Sticky */}
-            <div className="sticky top-20 lg:top-28 z-40 bg-navy/90 backdrop-blur-md border-b border-white/10 px-4 py-4">
+            <div className={`sticky z-40 bg-navy/90 backdrop-blur-md border-b border-white/10 px-4 py-4 transition-[top] duration-300 ${isHeaderVisible ? 'top-20 lg:top-28' : 'top-0'}`}>
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-4">
                         <button

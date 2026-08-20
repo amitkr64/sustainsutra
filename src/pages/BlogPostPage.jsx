@@ -143,11 +143,11 @@ const BlogPostPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
                     <main ref={contentRef} className="lg:col-span-8">
                         <div className="prose prose-invert prose-2xl max-w-none
-                            prose-headings:font-playfair prose-headings:text-white prose-headings:mb-10 prose-headings:mt-16
+                            prose-headings:font-playfair prose-headings:text-offwhite prose-headings:mb-10 prose-headings:mt-16
                             prose-h2:border-b prose-h2:border-white/5 prose-h2:pb-4
                             prose-p:text-dimmed prose-p:leading-[1.8] prose-p:mb-8
                             prose-strong:text-gold prose-strong:font-black
-                            prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:p-8 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-white
+                            prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:p-8 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-offwhite
                             prose-li:text-dimmed prose-li:mb-2
                             prose-a:text-gold
                             selection:bg-gold/30"
@@ -174,7 +174,7 @@ const BlogPostPage = () => {
                                 </div>
                                 <div className="text-center md:text-left">
                                     <span className="text-gold text-[10px] font-black uppercase tracking-[0.3em] mb-2 block">Executive Author</span>
-                                    <h3 className="text-3xl font-playfair text-white mb-4">{blog.author}</h3>
+                                    <h3 className="text-3xl font-playfair text-offwhite mb-4">{blog.author}</h3>
                                     <p className="text-dimmed leading-relaxed max-w-xl">
                                         {blog.authorBio || `A leading authority on ${blog.category}, dedicated to engineering resilient net-zero pathways for global enterprises.`}
                                     </p>
@@ -192,16 +192,16 @@ const BlogPostPage = () => {
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
                                 <a href="#" className="flex flex-col items-center gap-3 p-4 bg-white/5 rounded-2xl hover:bg-[#0077b5] transition-all group">
-                                    <Linkedin size={24} className="text-dimmed group-hover:text-white" />
-                                    <span className="text-[10px] font-bold text-dimmed group-hover:text-white">LinkedIn</span>
+                                    <Linkedin size={24} className="text-dimmed group-hover:text-offwhite" />
+                                    <span className="text-[10px] font-bold text-dimmed group-hover:text-offwhite">LinkedIn</span>
                                 </a>
                                 <a href="#" className="flex flex-col items-center gap-3 p-4 bg-white/5 rounded-2xl hover:bg-[#1DA1F2] transition-all group">
-                                    <Twitter size={24} className="text-dimmed group-hover:text-white" />
-                                    <span className="text-[10px] font-bold text-dimmed group-hover:text-white">Twitter</span>
+                                    <Twitter size={24} className="text-dimmed group-hover:text-offwhite" />
+                                    <span className="text-[10px] font-bold text-dimmed group-hover:text-offwhite">Twitter</span>
                                 </a>
                                 <a href="#" className="flex flex-col items-center gap-3 p-4 bg-white/5 rounded-2xl hover:bg-[#1877F2] transition-all group">
-                                    <Facebook size={24} className="text-dimmed group-hover:text-white" />
-                                    <span className="text-[10px] font-bold text-dimmed group-hover:text-white">Facebook</span>
+                                    <Facebook size={24} className="text-dimmed group-hover:text-offwhite" />
+                                    <span className="text-[10px] font-bold text-dimmed group-hover:text-offwhite">Facebook</span>
                                 </a>
                             </div>
                         </div>
@@ -219,7 +219,7 @@ const BlogPostPage = () => {
                                                 <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                             </div>
                                             <div className="flex-1">
-                                                <h4 className="font-playfair text-lg text-white group-hover:text-gold transition-colors leading-tight mb-2">
+                                                <h4 className="font-playfair text-lg text-offwhite group-hover:text-gold transition-colors leading-tight mb-2">
                                                     {post.title}
                                                 </h4>
                                                 <span className="text-[10px] font-black text-dimmed uppercase tracking-widest">{post.publishDate}</span>
@@ -239,7 +239,7 @@ const BlogPostPage = () => {
                             <p className="text-navy/80 mb-8 font-medium relative z-10">
                                 Need institutional expertise to navigate these challenges? Let's discuss your transformation.
                             </p>
-                            <Link to="/book-appointment" className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white hover:text-navy transition-all relative z-10">
+                                            <Link to="/book-appointment" className="inline-flex items-center gap-3 px-8 py-4 bg-navy text-offwhite rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold hover:text-navy transition-all relative z-10">
                                 Book Session <ChevronRight size={18} />
                             </Link>
                         </div>

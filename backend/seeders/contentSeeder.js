@@ -36,7 +36,7 @@ const blogs = [
         excerpt: 'The CBAM transitional reporting era is over. From 2026, embedded emissions in imported steel, aluminium, cement, fertilisers, hydrogen and electricity carry a real financial cost. Here is the practical compliance path.',
         category: 'Carbon Markets',
         tags: ['CBAM', 'EU', 'Exporters', 'Carbon Pricing', 'Compliance'],
-        featuredImage: '/images/blog/cbam-definitive-2026.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Aug 18, 2026',
         readTime: '7 min read',
         content: `The European Union’s Carbon Border Adjustment Mechanism has moved from paperwork to payment. After the transitional reporting phase, the definitive period that began in January 2026 means importers of iron and steel, aluminium, cement, fertilisers, hydrogen and electricity must surrender CBAM certificates priced against EU ETS allowances — with the free allocation phase-out ramping up through 2032.
@@ -79,7 +79,7 @@ SustainSutra runs CBAM readiness engagements covering embedded emissions calcula
         excerpt: 'The UK\u2019s own Carbon Border Adjustment Mechanism starts on 1 January 2027 covering iron, steel, aluminium, cement, fertilisers and hydrogen. Exporters already handling EU CBAM should not assume one system covers both.',
         category: 'Carbon Markets',
         tags: ['CBAM', 'UK', 'Exporters', 'Trade Policy'],
-        featuredImage: '/images/blog/uk-cbam-2027.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Aug 14, 2026',
         readTime: '5 min read',
         content: `The United Kingdom confirmed its Carbon Border Adjustment Mechanism will apply from 1 January 2027, covering iron and steel (including downstream products), aluminium, cement, fertilisers and hydrogen — a list deliberately close to the EU regime, with ceramics and glass added to the scope later.
@@ -115,7 +115,7 @@ SustainSutra maintains a joint EU+UK CBAM exposure workbook for clients covering
         excerpt: 'The Carbon Credit Trading Scheme creates India\u2019s first domestic compliance carbon market. Here is how the offset mechanism, obligated entities and compliance cycle fit together — and where non-obligated industries can benefit.',
         category: 'Carbon Markets',
         tags: ['CCTS', 'India', 'Carbon Credits', 'Energy Conservation Act', 'Offset Projects'],
-        featuredImage: '/images/blog/india-ccts-explained.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Aug 8, 2026',
         readTime: '6 min read',
         content: `India’s Carbon Credit Trading Scheme (CCTS), notified under the amended Energy Conservation Act, is the country’s first compliance-grade domestic carbon market. It runs on two tracks: a compliance mechanism for obligated entities (the energy-intensive designated consumers), and an offset mechanism that lets non-obligated projects generate tradable carbon credit certificates.
@@ -155,7 +155,7 @@ CCTS is no longer a policy announcement — it is an operating market with real 
         excerpt: 'For most industrial companies, Scope 3 dominates the GHG inventory — often 70-90% of total emissions. A practical guide to the 15 categories, data strategies that actually work, and where to start when everything seems material.',
         category: 'GHG Accounting',
         tags: ['Scope 3', 'GHG Protocol', 'Value Chain', 'Supplier Engagement', 'ISO 14064'],
-        featuredImage: '/images/blog/scope-3-primer.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Jul 30, 2026',
         readTime: '8 min read',
         content: `Ask a manufacturer to estimate their carbon footprint and they will usually describe their boilers, furnaces, DG sets and electricity bills — Scope 1 and Scope 2. For most industrial companies those scopes are the minority of the story. Purchased materials, inbound and outbound logistics, product use and end-of-life collectively dominate: commonly 70-90% of the total footprint sits in the value chain.
@@ -207,7 +207,7 @@ Scope 3 is where the footprint is. Increasingly, it is also where the procuremen
         excerpt: 'BRSR now covers India\u2019s top listed entities with assurance moving from optional to expected. The difference between a report that survives scrutiny and one that does comes down to data architecture, not writing quality.',
         category: 'ESG & Reporting',
         tags: ['BRSR', 'SEBI', 'ESG Reporting', 'Assurance', 'NGRBC'],
-        featuredImage: '/images/blog/brsr-assurance-readiness.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Jul 22, 2026',
         readTime: '6 min read',
         content: `India’s Business Responsibility and Sustainability Reporting framework, mandated by SEBI for the top listed entities and progressively widened, has moved Indian corporate disclosure from voluntary narrative to structured, indicator-based reporting aligned with the nine NGRBC principles. With the top 1000 (and expanding universe) filing annually and external assurance increasingly expected, the question is no longer whether to report but whether the report will hold.
@@ -246,7 +246,7 @@ SustainSutra runs BRSR readiness and reporting engagements on exactly this princ
         excerpt: 'Environmental Product Declarations are becoming procurement requirements in construction and industry. From the verifier\u2019s side of the table: the common findings that stall declarations under EN 15804+A2 — and how to avoid them.',
         category: 'LCA & EPD',
         tags: ['EPD', 'EN 15804+A2', 'LCA', 'Verification', 'ISO 14025', 'Construction'],
-        featuredImage: '/images/blog/epd-verification-findings.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Jul 15, 2026',
         readTime: '7 min read',
         content: `Environmental Product Declarations are shifting from differentiator to requirement — green building rating systems, public procurement and large industrial buyers increasingly demand verified EPDs to EN 15804+A2. Having sat on the verification side of this process, I can say the pattern of delays is remarkably consistent. Here is what actually gets checked, and what goes wrong.
@@ -286,7 +286,7 @@ For manufacturers in steel, cement, aluminium, chemicals and construction produc
         excerpt: 'An integrated water audit at a coal-tar and carbon black complex mapped every kilolitre from borewell to discharge — and found more annual savings in the steam condensate system than in all the "water" projects combined.',
         category: 'Resource Efficiency',
         tags: ['Water Audit', 'Water Balance', 'Condensate Recovery', 'Chemical Industry', 'Resource Efficiency'],
-        featuredImage: '/images/blog/water-audit-hidden-profit.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Jul 5, 2026',
         readTime: '7 min read',
         content: `When we begin an industrial water audit, clients expect the findings in the obvious places: cooling tower cycles, effluent treatment recycling, rainwater harvesting. At a recent integrated water audit of a coal-tar processing and carbon black complex in Bihar, the single largest finding was somewhere few plants look — the steam condensate return system.
@@ -333,7 +333,7 @@ Water audits pay when they follow the energy. Steam systems, condensate return, 
         excerpt: 'ISO 14064-3 verification is less about recalculation than about evidence. What materiality actually means in a GHG verification, how sampling works, and the internal habits that make an inventory verification-ready.',
         category: 'GHG Accounting',
         tags: ['ISO 14064', 'Verification', 'Materiality', 'GHG Inventory', 'Assurance'],
-        featuredImage: '/images/blog/ghg-verification-discipline.jpg',
+        featuredImage: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1920&q=80',
         publishDate: 'Jun 25, 2026',
         readTime: '6 min read',
         content: `A greenhouse gas verification under ISO 14064-3 is often imagined as an auditor recalculating your inventory line by line. In practice it is an evidence evaluation: the verifier builds an opinion by sampling data trails, testing your procedures, and establishing whether your numbers can be reproduced from your records. Inventories fail not because the arithmetic is wrong but because the trail is missing.

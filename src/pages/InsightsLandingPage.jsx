@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
@@ -15,6 +15,24 @@ const InsightsLandingPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [isLoading, setIsLoading] = useState(true);
+    // Mirrors Header.jsx hide-on-scroll-down logic so the sticky filter bar
+    // tucks under the header when it is visible and rises to top-0 when hidden.
+    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+    const lastScrollYRef = useRef(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) {
+                setIsHeaderVisible(false);
+            } else {
+                setIsHeaderVisible(true);
+            }
+            lastScrollYRef.current = currentScrollY;
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -82,7 +100,7 @@ const InsightsLandingPage = () => {
             </section>
 
             {/* Controls Bar */}
-            <section className="sticky top-20 z-40 bg-navy/80 backdrop-blur-2xl border-y border-white/5 py-6">
+            <section className={`sticky z-40 bg-navy/80 backdrop-blur-2xl border-y border-white/5 py-6 transition-[top] duration-300 ${isHeaderVisible ? 'top-20' : 'top-0'}`}>
                 <div className="container mx-auto px-4 lg:px-8 flex flex-col lg:flex-row justify-between items-center gap-8">
                     {/* Category Scroll */}
                     <div className="flex items-center gap-6 w-full lg:w-auto overflow-x-auto no-scrollbar">

@@ -21,7 +21,7 @@ const Logo = ({ size = 36, showWordmark = true, className = '' }) => (
             style={{ height: size }}
         />
         {showWordmark && (
-            <span className="text-2xl font-extrabold tracking-tight text-foreground">
+            <span className="text-[30px] font-extrabold tracking-tight text-foreground">
                 Sustain<span className="text-gold">Sutra</span>
             </span>
         )}

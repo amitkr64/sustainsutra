@@ -11,14 +11,14 @@ import { staggerContainer, fadeUp, viewportOnce } from '@/lib/motion';
  * "Request a Quote" CTAs. The "Professional" tier is highlighted as popular.
  *
  * NOTE: Prices and features are PLACEHOLDERS. Advisory engagement costs are
- * typically custom-quoted. Replace these with your real engagement models
- * and pricing before relying on this section publicly.
+ * indicative starting prices — final scope is confirmed per engagement.
  */
 const plans = [
     {
         name: 'Starter',
         description: 'For organizations beginning their sustainability journey.',
-        price: 'Custom',
+        price: '₹75,000',
+        period: 'one-time',
         features: [
             'Basic GHG footprint (Scope 1 & 2)',
             'Initial BRSR readiness assessment',
@@ -30,7 +30,8 @@ const plans = [
     {
         name: 'Professional',
         description: 'Full-spectrum compliance and strategy for growing enterprises.',
-        price: 'Custom',
+        price: '₹3,50,000',
+        period: 'one-time',
         features: [
             'Complete Scope 1, 2 & 3 inventory',
             'Full BRSR report preparation',
@@ -44,7 +45,9 @@ const plans = [
     {
         name: 'Enterprise',
         description: 'Dedicated, end-to-end ESG transformation for large organizations.',
-        price: 'Custom',
+        price: '₹10,00,000',
+        pricePrefix: 'From',
+        period: 'per year',
         features: [
             'Everything in Professional',
             'CCTS compliance & carbon credits',
@@ -98,8 +101,9 @@ const PricingSection = () => {
                             <h3 className="text-lg font-bold text-foreground">{plan.name}</h3>
                             <p className="mt-1 text-sm text-muted-foreground">{plan.description}</p>
                             <div className="mt-4 mb-5">
+                                {plan.pricePrefix && <span className="text-sm font-semibold text-muted-foreground mr-1">{plan.pricePrefix}</span>}
                                 <span className="text-3xl font-extrabold text-foreground">{plan.price}</span>
-                                <span className="text-sm text-muted-foreground ml-1">quote</span>
+                                <span className="text-sm text-muted-foreground ml-1">{plan.period}</span>
                             </div>
                             <ul className="mb-6 space-y-2.5 flex-grow">
                                 {plan.features.map((f) => (

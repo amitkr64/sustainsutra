@@ -112,11 +112,12 @@ const Header = () => {
         <>
             <header
                 className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${(isVisible || isMenuOpen) ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-                    } ${isScrolled ? 'bg-background/80 backdrop-blur-md border-b border-border shadow-sm' : 'bg-background/40 backdrop-blur-sm'}`}
+                    } ${isScrolled ? 'bg-background/90 backdrop-blur-xl border-b border-border shadow-lg shadow-black/10' : 'bg-background/40 backdrop-blur-sm'}`}
             >
                 {/* Slim accent announcement bar */}
-                <div className="bg-primary text-primary-foreground">
-                    <div className="container mx-auto px-4 py-1.5 text-center text-xs font-medium truncate">
+                <div className="bg-primary text-primary-foreground relative">
+                    <div className="absolute left-0 right-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-gold/70 to-transparent" />
+                    <div className="container mx-auto px-4 py-1.5 text-center text-xs font-bold tracking-wide truncate">
                         {tickerData[0]} &nbsp;&middot;&nbsp; {tickerData[1]}
                     </div>
                 </div>
@@ -127,12 +128,12 @@ const Header = () => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <ul className="hidden lg:flex items-center gap-7 text-sm font-medium text-foreground/80">
+                    <ul className="hidden lg:flex items-center gap-8 text-[15px] font-semibold tracking-wide text-foreground/80">
                         {/* Services Dropdown */}
                         <li>
                             <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1 hover:text-gold transition-colors font-medium outline-none">
-                                    Services <ChevronDown size={16} />
+                                <DropdownMenuTrigger className="nav-link group flex items-center gap-1 outline-none data-[state=open]:text-gold data-[state=open]:after:scale-x-100">
+                                    Services <ChevronDown size={16} className="transition-transform duration-300 group-data-[state=open]:rotate-180" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="bg-navy border-white/10 text-offwhite min-w-[280px] grid grid-cols-2 gap-1 p-2 z-[1001]">
                                     <div className="col-span-2 border-b border-white/5 mb-1 pb-1">
@@ -160,14 +161,14 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
-                        <li><Link to="/insights" className="hover:text-gold transition-colors font-medium">{t('nav.insights')}</Link></li>
-                        <li><Link to="/courses" className="hover:text-gold transition-colors font-medium">{t('nav.academy')}</Link></li>
+                        <li><Link to="/insights" className="nav-link">{t('nav.insights')}</Link></li>
+                        <li><Link to="/courses" className="nav-link">{t('nav.academy')}</Link></li>
 
                         {/* Resources Dropdown */}
                         <li>
                             <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1 hover:text-gold transition-colors font-medium outline-none">
-                                    Resources <ChevronDown size={16} />
+                                <DropdownMenuTrigger className="nav-link group flex items-center gap-1 outline-none data-[state=open]:text-gold data-[state=open]:after:scale-x-100">
+                                    Resources <ChevronDown size={16} className="transition-transform duration-300 group-data-[state=open]:rotate-180" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="bg-navy border-white/10 text-offwhite min-w-[240px] p-2 z-[1001]">
                                     {resourceLinks.map((link) => (
@@ -187,8 +188,8 @@ const Header = () => {
                         {/* Company Menu */}
                         <li>
                             <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1 hover:text-gold transition-colors font-medium outline-none">
-                                    Company <ChevronDown size={16} />
+                                <DropdownMenuTrigger className="nav-link group flex items-center gap-1 outline-none data-[state=open]:text-gold data-[state=open]:after:scale-x-100">
+                                    Company <ChevronDown size={16} className="transition-transform duration-300 group-data-[state=open]:rotate-180" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="bg-navy border-white/10 text-offwhite min-w-[200px] p-2 z-[1001]">
                                     {companyLinks.map((link) => (
@@ -212,7 +213,7 @@ const Header = () => {
 
                         {isAuthenticated ? (
                             <li className="flex items-center gap-3">
-                                <Link to="/book-appointment" className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold hover:brightness-110 transition-all text-sm">
+                                <Link to="/book-appointment" className="relative bg-gradient-to-b from-gold to-[hsl(var(--primary))] text-navy px-6 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-gold/25 hover:shadow-gold/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
                                     Book Appointment
                                 </Link>
                                 <DropdownMenu>
@@ -246,12 +247,12 @@ const Header = () => {
                         ) : (
                             <>
                                 <li>
-                                    <Link to="/book-appointment" className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold hover:brightness-110 transition-all text-sm">
+                                    <Link to="/book-appointment" className="relative bg-gradient-to-b from-gold to-[hsl(var(--primary))] text-navy px-6 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-gold/25 hover:shadow-gold/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
                                         Book Appointment
                                     </Link>
                                 </li>
                                 <li className="ml-1">
-                                    <Link to="/login" className="px-4 py-2 border border-border text-foreground rounded-lg hover:bg-secondary transition-colors font-medium text-sm">
+                                    <Link to="/login" className="px-5 py-2.5 border-2 border-gold/40 text-gold rounded-xl font-bold text-sm hover:bg-gold/10 hover:border-gold/70 transition-all">
                                         Sign In
                                     </Link>
                                 </li>

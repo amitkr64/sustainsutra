@@ -33,7 +33,10 @@ services:
 
     environment:
       # API Configuration
-      - VITE_API_URL=http://backend:5000
+      # Same-origin: nginx proxies /api to the backend container.
+      # Do NOT set VITE_API_URL to a docker-internal URL — it is baked into
+      # the browser bundle at build time and must be reachable by visitors.
+      - VITE_API_URL=
       - NODE_ENV=production
 
       # Feature Flags

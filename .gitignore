@@ -48,3 +48,6 @@ ccts-portal/frontend/node_modules/
 ccts-portal/frontend/dist/
 ccts-portal/backend/node_modules/
 ccts-portal/backend/.env
+
+# Deployment artifacts (regenerate with npm run build)
+deploy/hostinger/sustainsutra-frontend.zip

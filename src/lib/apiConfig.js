@@ -1,7 +1,12 @@
 // API Configuration with versioning support
 
 const API_VERSION = 'v1';
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// In production the frontend is served behind the same domain as the API
+// (nginx proxies /api to the backend), so same-origin URLs are correct and
+// avoid CORS/cookie issues. VITE_API_URL overrides for split hosting (e.g.
+// static frontend on shared hosting + API on another host).
+const API_BASE_URL = import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? 'http://localhost:5000' : window.location.origin);
 
 export const API_CONFIG = {
     baseURL: API_BASE_URL,

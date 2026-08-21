@@ -11,8 +11,13 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy source and build
+# Copy source and build.
+# BASE_PATH=/ serves the app at the domain ROOT (Docker/nginx deployments).
+# Override with --build-arg BASE_PATH=/repo-name/ for GitHub Pages-style
+# subpath hosting.
 COPY . .
+ARG BASE_PATH=/
+ENV BASE_PATH=${BASE_PATH}
 RUN npm run build
 
 # Stage 2: Production with nginx

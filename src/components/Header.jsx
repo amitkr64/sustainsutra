@@ -100,6 +100,11 @@ const Header = () => {
         { name: 'Industry Reports', path: '/resources/reports', icon: BarChart3 },
         { name: 'Regulatory Updates', path: '/resources/regulatory-updates', icon: Newspaper },
         { name: 'Case Studies', path: '/resources/case-studies', icon: Briefcase },
+    ];
+
+    const companyLinks = [
+        { name: 'About Us', path: '/about', icon: Info },
+        { name: 'Our Approach', path: '/our-approach', icon: Shield },
         { name: 'Impact Gallery', path: '/showcase', icon: Award },
     ];
 
@@ -130,6 +135,12 @@ const Header = () => {
                                     Services <ChevronDown size={16} />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="bg-navy border-white/10 text-offwhite min-w-[280px] grid grid-cols-2 gap-1 p-2 z-[1001]">
+                                    <div className="col-span-2 border-b border-white/5 mb-1 pb-1">
+                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2 px-3 rounded-lg group" onClick={() => navigate('/carbon-calculator')}>
+                                            <Calculator className="mr-2 h-4 w-4 text-gold group-hover:text-gold transition-colors" />
+                                            <span className="text-sm font-bold text-gold">Carbon Calculator — Free Tool</span>
+                                        </DropdownMenuItem>
+                                    </div>
                                     {serviceLinks.map((link) => (
                                         <DropdownMenuItem
                                             key={link.path}
@@ -149,8 +160,8 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
-                        <li><Link to="/courses" className="hover:text-gold transition-colors font-medium">{t('nav.academy')}</Link></li>
                         <li><Link to="/insights" className="hover:text-gold transition-colors font-medium">{t('nav.insights')}</Link></li>
+                        <li><Link to="/courses" className="hover:text-gold transition-colors font-medium">{t('nav.academy')}</Link></li>
 
                         {/* Resources Dropdown */}
                         <li>
@@ -173,25 +184,23 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
-                        {/* More Menu */}
+                        {/* Company Menu */}
                         <li>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1 hover:text-gold transition-colors font-medium outline-none">
-                                    More <ChevronDown size={16} />
+                                    Company <ChevronDown size={16} />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="bg-navy border-white/10 text-offwhite min-w-[200px] p-2 z-[1001]">
-                                    <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/our-approach')}>
-                                        <Shield className="mr-3 h-4 w-4 text-gold/60" />
-                                        <span>Our Approach</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/carbon-calculator')}>
-                                        <Calculator className="mr-3 h-4 w-4 text-gold/60" />
-                                        <span>Carbon Calculator</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/about')}>
-                                        <Info className="mr-3 h-4 w-4 text-gold/60" />
-                                        <span>About Us</span>
-                                    </DropdownMenuItem>
+                                    {companyLinks.map((link) => (
+                                        <DropdownMenuItem
+                                            key={link.path}
+                                            className="focus:bg-white/5 cursor-pointer py-2.5 px-3 rounded-lg group"
+                                            onClick={() => navigate(link.path)}
+                                        >
+                                            <link.icon className="mr-3 h-4 w-4 text-gold/60 group-hover:text-gold transition-colors" />
+                                            <span className="text-sm">{link.name}</span>
+                                        </DropdownMenuItem>
+                                    ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </li>
@@ -235,11 +244,18 @@ const Header = () => {
                                 </DropdownMenu>
                             </li>
                         ) : (
-                            <li className="ml-1">
-                                <Link to="/login" className="px-4 py-2 border border-border text-foreground rounded-lg hover:bg-secondary transition-colors font-medium text-sm">
-                                    Sign In
-                                </Link>
-                            </li>
+                            <>
+                                <li>
+                                    <Link to="/book-appointment" className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold hover:brightness-110 transition-all text-sm">
+                                        Book Appointment
+                                    </Link>
+                                </li>
+                                <li className="ml-1">
+                                    <Link to="/login" className="px-4 py-2 border border-border text-foreground rounded-lg hover:bg-secondary transition-colors font-medium text-sm">
+                                        Sign In
+                                    </Link>
+                                </li>
+                            </>
                         )}
                     </ul>
 

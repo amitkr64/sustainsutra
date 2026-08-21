@@ -128,7 +128,7 @@ const Header = () => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <ul className="hidden lg:flex items-center gap-8 text-[15px] font-semibold tracking-wide text-foreground/80">
+                    <ul className="hidden lg:flex items-center gap-7 ml-14 text-[15px] font-semibold text-foreground/80">
                         {/* Services Dropdown */}
                         <li>
                             <DropdownMenu>
@@ -212,8 +212,8 @@ const Header = () => {
                         </li>
 
                         {isAuthenticated ? (
-                            <li className="flex items-center gap-3">
-                                <Link to="/book-appointment" className="relative bg-gradient-to-b from-gold to-[hsl(var(--primary))] text-navy px-6 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-gold/25 hover:shadow-gold/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                            <li className="flex items-center gap-3 shrink-0">
+                                <Link to="/book-appointment" className="inline-flex items-center bg-gold text-navy px-5 py-2 rounded-lg font-bold text-sm shadow-md shadow-gold/20 hover:shadow-gold/40 hover:brightness-110 transition-all whitespace-nowrap">
                                     Book Appointment
                                 </Link>
                                 <DropdownMenu>
@@ -246,13 +246,13 @@ const Header = () => {
                             </li>
                         ) : (
                             <>
-                                <li>
-                                    <Link to="/book-appointment" className="relative bg-gradient-to-b from-gold to-[hsl(var(--primary))] text-navy px-6 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-gold/25 hover:shadow-gold/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                <li className="shrink-0">
+                                    <Link to="/book-appointment" className="inline-flex items-center bg-gold text-navy px-5 py-2 rounded-lg font-bold text-sm shadow-md shadow-gold/20 hover:shadow-gold/40 hover:brightness-110 transition-all whitespace-nowrap">
                                         Book Appointment
                                     </Link>
                                 </li>
-                                <li className="ml-1">
-                                    <Link to="/login" className="px-5 py-2.5 border-2 border-gold/40 text-gold rounded-xl font-bold text-sm hover:bg-gold/10 hover:border-gold/70 transition-all">
+                                <li className="ml-1 shrink-0">
+                                    <Link to="/login" className="inline-flex items-center px-4 py-2 border border-gold/40 text-gold rounded-lg font-semibold text-sm hover:bg-gold/10 hover:border-gold/70 transition-colors whitespace-nowrap">
                                         Sign In
                                     </Link>
                                 </li>

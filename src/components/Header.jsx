@@ -248,14 +248,6 @@ const Header = () => {
                                             <p className="text-sm font-bold text-gold">{user?.name || 'User'}</p>
                                             <p className="text-xs text-offwhite/50 truncate uppercase tracking-tighter">{user?.role}</p>
                                         </div>
-                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2.5 px-3" onClick={() => navigate('/brsr/dashboard')}>
-                                            <FileText className="mr-3 h-4 w-4 text-gold" />
-                                            <span className="font-bold text-gold">BRSR Portal</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2.5 px-3" onClick={() => navigate('/brsr/analysis')}>
-                                            <BarChart3 className="mr-3 h-4 w-4 text-gold" />
-                                            <span className="font-bold text-gold">BRSR Analysis</span>
-                                        </DropdownMenuItem>
                                         <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-2.5 px-3" onClick={() => navigate('/profile')}>
                                             <LayoutDashboard className="mr-3 h-4 w-4" />
                                             <span>My Dashboard</span>

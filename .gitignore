@@ -35,3 +35,10 @@ backend/uploads/
 uploads/
 *.log
 .cursor/
+
+# BRSR portal (standalone app in this repo)
+brsr-portal/frontend/node_modules/
+brsr-portal/frontend/dist/
+brsr-portal/backend/node_modules/
+brsr-portal/backend/.env
+brsr-portal/backend/uploads/

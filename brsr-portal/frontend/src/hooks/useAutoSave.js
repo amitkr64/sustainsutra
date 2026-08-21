@@ -36,7 +36,7 @@ const useAutoSave = (reportId, formData, options = {}) => {
             setError(null);
 
             const response = await axios.put(
-                `/api/brsr/${reportId}`,
+                `/api/brsr-reports/${reportId}`,
                 data,
                 { withCredentials: true }
             );

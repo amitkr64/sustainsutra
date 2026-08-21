@@ -63,7 +63,7 @@ const BRSRExportButtons = ({ reportData, onExportComplete }) => {
             setError(null);
 
             const response = await axios.post(
-                `/api/brsr/export/xml/${reportData._id}`,
+                `/api/brsr-reports/export/xml/${reportData._id}`,
                 {},
                 {
                     responseType: 'blob',

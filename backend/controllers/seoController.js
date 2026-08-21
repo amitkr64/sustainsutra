@@ -157,7 +157,6 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 Disallow: /profile
-Disallow: /brsr/wizard/
 Disallow: /ccts/dashboard
 Disallow: /ccts/monitoring-data
 Disallow: /ccts/verification

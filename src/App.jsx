@@ -59,12 +59,6 @@ const VerificationQueue = lazy(() => import('@/pages/VerificationQueue'));
 const VerificationDetail = lazy(() => import('@/pages/VerificationDetail'));
 const EmissionFactorLibrary = lazy(() => import('@/pages/EmissionFactorLibrary'));
 
-const BRSRDashboard = lazy(() => import('@/pages/BRSRDashboard'));
-const BRSRDiffPage = lazy(() => import('@/pages/BRSRDiffPage'));
-const BRSRReportWizard = lazy(() => import('@/pages/BRSRReportWizard'));
-const BRSRAnalysisDashboard = lazy(() => import('@/pages/BRSRAnalysisDashboard'));
-const BRSRAnalysisDashboardNew = lazy(() => import('@/pages/BRSRAnalysisDashboardNew'));
-
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const OurApproachPage = lazy(() => import('@/pages/OurApproachPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
@@ -208,13 +202,6 @@ function App() {
 
                                             {/* CCTS - Public Resources */}
                                             <Route path="/resources/emission-factors" element={<EmissionFactorLibrary />} />
-
-                                            {/* BRSR Reporting Routes */}
-                                            <Route path="/brsr/dashboard" element={<ProtectedRoute><BRSRDashboard /></ProtectedRoute>} />
-                                            <Route path="/brsr/diff" element={<ProtectedRoute><BRSRDiffPage /></ProtectedRoute>} />
-                                            <Route path="/brsr/wizard/:id" element={<ProtectedRoute><BRSRReportWizard /></ProtectedRoute>} />
-                                            <Route path="/brsr/analysis" element={<ProtectedRoute><BRSRAnalysisDashboardNew /></ProtectedRoute>} />
-                                            <Route path="/brsr/analysis/old" element={<ProtectedRoute><BRSRAnalysisDashboard /></ProtectedRoute>} />
 
                                             {/* Admin - Protected Routes */}
                                             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />

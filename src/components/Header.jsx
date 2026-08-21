@@ -118,7 +118,7 @@ const Header = () => {
 
                 <nav className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
                     <Link to="/" onClick={() => setIsMenuOpen(false)}>
-                        <Logo size={30} />
+                        <Logo size={42} />
                     </Link>
 
                     {/* Desktop Navigation */}

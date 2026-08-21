@@ -234,7 +234,7 @@ function App() {
                                     <div className="container mx-auto px-4">
                                         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
                                             <div className="md:col-span-2">
-                                                <div className="mb-4"><Logo size={28} /></div>
+                                                <div className="mb-4"><Logo size={36} /></div>
                                                 <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                                                     Environmental, sustainability and climate consulting and technology services — engineering NetZero pathways through ESG advisory, GHG accounting, audits, carbon markets, and green skilling.
                                                 </p>

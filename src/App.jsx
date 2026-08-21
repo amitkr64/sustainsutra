@@ -114,7 +114,7 @@ function App() {
             <CourseProvider>
                 <AppointmentProvider>
                     <ErrorBoundary>
-                        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                        <Router basename={import.meta.env.BASE_URL} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                             <ScrollToTopWrapper />
                             <SEOMeta {...SEOConfig.home} />
 

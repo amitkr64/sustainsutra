@@ -7,8 +7,13 @@ import path from 'path';
 // a non-default port locally (e.g. BACKEND_TARGET=http://localhost:5001).
 const backendTarget = process.env.BACKEND_TARGET || 'http://localhost:5000';
 
+// Base path for GitHub Pages project deployment (repo: sustainsutra).
+// Override with BASE_PATH=/ for a custom domain or user/organisation page.
+const basePath = process.env.BASE_PATH || '/sustainsutra/';
+
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: basePath,
     plugins: [
         react(),
         VitePWA({

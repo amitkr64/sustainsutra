@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { getVerificationReports, getPendingVerifications } from '@/services/cctsVerificationService';
 import { getMonitoringData } from '@/services/cctsMonitoringService';
 import { Button } from '@/components/ui/button';

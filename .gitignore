@@ -42,3 +42,9 @@ brsr-portal/frontend/dist/
 brsr-portal/backend/node_modules/
 brsr-portal/backend/.env
 brsr-portal/backend/uploads/
+
+# CCTS portal (standalone app in this repo)
+ccts-portal/frontend/node_modules/
+ccts-portal/frontend/dist/
+ccts-portal/backend/node_modules/
+ccts-portal/backend/.env

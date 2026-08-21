@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { getEmissionFactors } from '@/services/cctsEmissionFactorService';
 import { Search, Info, Database, Filter, ArrowUpRight, Zap, Sparkles, Binary, ShieldCheck, Settings, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { getMyEntity, getEntityDashboard } from '@/services/cctsEntityService';
 import { getMyCCCBalance } from '@/services/cctsCCCBalanceService';
 import ComplianceTrajectoryChart from '@/components/ComplianceTrajectoryChart';

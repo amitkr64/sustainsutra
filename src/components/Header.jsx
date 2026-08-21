@@ -173,37 +173,6 @@ const Header = () => {
                             </DropdownMenu>
                         </li>
 
-                        {/* CCTS Dropdown */}
-                        {isAuthenticated && (
-                            <li>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1 hover:text-gold transition-colors font-medium outline-none">
-                                        CCTS <ChevronDown size={16} />
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="bg-navy border-white/10 text-offwhite min-w-[220px] p-2 z-[1001]">
-                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/ccts/dashboard')}>
-                                            <Database className="mr-3 h-4 w-4 text-gold" />
-                                            <span>Dashboard</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/ccts/monitoring-data')}>
-                                            <BarChart3 className="mr-3 h-4 w-4 text-gold" />
-                                            <span>Monitoring Data</span>
-                                        </DropdownMenuItem>
-                                        {(user?.role === 'verifier' || isAdmin) && (
-                                            <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/ccts/verification-queue')}>
-                                                <Shield className="mr-3 h-4 w-4 text-gold" />
-                                                <span>Verification Queue</span>
-                                            </DropdownMenuItem>
-                                        )}
-                                        <DropdownMenuItem className="focus:bg-white/5 cursor-pointer py-3 px-3" onClick={() => navigate('/resources/emission-factors')}>
-                                            <Calculator className="mr-3 h-4 w-4 text-gold" />
-                                            <span>Emission Factors</span>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </li>
-                        )}
-
                         {/* More Menu */}
                         <li>
                             <DropdownMenu>
@@ -332,21 +301,6 @@ const Header = () => {
                                 ))}
                             </div>
                         </div>
-
-                        {/* CCTS Module (Authenticated) */}
-                        {isAuthenticated && (
-                            <div className="space-y-4">
-                                <span className="text-xs font-bold text-gold/50 uppercase tracking-[0.4em] block">CCTS Platform</span>
-                                <div className="grid grid-cols-1 gap-4">
-                                    <Link to="/ccts/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-lg text-offwhite">
-                                        <Database size={20} className="text-gold" /> Dashboard
-                                    </Link>
-                                    <Link to="/ccts/monitoring-data" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-lg text-offwhite">
-                                        <BarChart3 size={20} className="text-gold" /> Monitoring
-                                    </Link>
-                                </div>
-                            </div>
-                        )}
 
                         {/* Academy & Insights */}
                         <div className="space-y-4">

@@ -51,13 +51,6 @@ const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 
 const CarbonCalculatorPage = lazy(() => import('@/pages/CarbonCalculatorPage'));
 
-const CCTSDashboard = lazy(() => import('@/pages/CCTSDashboard'));
-const MonitoringDataForm = lazy(() => import('@/pages/MonitoringDataForm'));
-const MonitoringDataList = lazy(() => import('@/pages/MonitoringDataList'));
-const EntityRegistration = lazy(() => import('@/pages/EntityRegistration'));
-const VerificationQueue = lazy(() => import('@/pages/VerificationQueue'));
-const VerificationDetail = lazy(() => import('@/pages/VerificationDetail'));
-const EmissionFactorLibrary = lazy(() => import('@/pages/EmissionFactorLibrary'));
 
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const OurApproachPage = lazy(() => import('@/pages/OurApproachPage'));
@@ -192,20 +185,8 @@ function App() {
                                             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                                             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-                                            {/* CCTS - Protected Routes */}
-                                            <Route path="/ccts/dashboard" element={<ProtectedRoute><CCTSDashboard /></ProtectedRoute>} />
-                                            <Route path="/ccts/monitoring-data" element={<ProtectedRoute><MonitoringDataList /></ProtectedRoute>} />
-                                            <Route path="/ccts/monitoring-data/new" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
-                                            <Route path="/ccts/monitoring-data/edit/:id" element={<ProtectedRoute><MonitoringDataForm /></ProtectedRoute>} />
-                                            <Route path="/ccts/verification-queue" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationQueue /></RoleProtectedRoute>} />
-                                            <Route path="/ccts/verification/:id" element={<RoleProtectedRoute allowedRoles={['verifier', 'admin']}><VerificationDetail /></RoleProtectedRoute>} />
-
-                                            {/* CCTS - Public Resources */}
-                                            <Route path="/resources/emission-factors" element={<EmissionFactorLibrary />} />
-
                                             {/* Admin - Protected Routes */}
                                             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-                                            <Route path="/admin/ccts/register-entity" element={<RoleProtectedRoute allowedRoles={['admin']}><EntityRegistration /></RoleProtectedRoute>} />
                                             <Route path="/admin/blog/new" element={<ProtectedRoute><CreateBlogPage /></ProtectedRoute>} />
                                             <Route path="/admin/blog/:id/edit" element={<ProtectedRoute><EditBlogPage /></ProtectedRoute>} />
                                             <Route path="/admin/course/new" element={<RoleProtectedRoute allowedRoles={['admin', 'instructor']}><CreateCoursePage /></RoleProtectedRoute>} />

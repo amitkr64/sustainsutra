@@ -157,9 +157,6 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 Disallow: /profile
-Disallow: /ccts/dashboard
-Disallow: /ccts/monitoring-data
-Disallow: /ccts/verification
 Disallow: /my-courses
 Disallow: /courses/*/learn
 

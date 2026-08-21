@@ -179,6 +179,22 @@
     "redirecting": "Redirecting...",
     "connectingGateway": "Connecting to secure payment gateway."
   },
+  "ccts": {
+    "dashboard": "CCTS Dashboard",
+    "monitoringData": "Monitoring Data",
+    "verificationQueue": "Verification Queue",
+    "entityRegistration": "Entity Registration",
+    "compliance": "Compliance",
+    "rawMaterials": "Raw Materials (Scope 3)",
+    "addMaterial": "Add Material",
+    "fuelEnergy": "Fuel & Energy Inputs",
+    "addFuel": "Add Fuel",
+    "bulkImport": "Bulk Import",
+    "importTo": "Import to:",
+    "downloadTemplate": "Download template",
+    "addRows": "Add {{count}} rows",
+    "importComplete": "Import complete"
+  },
   "admin": {
     "dashboard": "Admin Dashboard",
     "blogs": "Blogs",

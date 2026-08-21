@@ -149,7 +149,6 @@ app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/resources', require('./routes/resourceRoutes'));
 // Carbon Credit Trading Scheme (CCTS). Requires a real database — fail closed
 // in demo mode rather than letting the controllers hit an absent DB.
-app.use('/api/ccts', require('./middleware/requireRealDb'), require('./routes/cctsRoutes'));
 
 // Error handling middleware (must be last)
 app.use((err, req, res, next) => {

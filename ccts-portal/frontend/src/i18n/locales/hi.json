@@ -179,6 +179,22 @@
     "redirecting": "रीडायरेक्ट हो रहा है...",
     "connectingGateway": "सुरक्षित भुगतान गेटवे से कनेक्ट हो रहा है।"
   },
+  "ccts": {
+    "dashboard": "CCTS डैशबोर्ड",
+    "monitoringData": "निगरानी डेटा",
+    "verificationQueue": "सत्यापन कतार",
+    "entityRegistration": "इकाई पंजीकरण",
+    "compliance": "अनुपालन",
+    "rawMaterials": "कच्चे माल (स्कोप 3)",
+    "addMaterial": "सामग्री जोड़ें",
+    "fuelEnergy": "ईंधन और ऊर्जा इनपुट",
+    "addFuel": "ईंधन जोड़ें",
+    "bulkImport": "बल्क इम्पोर्ट",
+    "importTo": "इसमें इम्पोर्ट करें:",
+    "downloadTemplate": "टेम्पलेट डाउनलोड करें",
+    "addRows": "{{count}} पंक्तियां जोड़ें",
+    "importComplete": "इम्पोर्ट पूर्ण"
+  },
   "admin": {
     "dashboard": "व्यवस्थापक डैशबोर्ड",
     "blogs": "ब्लॉग",

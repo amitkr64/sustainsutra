@@ -4,7 +4,6 @@ import { blogService } from '@/services/blogService';
 import { courseService } from '@/services/courseService';
 import { appointmentService } from '@/services/appointmentService';
 import { newsletterService } from '@/services/newsletterService';
-import { getAllEntities } from '@/services/cctsEntityService';
 import { leadService } from '@/services/leadService';
 import { paymentService } from '@/services/paymentService';
 import { userService } from '@/services/userService';
@@ -29,7 +28,6 @@ const AdminDashboard = () => {
     const [courses, setCourses] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [subscribers, setSubscribers] = useState([]);
-    const [cctsEntities, setCCTSEntities] = useState([]);
     const [leadsStats, setLeadsStats] = useState({ total: 0, new: 0 });
     const [revenueStats, setRevenueStats] = useState({ totalINR: 0, paidCount: 0 });
     const [usersCount, setUsersCount] = useState(0);
@@ -52,12 +50,11 @@ const AdminDashboard = () => {
         });
 
         try {
-            const [blogsData, appointmentsData, subscribersData, coursesData, cctsData, leadsData, revenueData, usersData] = await Promise.all([
+            const [blogsData, appointmentsData, subscribersData, coursesData, leadsData, revenueData, usersData] = await Promise.all([
                 safe(blogService.getAll()),
                 safe(appointmentService.getAllAppointments()),
                 safe(newsletterService.getAll()),
                 safe(courseService.getAllCourses()),
-                safe(getAllEntities()),
                 safe(leadService.getLeads({ limit: 100 })),
                 safe(paymentService.getRevenueStats()),
                 safe(userService.getAll())
@@ -67,7 +64,6 @@ const AdminDashboard = () => {
             setCourses(coursesData || []);
             setAppointments(appointmentsData || []);
             setSubscribers(subscribersData || []);
-            setCCTSEntities(cctsData?.data || []);
 
             // Leads: API returns { data, total, page, pages }
             const leads = leadsData?.data || [];
@@ -91,7 +87,6 @@ const AdminDashboard = () => {
             setCourses(await courseService.getAllCourses().catch(() => []) || []);
             setAppointments([]);
             setSubscribers([]);
-            setCCTSEntities([]);
         }
     };
 
@@ -131,7 +126,6 @@ const AdminDashboard = () => {
         appointments: appointments.length,
         pendingAppointments: appointments.filter(a => a.status === 'pending').length,
         subscribers: subscribers.length,
-        cctsEntities: cctsEntities.length,
         leads: leadsStats.total,
         newLeads: leadsStats.new,
         revenue: revenueStats.totalINR,
@@ -208,13 +202,6 @@ const AdminDashboard = () => {
                         </div>
                         <p className="text-3xl font-bold text-white">{stats.pendingAppointments}</p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
-                        <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-offwhite/80 text-sm font-medium">CCTS Entities</h3>
-                            <LayoutDashboard className="text-gold w-5 h-5" />
-                        </div>
-                        <p className="text-3xl font-bold text-white">{stats.cctsEntities}</p>
-                    </div>
                 </div>
 
                 {/* Tabs */}
@@ -224,7 +211,6 @@ const AdminDashboard = () => {
                         <TabsTrigger value="courses">Courses</TabsTrigger>
                         <TabsTrigger value="appointments">Appointments</TabsTrigger>
                         <TabsTrigger value="leads" className="text-gold">Leads</TabsTrigger>
-                        <TabsTrigger value="ccts" className="text-gold font-semibold">CCTS</TabsTrigger>
                         <TabsTrigger value="resources">Resources</TabsTrigger>
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
@@ -374,60 +360,6 @@ const AdminDashboard = () => {
                     {/* Leads Tab */}
                     <TabsContent value="leads" className="mt-6">
                         <LeadsManager />
-                    </TabsContent>
-
-                    {/* CCTS Compliance Tab */}
-                    <TabsContent value="ccts" className="mt-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-2xl font-playfair text-white">Consolidated CCTS Entities</h2>
-                            <Link to="/admin/ccts/register-entity">
-                                <Button className="bg-gold text-navy hover:bg-gold/90 font-bold">
-                                    <Plus className="w-4 h-4 mr-2" /> Register Entity
-                                </Button>
-                            </Link>
-                        </div>
-
-                        <div className="bg-white/5 border border-white/10 rounded-xl overflow-x-auto">
-                            <table className="w-full">
-                                <thead className="bg-white/5">
-                                    <tr className="border-b border-white/10">
-                                        <th className="p-4 text-left text-offwhite/60">Entity Name</th>
-                                        <th className="p-4 text-left text-offwhite/60">Registration No.</th>
-                                        <th className="p-4 text-left text-offwhite/60">Sector</th>
-                                        <th className="p-4 text-left text-offwhite/60">Baseline GEI</th>
-                                        <th className="p-4 text-right text-offwhite/60">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {cctsEntities.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="5" className="p-8 text-center text-offwhite/60 italic">
-                                                No entities registered yet. Click "Register Entity" to add one.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        cctsEntities.map(entity => (
-                                            <tr key={entity._id} className="border-b border-white/5 hover:bg-white/5">
-                                                <td className="p-4 text-white font-medium">{entity.entityName}</td>
-                                                <td className="p-4 text-offwhite/80">{entity.registrationNumber}</td>
-                                                <td className="p-4 text-offwhite/80">{entity.sector}</td>
-                                                <td className="p-4 text-gold font-mono">{entity.baselineData?.ghgIntensity?.toFixed(4) || '0.0000'}</td>
-                                                <td className="p-4 text-right space-x-2">
-                                                    <Link to={`/ccts/dashboard?entityId=${entity._id}`}>
-                                                        <button className="p-2 hover:text-gold text-offwhite/60" title="View Dashboard" aria-label="Dashboard">
-                                                            <LayoutDashboard size={16} />
-                                                        </button>
-                                                    </Link>
-                                                    <button className="p-2 hover:text-red-400 text-offwhite/60" title="Delete" aria-label="Delete">
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
                     </TabsContent>
 
                     {/* Resources Tab */}

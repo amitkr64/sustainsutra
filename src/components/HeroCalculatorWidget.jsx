@@ -9,7 +9,7 @@ import CountUp from '@/components/CountUp';
  * electricity, fuel, and materials and see a live tCO₂e estimate update in
  * real time. Demonstrates the product instantly — high engagement.
  *
- * Emission factors are simplified India-grid defaults for demo purposes.
+ * Emission factors are simplified India-grid defaults for quick estimation;
  */
 const EF = {
     electricity: 0.82,  // tCO₂e per MWh (India grid)
@@ -69,7 +69,6 @@ const HeroCalculatorWidget = ({ style }) => {
                             <div className="text-sm font-bold text-foreground">Live Emissions Estimator</div>
                             <div className="text-[10px] text-muted-foreground">Drag to estimate your footprint</div>
                         </div>
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">DEMO</span>
                     </div>
 
                     {/* Sliders */}
